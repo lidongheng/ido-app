@@ -1,0 +1,39 @@
+{
+  "cost": 12.21,
+  "name": "IT设备",
+  "ttlCost": 153.13,
+  "unitCost": 751.82,
+  "unitCostRatio": -0.02,
+  "children": [
+    {
+      "cost": 12.17,
+      "name": "通算服务器",
+      "ttlCost": 108.91,
+      "unitCost": 751.82,
+      "unitCostRatio": -0.01,
+      "assetCount": 446852
+    },
+    {
+      "cost": 3.17,
+      "name": "智算服务器",
+      "ttlCost": 34.67,
+      "unitCost": 716.43,
+      "unitCostRatio": -0.005,
+      "assetCount": 516852
+    },
+    {
+      "cost": 12.21,
+      "name": "昇腾服务器",
+      "ttlCost": 31.13,
+      "unitCost": 701.11,
+      "unitCostRatio": 0.05
+    },
+    {
+      "cost": 5.17,
+      "name": "存储服务器",
+      "ttlCost": 48.23,
+      "unitCost": 649.13,
+      "unitCostRatio": 0.12
+    }
+  ]
+}
