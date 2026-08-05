@@ -15,6 +15,7 @@ const routes = [
         name: 'resource',
         component: () => import('../views/cloud-operation/ResourceView.vue'),
         meta: {
+          keepAlive: true,
           title: '资源'
         }
       },
@@ -23,6 +24,7 @@ const routes = [
         name: 'dc',
         component: () => import('../views/cloud-operation/DcView.vue'),
         meta: {
+          keepAlive: true,
           title: 'DC'
         }
       }

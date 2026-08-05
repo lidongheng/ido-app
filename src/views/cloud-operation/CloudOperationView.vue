@@ -8,8 +8,21 @@
       />
 
       <main class="page-content">
-        <router-view v-slot="{ Component }">
-          <component :is="Component" :filters="filters" />
+        <router-view v-slot="{ Component, route: currentRoute }">
+          <keep-alive>
+            <component
+              :is="Component"
+              :key="currentRoute.name"
+              v-if="currentRoute.meta.keepAlive"
+              :filters="filters"
+            />
+          </keep-alive>
+          <component
+            :is="Component"
+            :key="currentRoute.name"
+            v-if="!currentRoute.meta.keepAlive"
+            :filters="filters"
+          />
         </router-view>
       </main>
 

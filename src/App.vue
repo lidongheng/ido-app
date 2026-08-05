@@ -1,6 +1,12 @@
 <template>
-  <router-view />
+  <router-view v-if="ready" />
 </template>
+
+<script setup>
+import { useAppInitialization } from '@/composables/useAppInitialization.js';
+
+const { ready } = useAppInitialization();
+</script>
 
 <style>
 * {
