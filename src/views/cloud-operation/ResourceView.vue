@@ -68,10 +68,11 @@ const props = defineProps({
     type: Object,
     required: true
   }
-})
+});
 
-const filters = toRef(props, 'filters')
-const { loading, errorMessage, pageData } = useResourceOverview(filters)
+const filters = toRef(props, 'filters');
+const { loading, errorMessage, pageData } = useResourceOverview(filters);
+
 const overviewData = computed(() => {
   return [
     {
@@ -170,14 +171,14 @@ const generalData = computed(() => {
       label: '通算服务器',
       value: formatterValue(1023453, 10000),
       unit: '万台',
-      ratio: formatRateValue(14245, 10000),
+      ratio: formatterValue(14245, 10000),
       iconName: 'general-icon-1',
     },
     {
       label: '运营总量',
       value: formatterValue(7023453, 10000),
       unit: '万核',
-      ratio: formatRateValue(245, 10000),
+      ratio: formatterValue(245, 10000),
       iconName: 'general-icon-2',
     },
   ];

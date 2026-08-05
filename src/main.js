@@ -4,6 +4,14 @@ import App from './App.vue'
 import router from './router'
 import bus from '@/utils/bus.js'
 
+// 一次性注册 src/icons 目录下的全部 SVG symbol。
+function loadSvgIcons() {
+  const iconFiles = require.context('./icons', false, /\.svg$/);
+  iconFiles.keys().forEach(iconFiles);
+}
+
+loadSvgIcons();
+
 // 自定义移动端自适应（替代 amfe-flexible，限制最大宽度）
 ;(function flexible() {
   const docEl = document.documentElement

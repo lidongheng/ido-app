@@ -5,14 +5,14 @@
         <span class="header-left">
           <SvgIcon
             v-if="iconName"
-            :icon-name: iconName"
+            :icon-name="iconName"
             class="svg-icon-class"
           ></SvgIcon>
           <span class="card-title">{{ title }}</span>
         </span>
         <span @click="toggle" v-if="expandable" class="expand-label">
           {{ expanded ? '收起' : '展开' }}
-          <van-icon name="expanded ? arrow-up : arrow-down" />
+          <van-icon :name="expanded ? 'arrow-up' : 'arrow-down'" />
         </span>
       </div>
 
@@ -21,7 +21,7 @@
           <metric-item
             class="metric-item"
             :metric="metric"
-            compact="compact"
+            :compact="compact"
           />
           <div class="line" v-if="index !== metrics.length - 1"></div>
         </template>
@@ -34,9 +34,9 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import SvgIcon from '@/components/cloud-operation/svg/icon.vue';
-import MetricItem from './MetricItem.vue'
+import { ref } from 'vue';
+import SvgIcon from './SvgIcon.vue';
+import MetricItem from './MetricItem.vue';
 
 const props = defineProps({
   title: {
@@ -63,16 +63,16 @@ const props = defineProps({
     type: Boolean,
     default: false
   }
-})
+});
 
-const expanded = ref(props.defaultExpanded)
+const expanded = ref(props.defaultExpanded);
 
 function toggle() {
   if (!props.expandable) {
-    return
+    return;
   }
 
-  expanded.value = !expanded.value
+  expanded.value = !expanded.value;
 }
 </script>
 

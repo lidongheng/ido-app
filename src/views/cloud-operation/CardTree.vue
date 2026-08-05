@@ -1,5 +1,6 @@
+<template>
 <div class="card-tree">
-  <div class="tree-item" v-for="(item, index) in data.length :key="index"> </div>
+  <div v-for="(item, index) in data" :key="index" class="tree-item"></div>
 </div>
 </template>
 
@@ -29,7 +30,7 @@ const props = defineProps({
   // height: var(--card-height);
   height: 82px; // 74 + 8
   width: 10px;
-  &::first-child {
+  &:first-child {
     height: 24px;
   }
 }

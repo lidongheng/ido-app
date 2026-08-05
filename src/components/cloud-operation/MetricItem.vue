@@ -60,17 +60,11 @@ const ratioArrow = computed(() => {
 });
 
 const textClass = computed(() => {
-  if (!props.metric.ratio) {
-    const direction = Number(props.metric.ratio) > 0 ? 'up' : 'down';
-    let color = "";
-    if (props.upGreen) {
-      color = direction === 'up' ? 'green' : 'red';
-    } else {
-      color = direction === 'up' ? 'red' : 'green';
-    }
-    return color;
+  const direction = Number(props.metric.ratio) > 0 ? 'up' : 'down';
+  if (props.upGreen) {
+    return direction === 'up' ? 'green' : 'red';
   }
-  return 'green';
+  return direction === 'up' ? 'red' : 'green';
 });
 </script>
 
