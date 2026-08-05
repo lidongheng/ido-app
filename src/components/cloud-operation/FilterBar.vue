@@ -68,10 +68,10 @@ function confirmDate(value) {
 <style lang="less" scoped>
 .filter-bar {
   display: flex;
-  min-height: 1.35rem;
+  min-height: 51px;
   align-items: center;
   justify-content: space-between;
-  padding: .21rem .43rem;
+  padding: 8px 16px;
   border-bottom: 1PX solid #ececf2;
   background: #fff;
 }
@@ -84,19 +84,19 @@ function confirmDate(value) {
 
 .global-label {
   flex-shrink: 0;
-  margin-right: .27rem;
+  margin-right: 10px;
   color: #241b4a;
-  font-size: .4rem;
+  font-size: 15px;
 }
 
 .filter-button {
   display: flex;
   min-width: 0;
   align-items: center;
-  gap: .08rem;
+  gap: 3px;
   color: #3e365f;
   background: transparent;
-  font-size: .36rem;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -108,9 +108,9 @@ function confirmDate(value) {
 }
 
 .region-button {
-  max-width: 3.2rem;
+  max-width: 120px;
   justify-content: flex-end;
-  margin-left: .21rem;
+  margin-left: 8px;
 }
 
 :deep(.van-popup) {

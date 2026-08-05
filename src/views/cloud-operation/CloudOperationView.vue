@@ -113,7 +113,7 @@ function onAiClick() {
 }
 
 .page-content {
-  padding-bottom: calc(2rem + env(safe-area-inset-bottom));
+  padding-bottom: calc(75px + env(safe-area-inset-bottom));
 }
 
 .shell-status {
@@ -127,6 +127,6 @@ function onAiClick() {
 
 .error-state {
   color: #df5b72;
-  font-size: .37rem;
+  font-size: 14px;
 }
 </style>

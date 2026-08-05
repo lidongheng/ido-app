@@ -52,72 +52,72 @@ const trendArrow = computed(() => {
 <style lang="less" scoped>
 .metric-item {
   min-width: 0;
-  padding: .08rem .11rem;
+  padding: 3px 4px;
   position: relative;
 }
 
 .metric-item:not(:last-child)::after {
   content: '';
   position: absolute;
-  top: .05rem;
+  top: 2px;
   right: 0;
-  height: 1.55rem;
+  height: 58px;
   border-right: 1PX dashed #e5e6ee;
 }
 
 .metric-label {
   display: flex;
   align-items: center;
-  min-height: .51rem;
+  min-height: 19px;
   color: #2c2357;
-  font-size: .34rem;
+  font-size: 13px;
   font-weight: 600;
   white-space: nowrap;
 }
 
 .metric-icon {
   flex-shrink: 0;
-  margin-right: .09rem;
+  margin-right: 3px;
   color: #5c4bc4;
-  font-size: .48rem;
+  font-size: 18px;
 }
 
 .metric-value-row {
   display: flex;
   align-items: baseline;
-  margin-top: .19rem;
+  margin-top: 7px;
   white-space: nowrap;
 }
 
 .metric-value {
   color: #271c58;
-  font-size: .51rem;
+  font-size: 19px;
   font-weight: 700;
-  line-height: .75rem;
+  line-height: 28px;
 }
 
 .metric-unit {
   flex-shrink: 0;
-  margin-left: .05rem;
+  margin-left: 2px;
   color: #4e466c;
-  font-size: .27rem;
+  font-size: 10px;
 }
 
 .metric-trend {
   display: flex;
   align-items: center;
-  margin-top: .16rem;
+  margin-top: 6px;
   color: #5e5873;
-  font-size: .31rem;
+  font-size: 12px;
   white-space: nowrap;
 }
 
 .trend-value {
-  margin-left: .08rem;
+  margin-left: 3px;
 }
 
 .trend-arrow {
-  font-size: .24rem;
+  font-size: 9px;
 }
 
 .trend-value.danger {
@@ -129,23 +129,23 @@ const trendArrow = computed(() => {
 }
 
 .compact {
-  padding: 0 .08rem;
+  padding: 0 3px;
 }
 
 .compact .metric-label {
   color: #47405e;
-  font-size: .32rem;
+  font-size: 12px;
   font-weight: 500;
 }
 
 .compact .metric-value-row {
-  margin-top: .11rem;
+  margin-top: 4px;
 }
 
 .compact .metric-value {
-  font-size: .45rem;
+  font-size: 17px;
   font-weight: 500;
-  line-height: .64rem;
+  line-height: 24px;
 }
 
 .compact .metric-trend {

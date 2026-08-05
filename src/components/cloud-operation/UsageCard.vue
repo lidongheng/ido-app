@@ -28,20 +28,20 @@ defineProps({
 .usage-card {
   display: flex;
   flex-direction: column;
-  gap: .29rem;
-  padding: .32rem .35rem;
+  gap: 11px;
+  padding: 12px 13px;
   border: 1PX solid #e3e4ed;
-  border-radius: .23rem;
+  border-radius: 9px;
   background: #fff;
 }
 
 .usage-group h3 {
   display: flex;
   align-items: center;
-  gap: .13rem;
-  margin-bottom: .19rem;
+  gap: 5px;
+  margin-bottom: 7px;
   color: #2b2254;
-  font-size: .4rem;
+  font-size: 15px;
 }
 
 .usage-group h3 .van-icon {
@@ -51,14 +51,14 @@ defineProps({
 .usage-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: .24rem;
+  gap: 9px;
 }
 
 .usage-track {
   position: relative;
-  height: .77rem;
+  height: 29px;
   overflow: hidden;
-  border-radius: .18rem;
+  border-radius: 7px;
   background: #f2f1f8;
 }
 
@@ -75,7 +75,7 @@ defineProps({
   align-items: center;
   justify-content: center;
   color: #2e2654;
-  font-size: .34rem;
+  font-size: 13px;
   font-weight: 700;
   white-space: nowrap;
 }

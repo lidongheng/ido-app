@@ -21,30 +21,30 @@ defineProps({
 
 <style lang="less" scoped>
 .operation-section {
-  margin-bottom: .64rem;
+  margin-bottom: 24px;
 }
 
 .section-title {
   display: flex;
   align-items: center;
-  gap: .19rem;
-  margin-bottom: .27rem;
+  gap: 7px;
+  margin-bottom: 10px;
   color: #251c4e;
-  font-size: .45rem;
+  font-size: 17px;
   font-weight: 700;
-  line-height: .64rem;
+  line-height: 24px;
 }
 
 .section-mark {
-  width: .11rem;
-  height: .59rem;
-  border-radius: .08rem;
+  width: 4px;
+  height: 22px;
+  border-radius: 3px;
   background: #536ee7;
 }
 
 .section-content {
   display: flex;
   flex-direction: column;
-  gap: .27rem;
+  gap: 10px;
 }
 </style>

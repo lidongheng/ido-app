@@ -81,18 +81,18 @@ function toggle() {
 .metric-card {
   overflow: hidden;
   border: 1PX solid #e4e5ed;
-  border-radius: .24rem;
+  border-radius: 9px;
   background: #fff;
-  box-shadow: 0 .05rem .19rem rgba(45, 37, 85, 0.04);
+  box-shadow: 0 2px 7px rgba(45, 37, 85, 0.04);
 }
 
 .card-header {
   display: flex;
   width: 100%;
-  min-height: .67rem;
+  min-height: 25px;
   align-items: center;
   justify-content: space-between;
-  padding: .08rem .27rem;
+  padding: 3px 10px;
   color: #28204f;
   background: linear-gradient(90deg, #e5e9ff 0%, #f1efff 100%);
   text-align: left;
@@ -106,40 +106,40 @@ function toggle() {
   display: flex;
   min-width: 0;
   align-items: center;
-  font-size: .4rem;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .card-title-icon {
   flex-shrink: 0;
-  margin-right: .13rem;
+  margin-right: 5px;
   color: #596fd7;
-  font-size: .43rem;
+  font-size: 16px;
 }
 
 .expand-label {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: .05rem;
+  gap: 2px;
   color: #7176ae;
-  font-size: .31rem;
+  font-size: 12px;
   font-weight: 400;
 }
 
 .card-body {
-  padding: .32rem .13rem .35rem;
+  padding: 12px 5px 13px;
 }
 
 .card-details {
   display: flex;
   flex-direction: column;
-  gap: .21rem;
-  padding: 0 .24rem .27rem;
+  gap: 8px;
+  padding: 0 9px 10px;
 }
 
 .compact .card-body {
-  padding-top: .24rem;
-  padding-bottom: .27rem;
+  padding-top: 9px;
+  padding-bottom: 10px;
 }
 </style>

@@ -61,7 +61,6 @@
         </div>
 
         <footer class="panel-actions">
-          <button class="cancel-button" type="button" @click="cancel">取消</button>
           <button
             class="confirm-button"
             type="button"
@@ -171,7 +170,7 @@ function confirm() {
   z-index: 900;
   display: flex;
   justify-content: center;
-  padding-top: 1.35rem;
+  padding-top: 51px;
 }
 
 .region-mask {
@@ -185,15 +184,15 @@ function confirm() {
   z-index: 1;
   display: flex;
   width: min(100%, 500PX);
-  max-height: calc(100vh - 2.83rem);
+  max-height: calc(100vh - 106px);
   flex-direction: column;
-  padding: .27rem .43rem .32rem;
-  border-radius: 0 0 .27rem .27rem;
+  padding: 10px 16px 12px;
+  border-radius: 0 0 10px 10px;
   background: #fff;
 }
 
 :deep(.van-search) {
-  padding: 0 0 .27rem;
+  padding: 0 0 10px;
 }
 
 :deep(.van-search__content) {
@@ -201,20 +200,20 @@ function confirm() {
 }
 
 .filter-group {
-  margin-bottom: .27rem;
+  margin-bottom: 10px;
 }
 
 .filter-group h3,
 .region-list-title {
-  margin-bottom: .19rem;
+  margin-bottom: 7px;
   color: #2a2153;
-  font-size: .4rem;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .chip-list {
   display: grid;
-  gap: .19rem;
+  gap: 7px;
 }
 
 .region-chips {
@@ -226,13 +225,13 @@ function confirm() {
 }
 
 .filter-chip {
-  min-height: .75rem;
-  padding: .08rem .11rem;
+  min-height: 28px;
+  padding: 3px 4px;
   border: 1PX solid transparent;
-  border-radius: .11rem;
+  border-radius: 4px;
   color: #4e4664;
   background: #f8f8fa;
-  font-size: .34rem;
+  font-size: 13px;
 }
 
 .filter-chip.active {
@@ -242,7 +241,7 @@ function confirm() {
 }
 
 .region-list-title {
-  margin-top: .08rem;
+  margin-top: 3px;
 }
 
 .region-list {
@@ -255,8 +254,8 @@ function confirm() {
 .select-all-row,
 .region-row {
   width: 100%;
-  min-height: 1.01rem;
-  padding: .19rem .16rem;
+  min-height: 38px;
+  padding: 7px 6px;
   border-bottom: 1PX solid #eeeeF3;
   background: #fff;
   text-align: left;
@@ -264,12 +263,12 @@ function confirm() {
 
 .select-all-row {
   border: 1PX solid #5c49c3;
-  border-radius: .13rem;
+  border-radius: 5px;
 }
 
 :deep(.van-checkbox__label) {
   color: #3b315e;
-  font-size: .35rem;
+  font-size: 13px;
 }
 
 :deep(.van-checkbox__icon--checked .van-icon) {
@@ -278,21 +277,14 @@ function confirm() {
 }
 
 .panel-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: .24rem;
-  padding-top: .27rem;
+  padding-top: 10px;
 }
 
 .panel-actions button {
-  min-height: .85rem;
-  border-radius: .13rem;
-  font-size: .36rem;
-}
-
-.cancel-button {
-  color: #504969;
-  background: #f1f2f6;
+  width: 100%;
+  min-height: 32px;
+  border-radius: 5px;
+  font-size: 14px;
 }
 
 .confirm-button {

@@ -30,9 +30,9 @@ defineProps({
 
 <style lang="less" scoped>
 .progress-card {
-  padding: .27rem .35rem .35rem;
+  padding: 10px 13px 13px;
   border: 1PX solid #e3e4ed;
-  border-radius: .23rem;
+  border-radius: 9px;
   background: #fff;
 }
 
@@ -40,45 +40,45 @@ defineProps({
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: .24rem;
+  margin-bottom: 9px;
 }
 
 .progress-title {
   display: flex;
   align-items: center;
   color: #2d2455;
-  font-size: .4rem;
+  font-size: 15px;
   font-weight: 700;
 }
 
 .progress-title .van-icon {
-  margin-right: .13rem;
+  margin-right: 5px;
   color: #5d6dd1;
 }
 
 .progress-subtitle {
   color: #777187;
-  font-size: .34rem;
+  font-size: 13px;
   font-weight: 400;
 }
 
 .progress-status {
   color: #51488d;
-  font-size: .34rem;
+  font-size: 13px;
   font-weight: 600;
 }
 
 .progress-rows {
   display: flex;
   flex-direction: column;
-  gap: .24rem;
+  gap: 9px;
 }
 
 .progress-track {
   position: relative;
-  height: .83rem;
+  height: 31px;
   overflow: hidden;
-  border-radius: .19rem;
+  border-radius: 7px;
   background: #f2f1f8;
 }
 
@@ -95,7 +95,7 @@ defineProps({
   align-items: center;
   justify-content: center;
   color: #28204f;
-  font-size: .37rem;
+  font-size: 14px;
   font-weight: 700;
 }
 </style>

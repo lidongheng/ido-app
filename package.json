@@ -26,7 +26,8 @@
     "@vue/cli-service": "~5.0.0",
     "less": "^4.0.0",
     "less-loader": "^8.0.0",
-    "postcss-pxtorem": "^6.1.0"
+    "postcss-pxtorem": "^6.1.0",
+    "svg-sprite-loader": "^6.0.11"
   },
   "browserslist": [
     "> 1%",

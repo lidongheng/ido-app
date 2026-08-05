@@ -6,7 +6,7 @@
       type="button"
       @click="emit('navigate', 'resource')"
     >
-      <van-icon name="cluster-o" />
+      <svg-icon class="nav-svg-icon" icon-name="resource" />
       <span>资源</span>
     </button>
 
@@ -28,6 +28,9 @@
 </template>
 
 <script setup>
+import '@/icons/resource.svg'
+import SvgIcon from './SvgIcon.vue'
+
 defineProps({
   active: {
     type: String,
@@ -48,14 +51,14 @@ const emit = defineEmits(['navigate', 'ai-click'])
   display: grid;
   width: 100%;
   max-width: 500PX;
-  min-height: 1.48rem;
+  min-height: 56px;
   grid-template-columns: 1fr 1.2fr 1fr;
   align-items: end;
-  padding: .13rem .48rem calc(.13rem + env(safe-area-inset-bottom));
+  padding: 5px 18px calc(5px + env(safe-area-inset-bottom));
   border-top: 1PX solid #ebeaf1;
   background: rgba(255, 255, 255, .98);
   transform: translateX(-50%);
-  box-shadow: 0 -.08rem .27rem rgba(39, 29, 78, .07);
+  box-shadow: 0 -3px 10px rgba(39, 29, 78, .07);
 }
 
 .nav-item,
@@ -70,12 +73,19 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 .nav-item {
   flex-direction: column;
-  gap: .03rem;
-  font-size: .32rem;
+  gap: 1px;
+  font-size: 12px;
 }
 
 .nav-item .van-icon {
-  font-size: .61rem;
+  font-size: 23px;
+}
+
+.nav-item .nav-svg-icon {
+  width: 23px;
+  min-width: 23px;
+  height: 23px;
+  min-height: 23px;
 }
 
 .nav-item.active {
@@ -83,29 +93,29 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .ai-button {
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 66px;
+  height: 66px;
   flex-direction: column;
   justify-self: center;
-  margin-bottom: .08rem;
-  border: .08rem solid #eeefff;
+  margin-bottom: 3px;
+  border: 3px solid #eeefff;
   border-radius: 50%;
   color: #4e55cc;
   background: #fff;
-  box-shadow: 0 -.05rem .24rem rgba(76, 79, 191, .22);
+  box-shadow: 0 -2px 9px rgba(76, 79, 191, .22);
 }
 
 .ai-symbol {
-  height: .75rem;
-  font-size: 1rem;
+  height: 28px;
+  font-size: 38px;
   font-weight: 500;
-  line-height: .72rem;
+  line-height: 27px;
   transform: rotate(-12deg);
 }
 
 .ai-label {
-  margin-top: .03rem;
-  font-size: .27rem;
+  margin-top: 1px;
+  font-size: 10px;
   font-weight: 600;
 }
 </style>

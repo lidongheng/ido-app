@@ -28,7 +28,7 @@
           :data="pageData.cityTree"
           :height="112"
           :collapsible="false"
-          :style="{ '--row-height': '2.99rem' }"
+          :style="{ '--row-height': '112px' }"
         >
           <template #default="{ item }">
             <metric-card
@@ -116,14 +116,14 @@ watch(filters, () => {
 
 <style lang="less" scoped>
 .dashboard-page {
-  min-height: calc(100vh - 1.35rem);
-  padding: .48rem .43rem .4rem;
+  min-height: calc(100vh - 51px);
+  padding: 18px 16px 15px;
   background: #fff;
 }
 
 .page-status {
   display: flex;
-  min-height: 7rem;
+  min-height: 263px;
   align-items: center;
   justify-content: center;
   color: #655d7d;
@@ -131,7 +131,7 @@ watch(filters, () => {
 
 .error-state {
   color: #df5b72;
-  font-size: .37rem;
+  font-size: 14px;
 }
 
 .tree-card {
@@ -141,14 +141,14 @@ watch(filters, () => {
 .more-button {
   display: flex;
   width: 100%;
-  min-height: .93rem;
+  min-height: 35px;
   align-items: center;
   justify-content: center;
-  gap: .08rem;
-  border-radius: .17rem;
+  gap: 3px;
+  border-radius: 6px;
   color: #6d66a3;
   background: linear-gradient(90deg, #fafafe 0%, #f6f5fb 100%);
-  font-size: .38rem;
+  font-size: 14px;
   cursor: pointer;
 }
 
@@ -162,8 +162,8 @@ watch(filters, () => {
 
 @media (max-width: 360px) {
   .dashboard-page {
-    padding-right: .32rem;
-    padding-left: .32rem;
+    padding-right: 12px;
+    padding-left: 12px;
   }
 }
 </style>
