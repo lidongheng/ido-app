@@ -19,6 +19,112 @@ const REGION_OPTIONS = [
   { id: 'tr-istanbul-1', name: '土耳其-伊斯坦布尔一', scope: '海外', area: '土耳其' }
 ]
 
+const DC_FILTER_OPTIONS = [
+  {
+    id: 'city-wuhu',
+    name: '芜湖',
+    scope: '国内',
+    area: '华东',
+    children: [
+      { id: 'dc-wuhu-jiangbei', name: '芜湖江北数据中心' },
+      { id: 'dc-wuhu-sanshan', name: '芜湖三山数据中心' },
+      { id: 'dc-wuhu-vocational', name: '芜湖职教数据中心' }
+    ]
+  },
+  {
+    id: 'city-guian',
+    name: '贵安新区',
+    scope: '国内',
+    area: '西部',
+    children: [
+      { id: 'dc-guian-1', name: '贵安新区一号数据中心' },
+      { id: 'dc-guian-2', name: '贵安新区二号数据中心' }
+    ]
+  },
+  {
+    id: 'city-ulanchabu',
+    name: '乌兰察布市',
+    scope: '国内',
+    area: '华北',
+    children: [
+      { id: 'dc-ulanchabu-1', name: '乌兰察布一号数据中心' },
+      { id: 'dc-ulanchabu-2', name: '乌兰察布二号数据中心' }
+    ]
+  },
+  {
+    id: 'city-horinger',
+    name: '和林格尔',
+    scope: '国内',
+    area: '华北',
+    children: [
+      { id: 'dc-horinger-1', name: '和林格尔数据中心' }
+    ]
+  },
+  {
+    id: 'city-shenzhen',
+    name: '深圳',
+    scope: '国内',
+    area: '华南',
+    children: [
+      { id: 'dc-shenzhen-1', name: '深圳一号数据中心' }
+    ]
+  },
+  {
+    id: 'city-singapore',
+    name: '新加坡',
+    scope: '海外',
+    area: '亚太',
+    children: [
+      { id: 'dc-singapore-1', name: '新加坡一号数据中心' }
+    ]
+  },
+  {
+    id: 'city-dubai',
+    name: '迪拜',
+    scope: '海外',
+    area: '中东中亚',
+    children: [
+      { id: 'dc-dubai-1', name: '迪拜数据中心' }
+    ]
+  },
+  {
+    id: 'city-cairo',
+    name: '开罗',
+    scope: '海外',
+    area: '北部非洲',
+    children: [
+      { id: 'dc-cairo-1', name: '开罗数据中心' }
+    ]
+  },
+  {
+    id: 'city-johannesburg',
+    name: '约翰内斯堡',
+    scope: '海外',
+    area: '南部非洲',
+    children: [
+      { id: 'dc-johannesburg-1', name: '约翰内斯堡数据中心' }
+    ]
+  },
+  {
+    id: 'city-paris',
+    name: '巴黎',
+    scope: '海外',
+    area: '欧洲',
+    children: [
+      { id: 'dc-paris-1', name: '巴黎数据中心' }
+    ]
+  },
+  {
+    id: 'city-saopaulo',
+    name: '圣保罗',
+    scope: '海外',
+    area: '拉美',
+    children: [
+      { id: 'dc-saopaulo-1', name: '圣保罗数据中心' }
+    ]
+  }
+]
+
 function resolveAfter(response) {
   return new Promise((resolve) => {
     setTimeout(() => resolve(response), 280)
@@ -142,35 +248,29 @@ function buildResourceAreaCards(regionIds) {
     }))
 }
 
-function buildDcCityCards(regionIds) {
-  const cards = [
-    { name: '贵安新区', regionId: 'cn-southwest-guiyang-1' },
-    { name: '乌兰察布', regionId: 'cn-north-ulanchabu-1' },
-    { name: '和林格尔', regionId: 'cn-north-3' },
-    { name: '上海', regionId: 'cn-east-shanghai-1' },
-    { name: '深圳', regionId: 'cn-south-shenzhen-1' },
-    { name: '新加坡', regionId: 'ap-singapore-1' }
-  ]
-
-  return cards
-    .filter((card) => isSelected(regionIds, card.regionId))
-    .map((card) => ({
-      ...card,
+function buildDcCityCards(dcIds) {
+  return DC_FILTER_OPTIONS
+    .filter((city) => city.id !== 'city-wuhu')
+    .map((city) => ({
+      ...city,
+      children: city.children.filter((dataCenter) => dcIds.includes(dataCenter.id))
+    }))
+    .filter((city) => city.children.length > 0)
+    .map((city) => ({
+      name: city.name,
       metrics: [
         { label: '投产机柜', value: 614842, unit: '个', icon: 'records', trend: { label: '环比', direction: 'up', tone: 'danger', value: 0.24, unit: '%' } },
         { label: '启用机柜', value: 600410, unit: '个', icon: 'completed', trend: { label: '环比', direction: 'up', tone: 'danger', value: 0.24, unit: '%' } },
         { label: '机柜启用率', value: 86.34, unit: '%', icon: 'underway-o', trend: { label: '环比', direction: 'down', tone: 'success', value: 8.54, unit: '%' } }
       ],
-      details: [
-        {
-          name: `${card.name}数据中心`,
+      details: city.children.map((dataCenter) => ({
+          name: dataCenter.name,
           metrics: [
             { label: '投产机柜', value: 201512, unit: '个' },
             { label: '启用机柜', value: 200100, unit: '个' },
             { label: '机柜启用率', value: 88.19, unit: '%' }
           ]
-        }
-      ]
+        }))
     }))
 }
 
@@ -178,6 +278,16 @@ export function getRegionOptions() {
   return resolveAfter({
     status: 200,
     data: REGION_OPTIONS.map((region) => ({ ...region }))
+  })
+}
+
+export function getDcFilterOptions() {
+  return resolveAfter({
+    status: 200,
+    data: DC_FILTER_OPTIONS.map((city) => ({
+      ...city,
+      children: city.children.map((dataCenter) => ({ ...dataCenter }))
+    }))
   })
 }
 
@@ -255,12 +365,15 @@ export function getResourceOverview({ date, regionIds }) {
   })
 }
 
-export function getDcOverview({ date, regionIds }) {
-  const { regionRatio, dateVariation } = getQueryContext({ date, regionIds })
-  const showWuhu = isSelected(regionIds, 'cn-east-2')
+export function getDcOverview({ date, dcIds }) {
+  const totalDcCount = DC_FILTER_OPTIONS.reduce((count, city) => count + city.children.length, 0)
+  const dcRatio = dcIds.length / totalDcCount
+  const dateVariation = Number(date.slice(-2)) % 5
+  const wuhu = DC_FILTER_OPTIONS.find((city) => city.id === 'city-wuhu')
+  const selectedWuhuChildren = wuhu.children.filter((dataCenter) => dcIds.includes(dataCenter.id))
   const cityTree = []
 
-  if (showWuhu) {
+  if (selectedWuhuChildren.length > 0) {
     cityTree.push({
       name: '芜湖',
       metrics: [
@@ -268,19 +381,18 @@ export function getDcOverview({ date, regionIds }) {
         { label: '启用机柜', value: 589300, unit: '个' },
         { label: '机柜启用率', value: 87.42, unit: '%' }
       ],
-      children: [
-        { name: '江北数据中心', metrics: [{ label: '投产机柜', value: 201512, unit: '个' }, { label: '启用机柜', value: 200100, unit: '个' }, { label: '机柜启用率', value: 88.19, unit: '%' }] },
-        { name: '三山数据中心', metrics: [{ label: '投产机柜', value: 201512, unit: '个' }, { label: '启用机柜', value: 200100, unit: '个' }, { label: '机柜启用率', value: 88.19, unit: '%' }] },
-        { name: '职教数据中心', metrics: [{ label: '投产机柜', value: 201512, unit: '个' }, { label: '启用机柜', value: 200100, unit: '个' }, { label: '机柜启用率', value: 88.19, unit: '%' }] }
-      ]
+      children: selectedWuhuChildren.map((dataCenter) => ({
+        name: dataCenter.name.replace('芜湖', ''),
+        metrics: [{ label: '投产机柜', value: 201512, unit: '个' }, { label: '启用机柜', value: 200100, unit: '个' }, { label: '机柜启用率', value: 88.19, unit: '%' }]
+      }))
     })
   }
 
   const data = {
     overview: [
-      { label: '投产园区', value: scaleValue(87, regionRatio, dateVariation, 0), unit: '个', icon: 'wap-home-o' },
-      { label: '投产DC', value: scaleValue(155, regionRatio, dateVariation, 0), unit: '个', icon: 'hotel-o' },
-      { label: '已建机电', value: scaleValue(784554, regionRatio, dateVariation, 0), unit: '柜', icon: 'records' }
+      { label: '投产园区', value: scaleValue(87, dcRatio, dateVariation, 0), unit: '个', icon: 'wap-home-o' },
+      { label: '投产DC', value: scaleValue(155, dcRatio, dateVariation, 0), unit: '个', icon: 'hotel-o' },
+      { label: '已建机电', value: scaleValue(784554, dcRatio, dateVariation, 0), unit: '柜', icon: 'records' }
     ],
     progressGroups: [
       {
@@ -340,7 +452,7 @@ export function getDcOverview({ date, regionIds }) {
       }
     ],
     cityTree,
-    cityCards: buildDcCityCards(regionIds)
+    cityCards: buildDcCityCards(dcIds)
   }
 
   return resolveAfter({

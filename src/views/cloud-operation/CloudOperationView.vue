@@ -1,10 +1,10 @@
 <template>
   <div class="cloud-operation-page">
-    <template v-if="regionOptions">
+    <template v-if="activeOptions">
       <filter-bar
-        :region-label="regionLabel"
-        :region-open="showRegionSelector"
-        @open-region="showRegionSelector = !showRegionSelector"
+        :region-label="filterLabel"
+        :region-open="showSelector"
+        @open-region="toggleSelector"
       />
 
       <main class="page-content">
@@ -27,83 +27,64 @@
       </main>
 
       <region-selector
-        :visible="showRegionSelector"
+        v-if="!isDcRoute"
+        :visible="showSelector"
         :options="regionOptions"
-        @cancel="showRegionSelector = false"
-        @confirm="showRegionSelector = false"
+        @cancel="closeSelector"
+        @confirm="closeSelector"
+      />
+
+      <dc-selector
+        v-else
+        :visible="showSelector"
+        :options="dcOptions"
+        :selected-ids="selectedDcIds"
+        @cancel="closeSelector"
+        @confirm="confirmDcSelection"
       />
 
       <bottom-navigation
-        :active="route.name"
+        :active="activeRouteName"
         @navigate="navigate"
         @ai-click="onAiClick"
       />
     </template>
 
-    <div v-else-if="loadingRegions" class="shell-status">
+    <div v-else-if="loadingOptions" class="shell-status">
       <van-loading color="#5b49c2" vertical>加载筛选项...</van-loading>
     </div>
 
     <div v-else class="shell-status error-state">
-      {{ regionError }}
+      {{ optionsError }}
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useRoute, useRouter } from 'vue-router'
-import FilterBar from '@/components/cloud-operation/FilterBar.vue'
-import RegionSelector from '@/components/cloud-operation/RegionSelector.vue'
-import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue'
-import { useCurrentDate } from '@/stores/useCurrentDate.js'
-import { useSelectedRegion } from '@/stores/useSelectedRegion.js'
-import { useRegionOptions } from './useRegionOptions.js'
+import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue';
+import DcSelector from '@/components/cloud-operation/DcSelector.vue';
+import FilterBar from '@/components/cloud-operation/FilterBar.vue';
+import RegionSelector from '@/components/cloud-operation/RegionSelector.vue';
+import { useCloudOperationFilters } from './useCloudOperationFilters.js';
 
-const route = useRoute()
-const router = useRouter()
-const showRegionSelector = ref(false)
-const { date: selectedDate } = storeToRefs(useCurrentDate())
-const { regionIds: selectedRegionIds } = storeToRefs(useSelectedRegion())
 const {
+  activeRouteName,
+  activeOptions,
+  closeSelector,
+  confirmDcSelection,
+  dcOptions,
+  filterLabel,
+  filters,
+  isDcRoute,
+  loadingOptions,
+  navigate,
+  onAiClick,
+  optionsError,
   regionOptions,
-  loadingRegions,
-  regionError
-} = useRegionOptions()
-
-const filters = computed(() => ({
-  date: selectedDate.value,
-  regionIds: [...selectedRegionIds.value]
-}))
-
-const regionLabel = computed(() => {
-  if (selectedRegionIds.value.length === regionOptions.value.length) {
-    return '全部'
-  }
-
-  const firstRegion = regionOptions.value.find(
-    (region) => region.id === selectedRegionIds.value[0]
-  )
-
-  if (selectedRegionIds.value.length === 1) {
-    return firstRegion.name
-  }
-
-  return `${firstRegion.name} +${selectedRegionIds.value.length - 1}`
-})
-
-function navigate(name) {
-  if (route.name === name) {
-    return
-  }
-
-  router.push({ name })
-}
-
-function onAiClick() {
-  // AI 助手入口按当前需求只保留点击能力，不进行页面跳转。
-}
+  selectedDcIds,
+  showSelector,
+  toggleSelector
+} = useCloudOperationFilters();
 </script>
 
 <style lang="less" scoped>
