@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
+import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
-import store from './store'
 import bus from '@/utils/bus.js'
 
 // 自定义移动端自适应（替代 amfe-flexible，限制最大宽度）
@@ -55,6 +55,7 @@ const i18n = createI18n({
 })
 
 const app = createApp(App)
+const pinia = createPinia()
 
 // 注册 Element Plus 所有图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -63,7 +64,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.config.globalProperties.$bus = bus;
 
-app.use(store)
+app.use(pinia)
    .use(router)
    .use(Vant)
    .use(ElementPlus)

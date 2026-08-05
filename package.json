@@ -13,16 +13,15 @@
     "element-plus": "2.6.1",
     "mitt": "3.0.1",
     "numerify": "1.2.9",
+    "pinia": "^3.0.4",
     "vant": "3.6.12",
     "vue": "^3.2.13",
     "vue-i18n": "9.10.1",
-    "vue-router": "^4.3.0",
-    "vuex": "4.1.0"
+    "vue-router": "^4.3.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~5.0.0",
     "@vue/cli-plugin-router": "~5.0.0",
-    "@vue/cli-plugin-vuex": "~5.0.0",
     "@vue/cli-service": "~5.0.0",
     "less": "^4.0.0",
     "less-loader": "^8.0.0",

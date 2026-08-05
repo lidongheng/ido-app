@@ -1,9 +1,11 @@
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSelectedRegion } from '@/stores/useSelectedRegion.js'
 import { getRegionOptions } from './mock.js'
 
 export function useRegionOptions() {
   const regionOptions = ref(null)
-  const selectedRegionIds = ref([])
+  const { regionIds: selectedRegionIds } = storeToRefs(useSelectedRegion())
   const loadingRegions = ref(true)
   const regionError = ref('')
 
@@ -43,7 +45,6 @@ export function useRegionOptions() {
 
   return {
     regionOptions,
-    selectedRegionIds,
     loadingRegions,
     regionError
   }

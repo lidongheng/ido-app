@@ -2,10 +2,8 @@
   <div class="cloud-operation-page">
     <template v-if="regionOptions">
       <filter-bar
-        :selected-date="selectedDate"
         :region-label="regionLabel"
         :region-open="showRegionSelector"
-        @date-change="selectedDate = $event"
         @open-region="showRegionSelector = !showRegionSelector"
       />
 
@@ -18,9 +16,8 @@
       <region-selector
         :visible="showRegionSelector"
         :options="regionOptions"
-        :selected-ids="selectedRegionIds"
         @cancel="showRegionSelector = false"
-        @confirm="confirmRegions"
+        @confirm="showRegionSelector = false"
       />
 
       <bottom-navigation
@@ -42,28 +39,22 @@
 
 <script setup>
 import { computed, ref } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRoute, useRouter } from 'vue-router'
 import FilterBar from '@/components/cloud-operation/FilterBar.vue'
 import RegionSelector from '@/components/cloud-operation/RegionSelector.vue'
 import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue'
+import { useCurrentDate } from '@/stores/useCurrentDate.js'
+import { useSelectedRegion } from '@/stores/useSelectedRegion.js'
 import { useRegionOptions } from './useRegionOptions.js'
-
-function getToday() {
-  const today = new Date()
-  const year = today.getFullYear()
-  const month = String(today.getMonth() + 1).padStart(2, '0')
-  const day = String(today.getDate()).padStart(2, '0')
-
-  return `${year}-${month}-${day}`
-}
 
 const route = useRoute()
 const router = useRouter()
-const selectedDate = ref(getToday())
 const showRegionSelector = ref(false)
+const { date: selectedDate } = storeToRefs(useCurrentDate())
+const { regionIds: selectedRegionIds } = storeToRefs(useSelectedRegion())
 const {
   regionOptions,
-  selectedRegionIds,
   loadingRegions,
   regionError
 } = useRegionOptions()
@@ -88,11 +79,6 @@ const regionLabel = computed(() => {
 
   return `${firstRegion.name} +${selectedRegionIds.value.length - 1}`
 })
-
-function confirmRegions(regionIds) {
-  selectedRegionIds.value = regionIds
-  showRegionSelector.value = false
-}
 
 function navigate(name) {
   if (route.name === name) {

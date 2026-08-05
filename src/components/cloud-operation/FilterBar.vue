@@ -26,6 +26,8 @@
 
 <script setup>
 import { ref } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useCurrentDate } from '@/stores/useCurrentDate.js'
 
 function parseDate(value) {
   return new Date(`${value}T00:00:00`)
@@ -39,11 +41,7 @@ function formatDate(value) {
   return `${year}-${month}-${day}`
 }
 
-const props = defineProps({
-  selectedDate: {
-    type: String,
-    required: true
-  },
+defineProps({
   regionLabel: {
     type: String,
     required: true
@@ -54,17 +52,19 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['date-change', 'open-region'])
+const emit = defineEmits(['open-region'])
+const currentDate = useCurrentDate()
+const { date: selectedDate } = storeToRefs(currentDate)
 const showDatePicker = ref(false)
-const pendingDate = ref(parseDate(props.selectedDate))
+const pendingDate = ref(parseDate(selectedDate.value))
 
 function openDatePicker() {
-  pendingDate.value = parseDate(props.selectedDate)
+  pendingDate.value = parseDate(selectedDate.value)
   showDatePicker.value = true
 }
 
 function confirmDate(value) {
-  emit('date-change', formatDate(value))
+  selectedDate.value = formatDate(value)
   showDatePicker.value = false
 }
 </script>
@@ -74,7 +74,8 @@ function confirmDate(value) {
   position: fixed;
   z-index: 1100;
   top: 0;
-  left: 50%;
+  right: 0;
+  left: 0;
   display: flex;
   width: 100%;
   max-width: 500PX;
@@ -84,7 +85,7 @@ function confirmDate(value) {
   padding: 8px 16px;
   border-bottom: 1PX solid #ececf2;
   background: #fff;
-  transform: translateX(-50%);
+  margin: 0 auto;
 }
 
 .filter-left {

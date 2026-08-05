@@ -77,6 +77,8 @@
 
 <script setup>
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { storeToRefs } from 'pinia'
+import { useSelectedRegion } from '@/stores/useSelectedRegion.js'
 
 const props = defineProps({
   visible: {
@@ -86,14 +88,11 @@ const props = defineProps({
   options: {
     type: Array,
     required: true
-  },
-  selectedIds: {
-    type: Array,
-    required: true
   }
 })
 
 const emit = defineEmits(['cancel', 'confirm'])
+const { regionIds: selectedRegionIds } = storeToRefs(useSelectedRegion())
 const keyword = ref('')
 const activeScope = ref('全部')
 const activeArea = ref('全部')
@@ -137,7 +136,7 @@ watch(() => props.visible, (value) => {
   }
 
   lockPageScroll()
-  pendingIds.value = [...props.selectedIds]
+  pendingIds.value = [...selectedRegionIds.value]
   keyword.value = ''
   activeScope.value = '全部'
   activeArea.value = '全部'
@@ -184,7 +183,8 @@ function confirm() {
     .filter((option) => selectedSet.has(option.id))
     .map((option) => option.id)
 
-  emit('confirm', orderedIds)
+  selectedRegionIds.value = orderedIds
+  emit('confirm')
 }
 </script>
 
