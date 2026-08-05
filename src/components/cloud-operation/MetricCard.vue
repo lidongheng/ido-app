@@ -1,42 +1,41 @@
 <template>
-  <article class="metric-card" :class="{ compact, 'has-title': title }">
-    <button
-      v-if="title"
-      class="card-header"
-      :class="{ expandable }"
-      type="button"
-      @click="toggle"
-    >
-      <span class="card-title">
-        <van-icon v-if="icon" :name="icon" class="card-title-icon" />
-        {{ title }}
-      </span>
-      <span v-if="expandable" class="expand-label">
-        {{ expanded ? '收起' : '展开' }}
-        <van-icon :name="expanded ? 'arrow-up' : 'arrow-down'" />
-      </span>
-    </button>
+  <div class="metric-card" :class="{ compact, 'has-title': title }">
+    <div class="metric-card-box">
+      <div v-if="title" class="card-header" :class="{ expandable }">
+        <span class="header-left">
+          <SvgIcon
+            v-if="iconName"
+            :icon-name: iconName"
+            class="svg-icon-class"
+          ></SvgIcon>
+          <span class="card-title">{{ title }}</span>
+        </span>
+        <span @click="toggle" v-if="expandable" class="expand-label">
+          {{ expanded ? '收起' : '展开' }}
+          <van-icon name="expanded ? arrow-up : arrow-down" />
+        </span>
+      </div>
 
-    <div class="card-body">
-      <stats-grid :columns="metrics.length" gap="small">
-        <metric-item
-          v-for="metric in metrics"
-          :key="metric.label"
-          :metric="metric"
-          :compact="compact"
-        />
-      </stats-grid>
+      <div class="card-body">
+        <template v-for="(metric, index) in metrics" :key="metric.label">
+          <metric-item
+            class="metric-item"
+            :metric="metric"
+            compact="compact"
+          />
+          <div class="line" v-if="index !== metrics.length - 1"></div>
+        </template>
+      </div>
     </div>
-
     <div v-if="expanded && $slots.default" class="card-details">
       <slot></slot>
     </div>
-  </article>
+  </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import StatsGrid from '@/components/stats-grid/index.vue'
+import SvgIcon from '@/components/cloud-operation/svg/icon.vue';
 import MetricItem from './MetricItem.vue'
 
 const props = defineProps({
@@ -44,7 +43,7 @@ const props = defineProps({
     type: String,
     default: ''
   },
-  icon: {
+  iconName: {
     type: String,
     default: ''
   },
@@ -78,23 +77,29 @@ function toggle() {
 </script>
 
 <style lang="less" scoped>
+.svg-icon-class {
+  height: 14px;
+  width: 14px;
+}
+
 .metric-card {
-  overflow: hidden;
-  border: 1PX solid #e4e5ed;
-  border-radius: 9px;
   background: #fff;
-  box-shadow: 0 2px 7px rgba(45, 37, 85, 0.04);
+}
+
+.metric-card-box {
+  border: 1.6px solid rgba(229, 237, 252, 1);
+  border-radius: 8px;
 }
 
 .card-header {
   display: flex;
   width: 100%;
-  min-height: 25px;
+  height: 20px;
   align-items: center;
   justify-content: space-between;
-  padding: 3px 10px;
+  padding: 0px 10px;
   color: #28204f;
-  background: linear-gradient(90deg, #e5e9ff 0%, #f1efff 100%);
+  background: rgba(205, 216, 255, 1);
   text-align: left;
 }
 
@@ -102,44 +107,36 @@ function toggle() {
   cursor: pointer;
 }
 
-.card-title {
+.header-left {
   display: flex;
-  min-width: 0;
-  align-items: center;
-  font-size: 15px;
+  gap: 2px;
+}
+
+.card-title {
+  color: rgba(37, 43, 58, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Bold;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: left;
 }
 
 .card-title-icon {
   flex-shrink: 0;
-  margin-right: 5px;
+  margin-right: 0.13rem;
   color: #596fd7;
-  font-size: 16px;
+  font-size: 0.43rem;
 }
 
 .expand-label {
   display: flex;
   flex-shrink: 0;
   align-items: center;
-  gap: 2px;
+  gap: 0.05rem;
   color: #7176ae;
-  font-size: 12px;
+  font-size: 0.31rem;
   font-weight: 400;
-}
-
-.card-body {
-  padding: 12px 5px 13px;
-}
-
-.card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  padding: 0 9px 10px;
-}
-
-.compact .card-body {
-  padding-top: 9px;
-  padding-bottom: 10px;
 }
 </style>

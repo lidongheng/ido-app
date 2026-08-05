@@ -1,100 +1,67 @@
 <template>
   <div class="dashboard-page">
-    <div v-if="loading" class="page-status">
-      <van-loading color="#5b49c2" vertical>资源数据加载中...</van-loading>
-    </div>
-
-    <div v-else-if="errorMessage" class="page-status error-state">
-      {{ errorMessage }}
-    </div>
-
-    <template v-else>
-      <operation-section title="运营概览(公有云)">
-        <metric-card :metrics="pageData.overview" />
-      </operation-section>
-
-      <operation-section title="智算">
-        <metric-card :metrics="pageData.intelligence.summary" />
-
-        <card-tree
-          :data="pageData.intelligence.modes"
-          :height="104"
-          :collapsible="false"
-          :style="{ '--row-height': '104px' }"
-        >
-          <template #default="{ item }">
+    <card-layout
+      title="运营概览(公有云)"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
+      <metric-card :metrics="overviewData"/>
+    </card-layout>
+    <card-layout
+      title="智算"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
+      <metric-card :metrics="intelligentData" :defaultExpanded="true">
+        <div class="tree-expand">
+          <CardTree :data="intelligentChildren" :cardHeight="74"></CardTree>
+          <div class="card-list">
             <metric-card
-              class="tree-card"
-              :title="item.name"
-              icon="cluster-o"
+              v-for="item in intelligentChildren"
+              :key="item.title"
+              :title="item.title"
+              :iconName="item.iconName"
               :metrics="item.metrics"
-              compact
-            />
-          </template>
-        </card-tree>
-      </operation-section>
-
-      <operation-section title="通算">
-        <metric-card :metrics="pageData.general.summary" />
-
-        <card-tree
-          :data="pageData.general.tree"
-          :height="112"
-          :collapsible="false"
-          :style="{ '--row-height': '112px' }"
-        >
-          <template #default="{ item }">
+              :compact="true"
+            ></metric-card>
+          </div>
+        </div>
+      </metric-card>
+    </card-layout>
+    <card-layout
+      title="通算"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
+      <metric-card :metrics="generalData" :defaultExpanded="true">
+        <div class="tree-expand">
+          <CardTree :data="generalChildren" :cardHeight="74"></CardTree>
+          <div class="card-list">
             <metric-card
-              class="tree-card"
-              :title="item.name"
-              icon="cluster-o"
+              v-for="item in generalChildren"
+              :key="item.title"
+              :title="item.title"
+              :iconName="item.iconName"
               :metrics="item.metrics"
-              compact
-            />
-          </template>
-        </card-tree>
-
-        <template v-if="visibleAreaCards.length > 0">
-          <metric-card
-            v-for="card in visibleAreaCards"
-            :key="card.name"
-            :title="card.name"
-            :metrics="card.metrics"
-            expandable
-          >
-            <metric-card
-              v-for="detail in card.details"
-              :key="detail.regionId"
-              :title="detail.name"
-              icon="cluster-o"
-              :metrics="detail.metrics"
-              compact
-            />
-          </metric-card>
-
-          <button
-            v-if="pageData.general.areaCards.length > visibleAreaCount"
-            class="more-button"
-            type="button"
-            @click="showAllAreas = !showAllAreas"
-          >
-            {{ showAllAreas ? '收起大区' : '更多大区' }}
-            <van-icon :name="showAllAreas ? 'arrow-up' : 'arrow-down'" />
-          </button>
-        </template>
-
-        <van-empty v-else description="当前筛选条件下暂无大区数据" />
-      </operation-section>
-    </template>
+              :compact="true"
+            ></metric-card>
+          </div>
+        </div>
+      </metric-card>
+    </card-layout>
   </div>
 </template>
 
 <script setup>
-import { computed, ref, toRef, watch } from 'vue'
-import CardTree from '@/components/card-tree/index.vue'
-import OperationSection from '@/components/cloud-operation/OperationSection.vue'
-import MetricCard from '@/components/cloud-operation/MetricCard.vue'
-import { useResourceOverview } from './useResourceOverview.js'
+import { computed, ref, toRef, watch } from 'vue';
+import CardLayout from '@/components/card-layout/index.vue';
+import CardTree from './CardTree.vue';
+import MetricCard from '@/components/cloud-operation/MetricCard.vue';
+import { useResourceOverview } from './useResourceOverview.js';
+import { formatterValue, formatRateValue } from '@/utils/formatFunction';
 
 const props = defineProps({
   filters: {
@@ -105,74 +72,202 @@ const props = defineProps({
 
 const filters = toRef(props, 'filters')
 const { loading, errorMessage, pageData } = useResourceOverview(filters)
-const showAllAreas = ref(false)
-const visibleAreaCount = 3
+const overviewData = computed(() => {
+  return [
+    {
+      label: '服务器',
+      value: formatterValue(1023453, 10000),
+      unit: '万台',
+      ratio: formatterValue(-14245, 10000),
+      iconName: 'overview-icon-1',
+    },
+    {
+      label: '超节点',
+      value: 1892,
+      unit: '个',
+      ratio: 14,
+      iconName: 'overview-icon-2',
+    },
+    {
+      label: '资产在线率',
+      value: formatRateValue(0.974772),
+      unit: '%',
+      ratio: formatRateValue(-0.12245),
+      iconName: 'overview-icon-3',
+    },
+  ];
+});
 
-const visibleAreaCards = computed(() => {
-  if (showAllAreas.value) {
-    return pageData.value.general.areaCards
-  }
+const intelligentData = computed(() => {
+  return [
+    {
+      label: '智算卡数',
+      value: formatterValue(1023453, 10000),
+      unit: '万卡',
+      ratio: formatterValue(-14245, 10000),
+      iconName: 'ai-icon-1',
+    },
+    {
+      label: '卡时使用率',
+      value: formatRateValue(0.974772),
+      unit: '%',
+      ratio: formatRateValue(0.12245),
+      iconName: 'ai-icon-2',
+    },
+  ];
+});
 
-  return pageData.value.general.areaCards.slice(0, visibleAreaCount)
-})
+const intelligentChildren = computed(() => {
+  return [
+    {
+      title: 'Token模式',
+      iconName: 'build-icon-1',
+      metrics: [
+        {
+          label: 'Token卡数',
+          value: formatterValue(1023453, 10000),
+          unit: '万卡',
+        },
+        {
+          label: '日Token数',
+          value: 1892,
+          unit: '亿',
+        },
+        {
+          label: 'Token利用率',
+          value: formatRateValue(0.974772),
+          unit: '%',
+        },
+      ],
+    },
+    {
+      title: '算力模式',
+      iconName: 'build-icon-1',
+      metrics: [
+        {
+          label: '算力卡数',
+          value: formatterValue(1023453, 10000),
+          unit: '万卡',
+        },
+        {
+          label: '内部客户',
+          value: formatterValue(1223453, 10000),
+          unit: '万卡',
+        },
+        {
+          label: '外部客户',
+          value: formatterValue(223453, 10000),
+          unit: '万卡',
+        },
+      ],
+    },
+  ];
+});
 
-watch(filters, () => {
-  showAllAreas.value = false
-}, {
-  deep: true
-})
+const generalData = computed(() => {
+  return [
+    {
+      label: '通算服务器',
+      value: formatterValue(1023453, 10000),
+      unit: '万台',
+      ratio: formatRateValue(14245, 10000),
+      iconName: 'general-icon-1',
+    },
+    {
+      label: '运营总量',
+      value: formatterValue(7023453, 10000),
+      unit: '万核',
+      ratio: formatRateValue(245, 10000),
+      iconName: 'general-icon-2',
+    },
+  ];
+});
+
+const generalChildren = computed(() => {
+  return [
+    {
+      title: 'ECS',
+      iconName: 'build-icon-1',
+      metrics: [
+        {
+          label: '服务器',
+          value: formatterValue(1023453, 10000),
+          unit: '万卡',
+        },
+        {
+          label: '运营总量',
+          value: formatterValue(9923453, 10000),
+          unit: '万核',
+        },
+        {
+          label: '分配率',
+          value: formatRateValue(0.974772),
+          unit: '%',
+        },
+      ],
+    },
+    {
+      title: 'EVS',
+      iconName: 'build-icon-1',
+      metrics: [
+        {
+          label: '服务器',
+          value: formatterValue(1023453, 10000),
+          unit: '万卡',
+        },
+        {
+          label: '逻辑总量',
+          value: formatterValue(9923453, 10000),
+          unit: 'TB'
+        },
+        {
+          label: '使用率',
+          value: formatRateValue(0.4772),
+          unit: '%'
+        },
+      ],
+    },
+    {
+      title: 'OBS',
+      iconName: 'build-icon-1',
+      metrics: [
+        {
+          label: '服务器',
+          value: formatterValue(1023453, 10000),
+          unit: '万卡'
+        },
+        {
+          label: 'HDD逻辑总量',
+          value: formatterValue(9923453, 10000),
+          unit: 'TB'
+        },
+        {
+          label: 'HDD日分配率',
+          value: formatRateValue(0.772),
+          unit: '%'
+        }
+      ]
+    },
+  ];
+});
 </script>
 
 <style lang="less" scoped>
 .dashboard-page {
-  min-height: calc(100vh - 51px);
-  padding: 18px 16px 15px;
-  background: #fff;
+  min-height: calc(100vh - 1.35rem);
+  padding: 0.48rem 0.43rem 0.4rem;
+  background: rgba(248, 248, 248, 1);
 }
 
-.page-status {
+.tree-expand {
   display: flex;
-  min-height: 263px;
-  align-items: center;
-  justify-content: center;
-  color: #655d7d;
 }
 
-.error-state {
-  color: #df5b72;
-  font-size: 14px;
-}
-
-.tree-card {
-  width: 100%;
-}
-
-.more-button {
+.card-list {
+  flex: 1;
   display: flex;
-  width: 100%;
-  min-height: 35px;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  border-radius: 6px;
-  color: #6d66a3;
-  background: linear-gradient(90deg, #fafafe 0%, #f6f5fb 100%);
-  font-size: 14px;
-  cursor: pointer;
-}
-
-:deep(.team-progress-list) {
-  width: 100%;
-}
-
-:deep(.team-progress-list .row) {
-  width: 100%;
-}
-
-@media (max-width: 360px) {
-  .dashboard-page {
-    padding-right: 12px;
-    padding-left: 12px;
-  }
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
 }
 </style>
