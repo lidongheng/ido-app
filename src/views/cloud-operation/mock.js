@@ -366,12 +366,48 @@ export function getResourceOverview({ date, regionIds }) {
 }
 
 export function getDcOverview({ date, dcIds }) {
-  const totalDcCount = DC_FILTER_OPTIONS.reduce((count, city) => count + city.children.length, 0)
+  const allDcIds = DC_FILTER_OPTIONS.flatMap((city) => {
+    return city.children.map((dataCenter) => dataCenter.id);
+  });
+  const totalDcCount = allDcIds.length
   const dcRatio = dcIds.length / totalDcCount
   const dateVariation = Number(date.slice(-2)) % 5
   const wuhu = DC_FILTER_OPTIONS.find((city) => city.id === 'city-wuhu')
   const selectedWuhuChildren = wuhu.children.filter((dataCenter) => dcIds.includes(dataCenter.id))
   const cityTree = []
+
+  /*
+   * 这是 DC 页“服务器 + 客户”模块的特殊产品规则，不属于通用筛选逻辑：
+   * 1. 只有完整选中所有数据中心叶子节点时，该模块才允许展示；少选任意叶子节点都必须隐藏。
+   * 2. 不能使用顶部的“全部”摘要文案或城市父节点状态判断，因为它们只是展示状态，不是请求条件。
+   * 3. 完整集合直接从 DC_FILTER_OPTIONS 的 children 生成，后续新增数据中心时会自动进入全选校验范围。
+   * 4. 同时校验数量和 ID，可以避免重复 ID 或非筛选项 ID 被错误识别为全选。
+   */
+  const selectedDcIdSet = new Set(dcIds);
+  const isAllDataCentersSelected = dcIds.length === allDcIds.length
+    && allDcIds.every((dcId) => selectedDcIdSet.has(dcId));
+  let usageGroups = [];
+
+  if (isAllDataCentersSelected) {
+    usageGroups = [
+      {
+        title: '服务器',
+        icon: 'desktop-o',
+        items: [
+          { label: '通算', value: 480, unit: '台', percent: 86 },
+          { label: '智算', value: 480, unit: '卡', percent: 86 }
+        ]
+      },
+      {
+        title: '客户',
+        icon: 'manager-o',
+        items: [
+          { label: '已用', value: 408, unit: '台', percent: 74 },
+          { label: '已用', value: 408, unit: '卡', percent: 74 }
+        ]
+      }
+    ];
+  }
 
   if (selectedWuhuChildren.length > 0) {
     cityTree.push({
@@ -433,24 +469,11 @@ export function getDcOverview({ date, dcIds }) {
         ]
       }
     ],
-    usageGroups: [
-      {
-        title: '服务器',
-        icon: 'desktop-o',
-        items: [
-          { label: '通算', value: 480, unit: '台', percent: 86 },
-          { label: '智算', value: 480, unit: '卡', percent: 86 }
-        ]
-      },
-      {
-        title: '客户',
-        icon: 'manager-o',
-        items: [
-          { label: '已用', value: 408, unit: '台', percent: 74 },
-          { label: '已用', value: 408, unit: '卡', percent: 74 }
-        ]
-      }
-    ],
+    /*
+     * 非全选时必须返回空数组，让页面彻底移除模块；这里不能返回空分组、占位数据，
+     * 也不能根据已选 DC 比例缩放数值。本次需求只处理显隐，资源页数据对齐留待后续需求。
+     */
+    usageGroups,
     cityTree,
     cityCards: buildDcCityCards(dcIds)
   }

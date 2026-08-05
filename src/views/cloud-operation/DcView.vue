@@ -19,7 +19,11 @@
           :key="group.title"
           :group="group"
         />
-        <usage-card :groups="pageData.usageGroups" />
+        <!--
+          特殊业务规则：服务器和客户必须作为一个完整模块，仅在全部数据中心都选中时展示。
+          Mock 在非全选时返回空数组，因此这里直接移除组件，不显示空状态，也不保留占位高度。
+        -->
+        <usage-card v-if="pageData.usageGroups.length > 0" :groups="pageData.usageGroups" />
       </operation-section>
 
       <operation-section title="城市详情">
