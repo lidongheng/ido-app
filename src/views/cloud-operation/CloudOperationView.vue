@@ -4,8 +4,9 @@
       <filter-bar
         :selected-date="selectedDate"
         :region-label="regionLabel"
+        :region-open="showRegionSelector"
         @date-change="selectedDate = $event"
-        @open-region="showRegionSelector = true"
+        @open-region="showRegionSelector = !showRegionSelector"
       />
 
       <main class="page-content">
@@ -113,6 +114,7 @@ function onAiClick() {
 }
 
 .page-content {
+  padding-top: 51px;
   padding-bottom: calc(75px + env(safe-area-inset-bottom));
 }
 

@@ -9,7 +9,7 @@
     </div>
     <button class="filter-button region-button" type="button" @click="emit('open-region')">
       <span>{{ regionLabel }}</span>
-      <van-icon name="arrow-down" />
+      <van-icon :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
     </button>
 
     <van-popup v-model:show="showDatePicker" position="bottom" round>
@@ -47,6 +47,10 @@ const props = defineProps({
   regionLabel: {
     type: String,
     required: true
+  },
+  regionOpen: {
+    type: Boolean,
+    required: true
   }
 })
 
@@ -67,13 +71,20 @@ function confirmDate(value) {
 
 <style lang="less" scoped>
 .filter-bar {
+  position: fixed;
+  z-index: 1100;
+  top: 0;
+  left: 50%;
   display: flex;
+  width: 100%;
+  max-width: 500PX;
   min-height: 51px;
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;
   border-bottom: 1PX solid #ececf2;
   background: #fff;
+  transform: translateX(-50%);
 }
 
 .filter-left {
