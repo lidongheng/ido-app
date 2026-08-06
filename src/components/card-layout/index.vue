@@ -12,10 +12,11 @@
             <van-tag plain type="warning" class="kpi-icon mini ml6" v-if="showKpi">KPI</van-tag>
             <p class="help-icon ml6" v-if="showHelp" @click.stop="onShowHelp"></p>
           </div>
+          <van-icon name="arrow" class="small" v-if="showNav" />
         </slot>
       </div>
-      <van-icon name="arrow" class="small" v-if="showNav" />
-    </slot>
+      <slot/>
+    </div>
   </div>
 </template>
 
