@@ -25,8 +25,8 @@ const props = defineProps({
   margin-left: 10px;
 }
 .tree-item {
-  border-left: 4px solid #f5f5f5;
-  border-bottom: 4px solid #f5f5f5;
+  border-left: 4px solid #e5e6ea;
+  border-bottom: 4px solid #e5e6ea;
   // height: var(--card-height);
   height: 82px; // 74 + 8
   width: 10px;

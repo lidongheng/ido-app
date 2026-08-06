@@ -1,14 +1,8 @@
 <template>
-  <div class="card-layout" @click="onClick">
-    <div
-      class="body"
-      :style="{
-        border: showBorder ? '1px solid #e5e6ea' : '1px solid #fff',
-        padding: showPadding ? '.35rem' : '0'
-      }"
-    >
+  <div class="card-layout" @click="onClick" :style="{ margin: `${margin}px` }">
+    <div class="body">
       <div class="header" v-if="showHeader">
-        <slot name="header"></slot>
+        <slot name="header" />
       </div>
       <div class="title" v-if="showTitle">
         <slot name="title">
@@ -18,17 +12,14 @@
             <van-tag plain type="warning" class="kpi-icon mini ml6" v-if="showKpi">KPI</van-tag>
             <p class="help-icon ml6" v-if="showHelp" @click.stop="onShowHelp"></p>
           </div>
-          <van-icon name="arrow" class="small" v-if="showNav"></van-icon>
         </slot>
       </div>
-      <slot/>
-    </div>
+      <van-icon name="arrow" class="small" v-if="showNav" />
+    </slot>
   </div>
 </template>
 
 <script>
-import { timePanelSharedProps } from 'element-plus/es/components/time-picker/src/props/shared';
-
 export default {
   name: 'cardLayout',
   props: {
@@ -51,22 +42,30 @@ export default {
     },
     showHelp: {
       type: Boolean,
-      default: true,
+      default: true
     },
     showNav: {
       type: Boolean,
-      default: true,
+      default: true
+    },
+    helpTip: [String, Array],
+    loading: {
+      type: Boolean,
+      default: true
     },
     showBlueLine: {
       type: Boolean,
-      default: false
+      default: false,
     },
-    helpTip: [String, Array],
+    margin: {
+      type: [Number, String],
+      default: 0
+    },
   },
   data() {
     return {
       showAppend: false,
-      showHeader: false,
+      showHeader: false
     }
   },
   mounted() {
@@ -96,10 +95,11 @@ export default {
   position: relative;
   .body {
     position: relative;
-    padding: .35rem;
-    background: #fff;
+    padding: 8px;
+    background: #ffffff;
     border-radius: .21rem;
     overflow: hidden;
+    margin-bottom: 8px;
     .header {
       margin-bottom: .32rem;
     }
@@ -116,67 +116,17 @@ export default {
         display: inline-block;
         width: .37rem;
         height: .37rem;
-        background: url('../../assets/svg/question.svg') no-repeat;
+        background: url(../../assets/svg/question.svg) no-repeat;
       }
     }
   }
-}
-
-.label-group {
-  margin: .16rem 0;
-}
-
-.row-center {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-}
-
-.justify-content-center {
-  justify-content: center;
-}
-
-.mt0 {
-  margin-top: 0;
-}
-
-.mb0 {
-  margin-bottom: 0;
-}
-
-.label-text {
-  position: rerlative;
-  white-space: nowrap;
-  color: #252b3a;
-  display: inline-block;
-}
-
-.black {
-  color: #252b3a;
-}
-
-.small {
-  font-size: .37rem;
-}
-
-.bold {
-  font-weight: 600;
-}
-
-.mini {
-  font-size: .32rem;
-  line-height: .4rem;
-}
-
-.ml6 {
-  margin-left: .16rem;
 }
 
 .blue-line {
   display: inline-block;
   width: .08rem;
   height: .43rem;
-  background: #1989fa;
+  background: #5F7DE0;
   border-radius: .04rem;
   margin-right: .21rem;
   vertical-align: middle;
