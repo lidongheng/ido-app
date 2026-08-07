@@ -1,0 +1,349 @@
+@import './variable.less';
+
+.bg245 {
+  background: rgb(245, 245, 245);
+}
+
+.bgfff {
+  background: #fff;
+}
+
+.br8 {
+  border-radius: .21rem;
+}
+
+.c333 {
+  color: #333;
+}
+
+.c666 {
+  color: #666;
+}
+
+.c999 {
+  color: #999;
+}
+
+// 更多右箭头颜色
+.cBFBFBF {
+  color: #BFBFBF;
+}
+
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+}
+
+.column_between {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.flex1 {
+  flex: 1;
+}
+
+.fs12 {
+  font-size: .32rem;
+}
+
+.fs14 {
+  font-size: .37rem;
+}
+
+.fs16 {
+  font-size: .43rem;
+}
+
+.fs18 {
+  font-size: .48rem;
+}
+
+.fw600 {
+  font-weight: 600;
+}
+
+.line1 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+// 超出2行点点点
+.line2 {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-all;
+}
+
+.mt0 {
+  margin-top: 0;
+}
+
+.mb0 {
+  margin-bottom: 0;
+}
+
+.m8_0 {
+  margin: .21rem 0;
+}
+
+.mb0 {
+  margin-bottom: 0;
+}
+
+.mb00 {
+  margin: 0.16rem 0 0 0;
+}
+
+.m00 {
+  margin: 0;
+}
+
+.mb7 {
+  margin-bottom: .19rem;
+}
+
+.mb10 {
+  margin-bottom: .27rem;
+}
+
+.mb16 {
+  margin-bottom: .43rem;
+}
+
+.mb20 {
+  margin-bottom: .53rem;
+}
+
+.ml6 {
+  margin-left: .16rem;
+}
+
+.ml8 {
+  margin-left: .21rem;
+}
+
+.mr12 {
+  margin-right: .32rem;
+}
+
+.mr30 {
+  margin-right: .8rem;
+}
+
+.mt6 {
+  margin-top: .16rem;
+}
+
+.mt10 {
+  margin-top: .27rem;
+}
+
+.p10 {
+  padding: .27rem;
+}
+
+.p10_16 {
+  padding: .27rem .43rem;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+
+.row_around {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.row_between {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.row_between_center {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.row_center {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+.w050 {
+  width: 50%;
+}
+
+.w100 {
+  width: 100%;
+}
+
+.inline-block {
+  // display: inline-block;
+}
+
+.wc-page__wrapper{
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: flex;
+  flex-flow: column nowrap;
+  -webkit-flex-flow: column nowrap;
+  height: 100%;
+  background-color: rgb(245, 245, 245);
+}
+
+.wc-page__hd{
+  width: 100%;
+  display: block;
+  position: relative;
+}
+
+.wc-page__bd{
+  -webkit-box-flex: 1;
+  -webkit-flex: 1;
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow: scroll;
+}
+
+.wc-page__ft{
+  width: 100%;
+  display: block;
+  position: relative;
+}
+
+.label-group {
+  margin: .16rem 0;
+}
+
+.label-text {
+  position: relative;
+  white-space: nowrap;
+  color: @display-color;
+  display: inline-block;
+}
+
+.big {
+  font-size: .64rem;
+  line-height: .64rem;
+}
+
+.black {
+  color: @display-color;
+}
+
+.mini {
+  font-size: .32rem;
+  line-height: .4rem;
+}
+
+.small {
+  font-size: .37rem;
+  line-height: .43rem;
+}
+
+.normal {
+  font-size: .43rem;
+  line-height: .43rem;
+}
+
+.bold {
+  font-weight: 600;
+}
+
+.gray {
+  color: @unit-color;
+}
+
+.label-text.big {
+  margin: .16rem 0 .11rem 0;
+}
+
+.label-text.big + .label-text.mini {
+  vertical-align: baseline;
+}
+
+.icon-down-arrow.down-green path {
+  fill: @icon-arrow-green;
+}
+
+.icon-success path {
+  fill: @icon-arrow-green;
+}
+
+.icon-help.blue path {
+  fill: @button-blue;
+}
+
+.icon-warning.p1 path {
+  fill: @unit-color;
+}
+
+.icon-warning.p2 path {
+  fill: @color-orange;
+}
+
+.icon-warning.p3 path {
+  fill: @button-blue;
+}
+
+.icon-down-arrow.down-red path {
+  fill: @icon-arrow-red;
+}
+
+.icon-up-arrow.up-green path {
+  fill: @icon-arrow-green;
+}
+
+.icon-up-arrow.up-red path {
+  fill: @icon-arrow-red;
+}
+
+.red {
+  color: @icon-arrow-red;
+}
+
+.green {
+  color: @icon-arrow-green;
+}
+
+.small-image {
+  width: .37rem;
+  height: .37rem;
+}
+
+.layout {
+  position: relative;
+}
+
+.layout .label-group:last-child {
+  margin-bottom: 0;
+}
+
+.status-bars .label-group {
+  margin: 0;
+}
