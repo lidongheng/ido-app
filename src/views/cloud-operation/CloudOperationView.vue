@@ -30,8 +30,10 @@
         v-if="!isDcRoute"
         :visible="showSelector"
         :options="regionOptions"
+        :selected-ids="selectedRegionIds"
+        :all-mode="regionAllMode"
         @cancel="closeSelector"
-        @confirm="closeSelector"
+        @confirm="confirmRegionSelection"
       />
 
       <dc-selector
@@ -39,6 +41,7 @@
         :visible="showSelector"
         :options="dcOptions"
         :selected-ids="selectedDcIds"
+        :all-mode="dcAllMode"
         @cancel="closeSelector"
         @confirm="confirmDcSelection"
       />
@@ -72,6 +75,8 @@ const {
   activeOptions,
   closeSelector,
   confirmDcSelection,
+  confirmRegionSelection,
+  dcAllMode,
   dcOptions,
   filterLabel,
   filters,
@@ -80,8 +85,10 @@ const {
   navigate,
   onAiClick,
   optionsError,
+  regionAllMode,
   regionOptions,
   selectedDcIds,
+  selectedRegionIds,
   showSelector,
   toggleSelector
 } = useCloudOperationFilters();

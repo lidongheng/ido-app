@@ -12,9 +12,12 @@
               v-for="item in scopeOptions"
               :key="item.value"
               class="filter-chip"
-              :class="{ active: activeScope === item.value }"
+              :class="{
+                active: isScopeSelected(item.value),
+                partial: isScopeIndeterminate(item.value)
+              }"
               type="button"
-              @click="activeScope = item.value"
+              @click="toggleScope(item.value)"
             >
               {{ item.label }}
             </button>
@@ -28,9 +31,12 @@
               v-for="item in areaOptions"
               :key="item"
               class="filter-chip"
-              :class="{ active: activeArea === item }"
+              :class="{
+                active: isAreaSelected(item),
+                partial: isAreaIndeterminate(item)
+              }"
               type="button"
-              @click="activeArea = item"
+              @click="toggleArea(item)"
             >
               {{ item }}
             </button>
@@ -39,16 +45,6 @@
 
         <div class="city-list-title">城市</div>
         <div class="city-list">
-          <button class="select-all-row" type="button" @click="toggleAll">
-            <el-checkbox
-              :model-value="allSelected"
-              :indeterminate="allIndeterminate"
-              @click.stop="toggleAll"
-            >
-              全部
-            </el-checkbox>
-          </button>
-
           <div
             v-if="visibleTree.length > 0"
             class="dc-tree"
@@ -60,7 +56,11 @@
             >
               <div
                 class="tree-option city-option"
-                @click="toggleCityExpanded(city)"
+                :class="{
+                  active: isCitySelected(city),
+                  partial: isCityIndeterminate(city)
+                }"
+                @click="toggleItem(city, true)"
               >
                 <el-checkbox
                   :model-value="isCitySelected(city)"
@@ -72,12 +72,13 @@
                 <van-icon
                   class="expand-icon"
                   :name="isCityExpanded(city) ? 'arrow-up' : 'arrow-down'"
+                  @click.stop="toggleCityExpanded(city)"
                 />
               </div>
 
               <div v-if="isCityExpanded(city)" class="children-list">
                 <div
-                  v-for="dataCenter in city.children"
+                  v-for="dataCenter in city.visibleChildren"
                   :key="dataCenter.id"
                   class="tree-option child-option"
                 >
@@ -111,7 +112,6 @@
 </template>
 
 <script setup>
-import { ElCheckbox } from 'element-plus';
 import { useDcSelector } from './useDcSelector.js';
 
 const props = defineProps({
@@ -126,28 +126,33 @@ const props = defineProps({
   selectedIds: {
     type: Array,
     required: true
+  },
+  allMode: {
+    type: Boolean,
+    required: true
   }
 });
 
 const emit = defineEmits(['cancel', 'confirm']);
 const {
-  activeArea,
-  activeScope,
-  allIndeterminate,
-  allSelected,
   areaOptions,
   cancel,
   confirm,
+  isAreaIndeterminate,
+  isAreaSelected,
   isCityExpanded,
   isCityIndeterminate,
   isCitySelected,
   isDataCenterSelected,
+  isScopeIndeterminate,
+  isScopeSelected,
   keyword,
   pendingIds,
   scopeOptions,
-  toggleAll,
+  toggleArea,
   toggleCityExpanded,
   toggleItem,
+  toggleScope,
   visibleTree
 } = useDcSelector(props, emit);
 </script>
@@ -234,6 +239,17 @@ const {
   background: #f5f2ff;
 }
 
+.filter-chip.partial,
+.city-option.partial {
+  border-color: #a99fe0;
+  color: #5f4cc4;
+  background: #faf8ff;
+}
+
+.city-option.active {
+  background: #f5f2ff;
+}
+
 .city-list-title {
   margin-top: 1px;
 }
@@ -247,7 +263,6 @@ const {
   -webkit-overflow-scrolling: touch;
 }
 
-.select-all-row,
 .tree-option {
   width: 100%;
   height: 40PX;
@@ -256,17 +271,6 @@ const {
   border-bottom: 1PX solid #eeeef3;
   background: #fff;
   text-align: left;
-}
-
-.select-all-row {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  box-sizing: border-box;
-  align-items: center;
-  margin-bottom: 8px;
-  border: 1PX solid #5c49c3;
-  border-radius: 5px;
 }
 
 .tree-option {

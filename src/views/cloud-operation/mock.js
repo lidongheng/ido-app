@@ -131,6 +131,85 @@ function resolveAfter(response) {
   })
 }
 
+function getUniqueValues(values) {
+  return [...new Set(values)];
+}
+
+function buildRegionOptionTree() {
+  const insideOutsideNames = getUniqueValues(REGION_OPTIONS.map((region) => region.scope));
+
+  return insideOutsideNames.map((insideOutside) => {
+    const scopeRegions = REGION_OPTIONS.filter((region) => region.scope === insideOutside);
+    const areaNames = getUniqueValues(scopeRegions.map((region) => region.area));
+
+    return {
+      id: null,
+      dimensionCode: null,
+      dimensionLevelL1: insideOutside,
+      dimensionLevelL2: null,
+      dimensionLevelL3: null,
+      dimensionLevelL4: null,
+      delFlag: null,
+      list: areaNames.map((areaName) => {
+        const areaRegions = scopeRegions.filter((region) => region.area === areaName);
+
+        return {
+          id: null,
+          dimensionCode: null,
+          dimensionLevelL1: null,
+          dimensionLevelL2: areaName,
+          dimensionLevelL3: null,
+          dimensionLevelL4: null,
+          delFlag: null,
+          list: areaRegions.map((region) => ({
+            id: region.id,
+            dimensionCode: 'resource',
+            dimensionLevelL1: insideOutside,
+            dimensionLevelL2: areaName,
+            dimensionLevelL3: region.name,
+            dimensionLevelL4: null,
+            delFlag: false,
+            list: null
+          }))
+        };
+      })
+    };
+  });
+}
+
+function buildDcOptionTree() {
+  const insideOutsideNames = getUniqueValues(DC_FILTER_OPTIONS.map((city) => city.scope));
+
+  return insideOutsideNames.map((insideOutside) => {
+    const scopeCities = DC_FILTER_OPTIONS.filter((city) => city.scope === insideOutside);
+    const areaNames = getUniqueValues(scopeCities.map((city) => city.area));
+
+    return {
+      insideOutside,
+      children: areaNames.map((areaName) => {
+        const areaCities = scopeCities.filter((city) => city.area === areaName);
+
+        return {
+          insideOutside,
+          areaName,
+          children: areaCities.map((city) => ({
+            insideOutside,
+            areaName,
+            cityName: city.name,
+            children: city.children.map((campus) => ({
+              insideOutside,
+              areaName,
+              cityName: city.name,
+              campusName: campus.name,
+              children: null
+            }))
+          }))
+        };
+      })
+    };
+  });
+}
+
 function getQueryContext({ date, regionIds }) {
   const selectedRegions = REGION_OPTIONS.filter((region) => regionIds.includes(region.id))
   const regionRatio = selectedRegions.length / REGION_OPTIONS.length
@@ -277,22 +356,58 @@ function buildDcCityCards(dcIds) {
 export function getRegionOptions() {
   return resolveAfter({
     status: 200,
-    data: REGION_OPTIONS.map((region) => ({ ...region }))
-  })
+    data: buildRegionOptionTree()
+  });
 }
 
 export function getDcFilterOptions() {
   return resolveAfter({
     status: 200,
-    data: DC_FILTER_OPTIONS.map((city) => ({
-      ...city,
-      children: city.children.map((dataCenter) => ({ ...dataCenter }))
-    }))
-  })
+    data: buildDcOptionTree()
+  });
 }
 
-export function getResourceOverview({ date, regionIds }) {
-  const { regionRatio, dateVariation } = getQueryContext({ date, regionIds })
+function getSelectedRegionIds(filters) {
+  return REGION_OPTIONS
+    .filter((region) => {
+      const matchesInsideOutside = filters.insideOutsideList.length === 0
+        || filters.insideOutsideList.includes(region.scope);
+      const matchesArea = filters.areaNameList.length === 0
+        || filters.areaNameList.includes(region.area);
+      const matchesRegion = filters.regionNameList.length === 0
+        || filters.regionNameList.includes(region.name);
+
+      return matchesInsideOutside && matchesArea && matchesRegion;
+    })
+    .map((region) => region.id);
+}
+
+function getSelectedDcIds(filters) {
+  return DC_FILTER_OPTIONS.flatMap((city) => {
+    const matchesInsideOutside = filters.insideOutsideList.length === 0
+      || filters.insideOutsideList.includes(city.scope);
+    const matchesArea = filters.areaNameList.length === 0
+      || filters.areaNameList.includes(city.area);
+    const matchesCity = filters.cityNameList.length === 0
+      || filters.cityNameList.includes(city.name);
+
+    if (!matchesInsideOutside || !matchesArea || !matchesCity) {
+      return [];
+    }
+
+    return city.children
+      .filter((campus) => {
+        return filters.campusNameList.length === 0
+          || filters.campusNameList.includes(campus.name);
+      })
+      .map((campus) => campus.id);
+  });
+}
+
+export function getResourceOverview(filters) {
+  const { date } = filters;
+  const regionIds = getSelectedRegionIds(filters);
+  const { regionRatio, dateVariation } = getQueryContext({ date, regionIds });
   const ecsChildren = [
     { regionId: 'cn-north-beijing-4', name: '华北-北京四' },
     { regionId: 'cn-north-ulanchabu-1', name: '华北-乌兰察布一' },
@@ -365,7 +480,9 @@ export function getResourceOverview({ date, regionIds }) {
   })
 }
 
-export function getDcOverview({ date, dcIds }) {
+export function getDcOverview(filters) {
+  const { date } = filters;
+  const dcIds = getSelectedDcIds(filters);
   const allDcIds = DC_FILTER_OPTIONS.flatMap((city) => {
     return city.children.map((dataCenter) => dataCenter.id);
   });

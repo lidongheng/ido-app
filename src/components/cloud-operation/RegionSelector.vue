@@ -12,9 +12,12 @@
               v-for="item in scopeOptions"
               :key="item.value"
               class="filter-chip"
-              :class="{ active: activeScope === item.value }"
+              :class="{
+                active: isScopeSelected(item.value),
+                partial: isScopeIndeterminate(item.value)
+              }"
               type="button"
-              @click="activeScope = item.value"
+              @click="toggleScope(item.value)"
             >
               {{ item.label }}
             </button>
@@ -28,9 +31,12 @@
               v-for="item in areaOptions"
               :key="item"
               class="filter-chip"
-              :class="{ active: activeArea === item }"
+              :class="{
+                active: isAreaSelected(item),
+                partial: isAreaIndeterminate(item)
+              }"
               type="button"
-              @click="activeArea = item"
+              @click="toggleArea(item)"
             >
               {{ item }}
             </button>
@@ -39,23 +45,16 @@
 
         <div class="region-list-title">Region</div>
         <div class="region-list">
-          <button class="select-all-row" type="button" @click="selectAll">
-            <van-checkbox :model-value="allSelected" shape="square" @click.stop="selectAll">
-              全部
-            </van-checkbox>
-          </button>
-
-          <van-checkbox-group v-model="pendingIds">
-            <van-checkbox
-              v-for="option in visibleOptions"
-              :key="option.id"
-              :name="option.id"
-              shape="square"
-              class="region-row"
-            >
-              {{ option.name }}
-            </van-checkbox>
-          </van-checkbox-group>
+          <van-checkbox
+            v-for="option in visibleOptions"
+            :key="option.id"
+            :model-value="isRegionSelected(option)"
+            shape="square"
+            class="region-row"
+            @click="toggleRegion(option)"
+          >
+            {{ option.name }}
+          </van-checkbox>
 
           <van-empty v-if="visibleOptions.length === 0" description="未找到匹配的 Region" />
         </div>
@@ -76,9 +75,7 @@
 </template>
 
 <script setup>
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import { storeToRefs } from 'pinia'
-import { useSelectedRegion } from '@/stores/useSelectedRegion.js'
+import { useRegionSelector } from './useRegionSelector.js';
 
 const props = defineProps({
   visible: {
@@ -88,104 +85,35 @@ const props = defineProps({
   options: {
     type: Array,
     required: true
+  },
+  selectedIds: {
+    type: Array,
+    required: true
+  },
+  allMode: {
+    type: Boolean,
+    required: true
   }
-})
+});
 
-const emit = defineEmits(['cancel', 'confirm'])
-const { regionIds: selectedRegionIds } = storeToRefs(useSelectedRegion())
-const keyword = ref('')
-const activeScope = ref('全部')
-const activeArea = ref('全部')
-const pendingIds = ref([])
-let lockedScrollTop = 0
-const scopeOptions = [
-  { label: '全部', value: '全部' },
-  { label: '国内', value: '国内' },
-  { label: '海外', value: '海外' }
-]
-const areaOptions = [
-  '全部',
-  '华北',
-  '华东',
-  '西南',
-  '西北',
-  '亚太',
-  '中东',
-  '非洲',
-  '拉美',
-  '欧洲',
-  '土耳其'
-]
-
-const allSelected = computed(() => pendingIds.value.length === props.options.length)
-
-const visibleOptions = computed(() => {
-  return props.options.filter((option) => {
-    const matchesKeyword = option.name.includes(keyword.value.trim())
-    const matchesScope = activeScope.value === '全部' || option.scope === activeScope.value
-    const matchesArea = activeArea.value === '全部' || option.area === activeArea.value
-
-    return matchesKeyword && matchesScope && matchesArea
-  })
-})
-
-watch(() => props.visible, (value) => {
-  if (!value) {
-    unlockPageScroll()
-    return
-  }
-
-  lockPageScroll()
-  pendingIds.value = [...selectedRegionIds.value]
-  keyword.value = ''
-  activeScope.value = '全部'
-  activeArea.value = '全部'
-})
-
-onBeforeUnmount(() => {
-  if (props.visible) {
-    unlockPageScroll()
-  }
-})
-
-function lockPageScroll() {
-  lockedScrollTop = window.scrollY
-  document.body.style.position = 'fixed'
-  document.body.style.top = `-${lockedScrollTop}px`
-  document.body.style.width = '100%'
-  document.body.style.overflow = 'hidden'
-}
-
-function unlockPageScroll() {
-  document.body.style.position = ''
-  document.body.style.top = ''
-  document.body.style.width = ''
-  document.body.style.overflow = ''
-  window.scrollTo(0, lockedScrollTop)
-}
-
-function selectAll() {
-  pendingIds.value = props.options.map((option) => option.id)
-}
-
-function cancel() {
-  emit('cancel')
-}
-
-function confirm() {
-  if (pendingIds.value.length === 0) {
-    return
-  }
-
-  // 保持 Region 固定顺序，顶部摘要和请求参数不会随点击顺序变化。
-  const selectedSet = new Set(pendingIds.value)
-  const orderedIds = props.options
-    .filter((option) => selectedSet.has(option.id))
-    .map((option) => option.id)
-
-  selectedRegionIds.value = orderedIds
-  emit('confirm')
-}
+const emit = defineEmits(['cancel', 'confirm']);
+const {
+  areaOptions,
+  cancel,
+  confirm,
+  isAreaIndeterminate,
+  isAreaSelected,
+  isRegionSelected,
+  isScopeIndeterminate,
+  isScopeSelected,
+  keyword,
+  pendingIds,
+  scopeOptions,
+  toggleArea,
+  toggleRegion,
+  toggleScope,
+  visibleOptions
+} = useRegionSelector(props, emit);
 </script>
 
 <style lang="less" scoped>
@@ -270,6 +198,12 @@ function confirm() {
   background: #f5f2ff;
 }
 
+.filter-chip.partial {
+  border-color: #a99fe0;
+  color: #5f4cc4;
+  background: #faf8ff;
+}
+
 .region-list-title {
   margin-top: 1px;
 }
@@ -283,7 +217,6 @@ function confirm() {
   -webkit-overflow-scrolling: touch;
 }
 
-.select-all-row,
 .region-row {
   width: 100%;
   min-height: 38px;
@@ -291,11 +224,6 @@ function confirm() {
   border-bottom: 1PX solid #eeeeF3;
   background: #fff;
   text-align: left;
-}
-
-.select-all-row {
-  border: 1PX solid #5c49c3;
-  border-radius: 5px;
 }
 
 :deep(.van-checkbox__label) {

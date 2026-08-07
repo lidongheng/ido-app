@@ -51,18 +51,32 @@ const emit = defineEmits(['navigate', 'ai-click'])
   display: grid;
   width: 100%;
   max-width: 500PX;
-  min-height: 56px;
+  height: 54px;
   grid-template-columns: 1fr 1.2fr 1fr;
-  align-items: end;
-  padding: 5px 18px calc(5px + env(safe-area-inset-bottom));
-  border-top: 1PX solid #ebeaf1;
-  background: rgba(255, 255, 255, .98);
+  align-items: stretch;
+  padding: 0;
   transform: translateX(-50%);
-  box-shadow: 0 -3px 10px rgba(39, 29, 78, .07);
+}
+
+.bottom-navigation::before {
+  position: absolute;
+  z-index: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 76px;
+  background-image: url('@/assets/svg/bottom-navigation-bg.svg');
+  background-repeat: no-repeat;
+  background-position: center bottom;
+  background-size: 100% 100%;
+  content: '';
+  pointer-events: none;
 }
 
 .nav-item,
 .ai-button {
+  position: relative;
+  z-index: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -72,9 +86,19 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .nav-item {
+  height: 54px;
   flex-direction: column;
   gap: 1px;
   font-size: 12px;
+}
+
+/* AI 按钮脱离 Grid 后，明确固定左右导航项所在列。 */
+.nav-item:first-child {
+  grid-column: 1;
+}
+
+.nav-item:last-child {
+  grid-column: 3;
 }
 
 .nav-item .van-icon {
@@ -93,16 +117,19 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .ai-button {
+  position: absolute;
+  right: auto;
+  bottom: 3px;
+  left: 50%;
   width: 66px;
   height: 66px;
   flex-direction: column;
-  justify-self: center;
-  margin-bottom: 3px;
   border: 3px solid #eeefff;
   border-radius: 50%;
   color: #4e55cc;
   background: #fff;
   box-shadow: 0 -2px 9px rgba(76, 79, 191, .22);
+  transform: translateX(-50%);
 }
 
 .ai-symbol {

@@ -6,48 +6,30 @@ function getUniqueValues(values) {
   return [...new Set(values)];
 }
 
-export function useDcSelector(props, emit) {
+export function useRegionSelector(props, emit) {
   const keyword = ref('');
   const pendingIds = ref([]);
   const pendingAllMode = ref(true);
-  const expandedCityIds = ref(new Set(props.options.map((city) => city.id)));
   let lockedScrollTop = 0;
 
-  const allDcIds = computed(() => {
-    return props.options.flatMap((city) => {
-      return city.children.map((campus) => campus.id);
-    });
-  });
+  const allRegionIds = computed(() => props.options.map((option) => option.id));
   const scopeOptions = computed(() => {
-    const scopes = getUniqueValues(props.options.map((city) => city.scope));
+    const scopes = getUniqueValues(props.options.map((option) => option.scope));
     return [
       { label: ALL_OPTION, value: ALL_OPTION },
       ...scopes.map((scope) => ({ label: scope, value: scope }))
     ];
   });
   const areaOptions = computed(() => {
-    const areas = props.options.map((city) => city.area);
+    const areas = props.options.map((option) => option.area);
     return getUniqueValues(areas);
   });
-  const visibleTree = computed(() => {
+  const visibleOptions = computed(() => {
     const normalizedKeyword = keyword.value.trim();
 
-    return props.options
-      .map((city) => {
-        let visibleChildren = city.children;
-
-        if (normalizedKeyword && !city.name.includes(normalizedKeyword)) {
-          visibleChildren = city.children.filter((campus) => {
-            return campus.name.includes(normalizedKeyword);
-          });
-        }
-
-        return {
-          ...city,
-          visibleChildren
-        };
-      })
-      .filter((city) => city.visibleChildren.length > 0);
+    return props.options.filter((option) => {
+      return option.name.includes(normalizedKeyword);
+    });
   });
 
   watch(() => props.visible, (value) => {
@@ -86,14 +68,14 @@ export function useDcSelector(props, emit) {
 
   function getScopeIds(scope) {
     return props.options
-      .filter((city) => city.scope === scope)
-      .flatMap((city) => city.children.map((campus) => campus.id));
+      .filter((option) => option.scope === scope)
+      .map((option) => option.id);
   }
 
   function getAreaIds(area) {
     return props.options
-      .filter((city) => city.area === area)
-      .flatMap((city) => city.children.map((campus) => campus.id));
+      .filter((option) => option.area === area)
+      .map((option) => option.id);
   }
 
   function isBranchSelected(ids) {
@@ -114,7 +96,7 @@ export function useDcSelector(props, emit) {
       ids.forEach((id) => selectedIdSet.add(id));
     }
 
-    pendingIds.value = allDcIds.value.filter((id) => selectedIdSet.has(id));
+    pendingIds.value = allRegionIds.value.filter((id) => selectedIdSet.has(id));
     pendingAllMode.value = false;
   }
 
@@ -142,7 +124,7 @@ export function useDcSelector(props, emit) {
         return;
       }
 
-      pendingIds.value = [...allDcIds.value];
+      pendingIds.value = [...allRegionIds.value];
       pendingAllMode.value = true;
       return;
     }
@@ -162,60 +144,19 @@ export function useDcSelector(props, emit) {
     toggleBranch(getAreaIds(area));
   }
 
-  function isCitySelected(city) {
-    return isBranchSelected(city.children.map((campus) => campus.id));
+  function isRegionSelected(option) {
+    return pendingIds.value.includes(option.id);
   }
 
-  function isCityIndeterminate(city) {
-    return isBranchIndeterminate(city.children.map((campus) => campus.id));
-  }
-
-  function isDataCenterSelected(dataCenter) {
-    return pendingIds.value.includes(dataCenter.id);
-  }
-
-  function toggleCity(city) {
-    toggleBranch(city.children.map((campus) => campus.id));
-  }
-
-  function toggleDataCenter(dataCenter) {
-    if (isDataCenterSelected(dataCenter)) {
-      pendingIds.value = pendingIds.value.filter((id) => id !== dataCenter.id);
+  function toggleRegion(option) {
+    if (isRegionSelected(option)) {
+      pendingIds.value = pendingIds.value.filter((id) => id !== option.id);
     } else {
-      const selectedIdSet = new Set([...pendingIds.value, dataCenter.id]);
-      pendingIds.value = allDcIds.value.filter((id) => selectedIdSet.has(id));
+      const selectedIdSet = new Set([...pendingIds.value, option.id]);
+      pendingIds.value = allRegionIds.value.filter((id) => selectedIdSet.has(id));
     }
 
     pendingAllMode.value = false;
-  }
-
-  function toggleItem(item, hasChildren) {
-    if (hasChildren) {
-      toggleCity(item);
-      return;
-    }
-
-    toggleDataCenter(item);
-  }
-
-  function isCityExpanded(city) {
-    if (keyword.value.trim()) {
-      return true;
-    }
-
-    return expandedCityIds.value.has(city.id);
-  }
-
-  function toggleCityExpanded(city) {
-    const nextIds = new Set(expandedCityIds.value);
-
-    if (nextIds.has(city.id)) {
-      nextIds.delete(city.id);
-    } else {
-      nextIds.add(city.id);
-    }
-
-    expandedCityIds.value = nextIds;
   }
 
   function cancel() {
@@ -239,19 +180,15 @@ export function useDcSelector(props, emit) {
     confirm,
     isAreaIndeterminate,
     isAreaSelected,
-    isCityExpanded,
-    isCityIndeterminate,
-    isCitySelected,
-    isDataCenterSelected,
+    isRegionSelected,
     isScopeIndeterminate,
     isScopeSelected,
     keyword,
     pendingIds,
     scopeOptions,
     toggleArea,
-    toggleCityExpanded,
-    toggleItem,
+    toggleRegion,
     toggleScope,
-    visibleTree
+    visibleOptions
   };
 }

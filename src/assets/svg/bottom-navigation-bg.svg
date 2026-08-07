@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 375 76" fill="none">
+  <defs>
+    <filter
+      id="navigation-shadow"
+      x="-8"
+      y="-8"
+      width="391"
+      height="92"
+      color-interpolation-filters="sRGB"
+      filterUnits="userSpaceOnUse"
+    >
+      <feDropShadow dx="0" dy="-1" stdDeviation="2" flood-color="#271D4E" flood-opacity="0.08" />
+    </filter>
+  </defs>
+  <g filter="url(#navigation-shadow)">
+    <rect x="0" y="22" width="375" height="54" fill="#FFFFFF" />
+    <circle cx="187.5" cy="40" r="36" fill="#FFFFFF" />
+  </g>
+</svg>
