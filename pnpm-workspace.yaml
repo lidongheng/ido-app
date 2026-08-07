@@ -1,4 +1,0 @@
-allowBuilds:
-  core-js: false
-  less: false
-  vue-demi: false
