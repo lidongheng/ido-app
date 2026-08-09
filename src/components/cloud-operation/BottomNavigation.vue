@@ -7,7 +7,7 @@
       @click="emit('navigate', 'resource')"
     >
       <svg-icon class="nav-svg-icon" icon-name="resource" />
-      <span>资源</span>
+      <p class="nav-item-text">资源</p>
     </button>
 
     <button class="ai-button" type="button" aria-label="AI助手" @click="emit('ai-click')">
@@ -22,7 +22,7 @@
       @click="emit('navigate', 'dc')"
     >
       <van-icon name="wap-home-o" />
-      <span>DC</span>
+      <p class="nav-item-text">DC</p>
     </button>
   </nav>
 </template>
@@ -43,19 +43,12 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 <style lang="less" scoped>
 .bottom-navigation {
-  position: fixed;
-  z-index: 1000;
-  right: 0;
-  bottom: 0;
-  left: 50%;
   display: grid;
   width: 100%;
   max-width: 500PX;
   height: 54px;
   grid-template-columns: 1fr 1.2fr 1fr;
   align-items: stretch;
-  padding: 0;
-  transform: translateX(-50%);
 }
 
 .bottom-navigation::before {
@@ -89,7 +82,10 @@ const emit = defineEmits(['navigate', 'ai-click'])
   height: 54px;
   flex-direction: column;
   gap: 1px;
-  font-size: 12px;
+  .nav-item-text {
+    font-size: 12px;
+    line-height: 16px;
+  }
 }
 
 /* AI 按钮脱离 Grid 后，明确固定左右导航项所在列。 */
@@ -113,7 +109,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .nav-item.active {
-  color: #5c4bc3;
+  color: rgba(94, 124, 224, 1);
 }
 
 .ai-button {
@@ -124,6 +120,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
   width: 66px;
   height: 66px;
   flex-direction: column;
+  align-self: end;
   border: 3px solid #eeefff;
   border-radius: 50%;
   color: #4e55cc;

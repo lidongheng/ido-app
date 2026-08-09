@@ -8,51 +8,90 @@
       ></SvgIcon>
       <span>{{ metric.label }}</span>
     </div>
-    <div class="metric-value-row">
-      <span class="metric-value">{{ formattedValue }}</span>
-      <span class="metric-unit">{{ metric.unit }}</span>
-    </div>
-    <div v-if="metric.ratio" class="metric-ratio">
-      <span class="ratio-label">较上月</span>
-      <span class="ratio-value-row">
-        <span :class="['ratio-arrow', textClass]">{{ ratioArrow }}</span>
-        <span :class="['ratio-value', textClass]">{{
-          Math.abs(metric.ratio)
-        }}</span>
-      </span>
-      <span class="ratio-unit">{{ metric.unit }}</span>
-    </div>
+    <skeleton
+      loading="loading"
+      width="60"
+      height="compact ? 20 : 24"
+      style="{
+        marginTop: loading ? '6px' : '0px',
+      }"
+    >
+      <div class="metric-value-row">
+        <span class="metric-value">{{ metric.value }}</span>
+        <span class="metric-unit">{{ metric.unit }}</span>
+      </div>
+    </skeleton>
+    <skeleton
+      v-if="showRatio"
+      loading="loading"
+      width="90"
+      height="16"
+      style="{
+        marginTop: loading ? '3px' : '0px',
+      }"
+    >
+      <div class="metric-ratio">
+        <span class="ratio-label">较上月</span>
+        <span class="ratio-value-row">
+          <span :class="['ratio-arrow', textClass]">{{ ratioArrow }}</span>
+          <span :class="['ratio-value', textClass]">{{
+            formattedRatioValue
+          }}</span>
+        </span>
+        <span class="ratio-unit">{{ metric.unit }}</span>
+      </div>
+    </skeleton>
   </div>
 </template>
 
 <script setup>
 import { computed } from 'vue';
 import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
+import skeleton from '@/components/skeleton/index.vue';
 
 const props = defineProps({
   metric: {
     type: Object,
-    required: true
+    required: true,
   },
   compact: {
     type: Boolean,
-    default: false
+    default: false,
   },
   upGreen: {
     type: Boolean,
+    default: true,
+  },
+  loading: {
+    type: Boolean,
+    default: true,
+  },
+  showRatio: {
+    type: Boolean,
     default: false,
   },
-})
+});
 
 const formattedValue = computed(() => {
   if (typeof props.metric.value === 'number') {
-    return props.metric.value.toLocaleString('zh-CN')
+    return props.metric.value.toLocaleString('zh-CN');
   }
 
-  return props.metric.value
-})
+  return props.metric.value;
+});
+
+const formattedRatioValue = computed(() => {
+  if (['**', '--'].includes(props.metric.ratio)) {
+    return props.metric.ratio;
+  }
+
+  return Math.abs(props.metric.ratio)?.toLocaleString('zh-CN');
+});
 
 const ratioArrow = computed(() => {
+  if (['**', '--'].includes(props.metric.ratio)) {
+    return '';
+  }
   if (props.metric.ratio >= 0) {
     return '▲';
   }
@@ -60,11 +99,20 @@ const ratioArrow = computed(() => {
 });
 
 const textClass = computed(() => {
-  const direction = Number(props.metric.ratio) > 0 ? 'up' : 'down';
-  if (props.upGreen) {
-    return direction === 'up' ? 'green' : 'red';
+  if (['**', '--'].includes(props.metric.ratio)) {
+    return '';
   }
-  return direction === 'up' ? 'red' : 'green';
+  if (!props.metric.ratio) {
+    const direction = Number(props.metric.ratio) >= 0 ? 'up' : 'down';
+    let color = "";
+    if (props.upGreen) {
+      color = direction === 'up' ? 'green' : 'red';
+    } else {
+      color = direction === 'up' ? 'red' : 'green';
+    }
+    return color;
+  }
+  return 'green';
 });
 </script>
 

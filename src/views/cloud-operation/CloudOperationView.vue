@@ -1,6 +1,6 @@
 <template>
   <div class="cloud-operation-page">
-    <template v-if="activeOptions">
+    <template v-if="true">
       <filter-bar
         :region-label="filterLabel"
         :region-open="showSelector"
@@ -53,13 +53,20 @@
       />
     </template>
 
-    <div v-else-if="loadingOptions" class="shell-status">
-      <van-loading color="#5b49c2" vertical>加载筛选项...</van-loading>
-    </div>
+    <template v-if="showAssistant">
+      <iframe
+        id="iframe-page"
+        src="#"
+      ></iframe>
 
-    <div v-else class="shell-status error-state">
-      {{ optionsError }}
-    </div>
+      <div class="return circle" @click="showAssistant = false">
+        <SvgIcon iconName="dashboard" class="icon-dashboard" />
+        <span class="text">点我~</span>
+        <span class="text">返回看板</span>
+      </div>
+    </template>
+    
+    divdiv
   </div>
 </template>
 
@@ -90,19 +97,23 @@ const {
   selectedDcIds,
   selectedRegionIds,
   showSelector,
+  showAssistant,
   toggleSelector
 } = useCloudOperationFilters();
 </script>
 
 <style lang="less" scoped>
 .cloud-operation-page {
-  min-height: 100vh;
+  height: calc(100vh - 40PX);
   background: #fff;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
 
 .page-content {
-  padding-top: 51px;
-  padding-bottom: calc(75px + env(safe-area-inset-bottom));
+  flex: 1;
+  overflow: auto;
 }
 
 .shell-status {
@@ -117,5 +128,86 @@ const {
 .error-state {
   color: #df5b72;
   font-size: 14px;
+}
+
+#iframe-page {
+  position: absolute;
+  z-index: 1200;
+  left: 0;
+  top: 0;
+  border: 0;
+  transform-origin: 0 0;
+  width: 100vw;
+  height: calc(100vh - 40px);
+}
+
+.return {
+  position: absolute;
+  z-index: 1210;
+  right: 4px;
+  bottom: 20vh;
+  display: flex;
+  justify-content: center;
+  padding-top: 10px;
+
+  .icon-dashboard {
+    width: 20px;
+    height: 20px;
+    color: #4E5FE9;
+  }
+
+  .text {
+    position: absolute;
+    bottom: 4px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #5651ea;
+    font-family: 'Microsoft YaHei';
+    transform-origin: center;
+    white-space: nowrap;
+
+    &:nth-of-type(1) {
+      animation: textLoopA 8s infinite;
+    }
+
+    &:nth-of-type(2) {
+      animation: textLoopB 8s infinite;
+    }
+  }
+}
+
+@keyframes textLoopA {
+  0%, 40% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0; transform: scale(0); }
+  90% { opacity: 0; transform: scale(0); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes textLoopB {
+  0%, 40% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+.circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(to right, #f3f4fd, #edf9fc, #ebfafc);
+  box-shadow: 0px -4px 8px 0px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  position: absolute;
+
+  &::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: #fff;
+    border-radius: 50%;
+  }
 }
 </style>

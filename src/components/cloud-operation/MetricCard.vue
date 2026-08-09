@@ -22,6 +22,8 @@
             class="metric-item"
             :metric="metric"
             :compact="compact"
+            :loading="loading"
+            :showRatio="showRatio"
           />
           <div class="line" v-if="index !== metrics.length - 1"></div>
         </template>
@@ -62,7 +64,15 @@ const props = defineProps({
   compact: {
     type: Boolean,
     default: false
-  }
+  },
+  loading: {
+    type: Boolean,
+    default: false,
+  },
+  showRatio: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const expanded = ref(props.defaultExpanded);
@@ -89,6 +99,7 @@ function toggle() {
 .metric-card-box {
   border: 1.6px solid rgba(229, 237, 252, 1);
   border-radius: 8px;
+  overflow: hidden;
 }
 
 .card-header {
@@ -138,5 +149,31 @@ function toggle() {
   color: #7176ae;
   font-size: 0.31rem;
   font-weight: 400;
+}
+
+.card-body {
+  padding: 8px 10px;
+  display: flex;
+  gap: 8px;
+  // justify-content: space-between;
+}
+
+.metric-item {
+  flex: 1;
+}
+
+.line {
+  width: 1px;
+  border-right: 1px dashed #e5e6ee;
+  margin: 4px 0px;
+}
+
+.compact .card-body {
+  padding-top: 0.24rem;
+  padding-bottom: 0.27rem;
+}
+
+.compact .card-header {
+  background: rgba(229, 237, 252, 1);
 }
 </style>

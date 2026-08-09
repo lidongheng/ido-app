@@ -71,15 +71,10 @@ function confirmDate(value) {
 
 <style lang="less" scoped>
 .filter-bar {
-  position: fixed;
-  z-index: 1100;
-  top: 0;
-  right: 0;
-  left: 0;
   display: flex;
   width: 100%;
   max-width: 500PX;
-  min-height: 51px;
+  min-height: 32px;
   align-items: center;
   justify-content: space-between;
   padding: 8px 16px;

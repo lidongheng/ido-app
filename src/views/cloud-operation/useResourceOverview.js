@@ -1,58 +1,64 @@
-import { ref, watch } from 'vue'
-import { getResourceOverview } from './mock.js'
+import { ref, watch } from 'vue';
+import api from '@/service/index';
+
+export const loading = ref(true);
+export const overviewLoading = ref(true);
+export const xpuLoading = ref(true);
+export const generalLoading = ref(true);
+
+export const resourceOverviewData = ref({});
+export const resourceXpuData = ref({});
+export const resourceGeneralData = ref({});
 
 export function useResourceOverview(filters) {
-  const loading = ref(true)
-  const errorMessage = ref('')
-  const pageData = ref(null)
-  let requestSequence = 0
-
-  async function fetchData() {
-    const sequence = ++requestSequence
-    loading.value = true
-    errorMessage.value = ''
-
+  const loadDataByOverview = async () => {
+    overviewLoading.value = true;
+    resourceOverviewData.value = {};
     try {
-      const res = await getResourceOverview(filters.value)
-
-      // 用户连续调整筛选时，只接收最后一次请求的结果。
-      if (sequence !== requestSequence) {
-        return
-      }
-
-      if (res.status === 403) {
-        pageData.value = null
-        errorMessage.value = '暂无资源数据查看权限'
-        return
-      }
-
+      const res = await api.operate.getResourceOverview(filters.value);
       if (res.status === 200) {
-        pageData.value = res.data
-        return
-      }
-
-      pageData.value = null
-      errorMessage.value = '资源数据加载失败'
-    } catch (error) {
-      if (sequence === requestSequence) {
-        pageData.value = null
-        errorMessage.value = '资源数据加载失败'
+        resourceOverviewData.value = res.data ?? {};
       }
     } finally {
-      if (sequence === requestSequence) {
-        loading.value = false
-      }
+      overviewLoading.value = false;
     }
-  }
+  };
 
-  watch(filters, fetchData, {
-    deep: true,
-    immediate: true
-  })
+  const loadDataByXpu = async () => {
+    xpuLoading.value = true;
+    resourceXpuData.value = {};
+    try {
+      const res = await api.operate.getResourceXpu(filters.value);
+      if (res.status === 200) {
+        resourceXpuData.value = res.data ?? {};
+      }
+    } finally {
+      xpuLoading.value = false;
+    }
+  };
 
-  return {
-    loading,
-    errorMessage,
-    pageData
-  }
+  const loadDataByGeneral = async () => {
+    generalLoading.value = true;
+    resourceGeneralData.value = {};
+    try {
+      const res = await api.operate.getResourceGeneral(filters.value);
+      if (res.status === 200) {
+        resourceGeneralData.value = res.data ?? {};
+      }
+    } finally {
+      generalLoading.value = false;
+    }
+  };
+
+  watch(
+    () => filters,
+    () => {
+      loadDataByOverview();
+      loadDataByXpu();
+      loadDataByGeneral();
+    },
+    { deep: true, immediate: true }
+  );
+
+  return { loading, overviewLoading, xpuLoading, generalLoading, resourceOverviewData, resourceXpuData, resourceGeneralData };
 }

@@ -31,3 +31,24 @@ export const formatterValue = (value, unit, fixed = 2) => {
   }
   return Number(value / unit ?? 1e8).toFixed(fixed);
 };
+
+
+export const formatNumToLocalStringAndFiexd = (num, fixed = 2) => {
+    if ((!num && num !== 0) || num === '--') {
+      return '-';
+    }
+    
+    if (num === '*') {
+      return '*';
+    }
+  
+    if (num === '') {
+      return '';
+    }
+  
+    if (num === '0') {
+      return '0';
+    }
+  
+    return Number(Number(num).toFixed(fixed)).toLocaleString('en-US');
+  };

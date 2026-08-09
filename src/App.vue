@@ -28,6 +28,7 @@ body {
   background: #f4f5f8;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
 }
 
 button,
