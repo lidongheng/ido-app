@@ -22,10 +22,10 @@
         >
           <div v-if="item.name2" class="double-value-row">
             <div class="value-track">
-              <span>{{ item.name }} <strong>{{ item.value }}</strong> {{ item.unit }}</span>
+              <span>{{ item.name }} <strong>{{ getDisplayValue(item.value) }}</strong> {{ item.unit }}</span>
             </div>
             <div class="value-track">
-              <span>{{ item.name2 }} <strong>{{ item.value2 }}</strong> {{ item.unit2 }}</span>
+              <span>{{ item.name2 }} <strong>{{ getDisplayValue(item.value2) }}</strong> {{ item.unit2 }}</span>
             </div>
           </div>
 
@@ -49,14 +49,14 @@
               class="main-value"
               :style="{ width: getMainBarWidth(item) }"
             >
-              {{ item.name }} <strong>{{ item.value }}</strong> {{ item.unit }}
+              {{ item.name }} <strong>{{ getDisplayValue(item.value) }}</strong> {{ item.unit }}
             </span>
             <span
               v-if="showSubBar && item.subName"
               class="sub-value"
               :style="{ width: `${item.subBarWidth}%` }"
             >
-              {{ item.subName }} <strong>{{ item.subValue }}</strong> {{ item.unit }}
+              {{ item.subName }} <strong>{{ getDisplayValue(item.subValue) }}</strong> {{ item.unit }}
             </span>
           </div>
         </Skeleton>
@@ -94,7 +94,19 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
+  failed: {
+    type: Boolean,
+    required: true,
+  },
 });
+
+function getDisplayValue(value) {
+  if (props.failed) {
+    return '--';
+  }
+
+  return value;
+}
 
 function getMainBarWidth(item) {
   if (props.showSubBar && item.subName) {

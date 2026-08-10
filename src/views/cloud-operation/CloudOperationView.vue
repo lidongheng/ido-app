@@ -4,6 +4,7 @@
       <filter-bar
         :region-label="filterLabel"
         :region-open="showSelector"
+        :region-disabled="filterDisabled"
         @open-region="toggleSelector"
       />
 
@@ -27,7 +28,7 @@
       </main>
 
       <region-selector
-        v-if="!isDcRoute"
+        v-if="!isDcRoute && regionOptions"
         :visible="showSelector"
         :options="regionOptions"
         :selected-ids="selectedRegionIds"
@@ -37,7 +38,7 @@
       />
 
       <dc-selector
-        v-else
+        v-else-if="isDcRoute && dcOptions"
         :visible="showSelector"
         :options="dcOptions"
         :selected-ids="selectedDcIds"
@@ -73,6 +74,7 @@ import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue'
 import DcSelector from '@/components/cloud-operation/DcSelector.vue';
 import FilterBar from '@/components/cloud-operation/FilterBar.vue';
 import RegionSelector from '@/components/cloud-operation/RegionSelector.vue';
+import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
 import { useCloudOperationFilters } from './useCloudOperationFilters.js';
 
 const {
@@ -83,6 +85,7 @@ const {
   confirmRegionSelection,
   dcAllMode,
   dcOptions,
+  filterDisabled,
   filterLabel,
   filters,
   isDcRoute,

@@ -23,6 +23,7 @@
             :metric="metric"
             :compact="compact"
             :loading="loading"
+            :failed="failed"
             :showRatio="showRatio"
           />
           <div class="line" v-if="index !== metrics.length - 1"></div>
@@ -68,6 +69,10 @@ const props = defineProps({
   loading: {
     type: Boolean,
     default: false,
+  },
+  failed: {
+    type: Boolean,
+    required: true,
   },
   showRatio: {
     type: Boolean,

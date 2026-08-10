@@ -9,6 +9,7 @@
       <metric-card
         :metrics="overviewData"
         :loading="overviewLoading"
+        :failed="overviewFailed"
         :showRatio="true"
       />
     </card-layout>
@@ -22,6 +23,7 @@
         :metrics="xpuData"
         :defaultExpanded="true"
         :loading="xpuLoading"
+        :failed="xpuFailed"
         :showRatio="true"
       >
         <div class="tree-expand">
@@ -35,6 +37,7 @@
               :metrics="item.metrics"
               :compact="true"
               :loading="xpuLoading"
+              :failed="xpuFailed"
             ></metric-card>
           </div>
         </div>
@@ -50,6 +53,7 @@
         :metrics="generalData"
         :defaultExpanded="true"
         :loading="generalLoading"
+        :failed="generalFailed"
         :showRatio="true"
       >
         <div class="tree-expand">
@@ -63,6 +67,7 @@
               :metrics="item.metrics"
               :compact="true"
               :loading="generalLoading"
+              :failed="generalFailed"
             ></metric-card>
           </div>
         </div>
@@ -82,6 +87,9 @@ import {
   overviewLoading,
   xpuLoading,
   generalLoading,
+  overviewFailed,
+  xpuFailed,
+  generalFailed,
   resourceOverviewData,
   resourceGeneralData,
   resourceXpuData,

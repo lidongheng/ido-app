@@ -9,6 +9,9 @@ export const loading = ref(true);
 export const overviewLoading = ref(true);
 export const xpuLoading = ref(true);
 export const generalLoading = ref(true);
+export const overviewFailed = ref(false);
+export const xpuFailed = ref(false);
+export const generalFailed = ref(false);
 
 export const resourceOverviewData = ref({});
 export const resourceXpuData = ref({});
@@ -17,6 +20,7 @@ export const resourceGeneralData = ref({});
 export function useResourceOverview(filters) {
   const loadDataByOverview = async () => {
     overviewLoading.value = true;
+    overviewFailed.value = false;
     resourceOverviewData.value = {};
     try {
       const res = await getResourceOverview(filters.value);
@@ -24,6 +28,7 @@ export function useResourceOverview(filters) {
         resourceOverviewData.value = res.data ?? {};
       }
     } catch (error) {
+      overviewFailed.value = true;
       console.error('资源概览接口请求失败:', error);
     } finally {
       overviewLoading.value = false;
@@ -32,6 +37,7 @@ export function useResourceOverview(filters) {
 
   const loadDataByXpu = async () => {
     xpuLoading.value = true;
+    xpuFailed.value = false;
     resourceXpuData.value = {};
     try {
       const res = await getResourceXpu(filters.value);
@@ -39,6 +45,7 @@ export function useResourceOverview(filters) {
         resourceXpuData.value = res.data ?? {};
       }
     } catch (error) {
+      xpuFailed.value = true;
       console.error('XPU 概览接口请求失败:', error);
     } finally {
       xpuLoading.value = false;
@@ -47,6 +54,7 @@ export function useResourceOverview(filters) {
 
   const loadDataByGeneral = async () => {
     generalLoading.value = true;
+    generalFailed.value = false;
     resourceGeneralData.value = {};
     try {
       const res = await getResourceGeneral(filters.value);
@@ -54,6 +62,7 @@ export function useResourceOverview(filters) {
         resourceGeneralData.value = res.data ?? {};
       }
     } catch (error) {
+      generalFailed.value = true;
       console.error('通算概览接口请求失败:', error);
     } finally {
       generalLoading.value = false;
@@ -70,5 +79,16 @@ export function useResourceOverview(filters) {
     { deep: true, immediate: true }
   );
 
-  return { loading, overviewLoading, xpuLoading, generalLoading, resourceOverviewData, resourceXpuData, resourceGeneralData };
+  return {
+    loading,
+    overviewLoading,
+    xpuLoading,
+    generalLoading,
+    overviewFailed,
+    xpuFailed,
+    generalFailed,
+    resourceOverviewData,
+    resourceXpuData,
+    resourceGeneralData
+  };
 }

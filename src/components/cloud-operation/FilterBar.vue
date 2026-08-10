@@ -7,7 +7,12 @@
         <van-icon name="arrow-down" />
       </button>
     </div>
-    <button class="filter-button region-button" type="button" @click="emit('open-region')">
+    <button
+      class="filter-button region-button"
+      type="button"
+      :disabled="regionDisabled"
+      @click="emit('open-region')"
+    >
       <span>{{ regionLabel }}</span>
       <van-icon :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
     </button>
@@ -47,6 +52,10 @@ defineProps({
     required: true
   },
   regionOpen: {
+    type: Boolean,
+    required: true
+  },
+  regionDisabled: {
     type: Boolean,
     required: true
   }
@@ -121,6 +130,11 @@ function confirmDate(value) {
   max-width: 120px;
   justify-content: flex-end;
   margin-left: 8px;
+}
+
+.region-button:disabled {
+  color: #9a96aa;
+  cursor: default;
 }
 
 :deep(.van-popup) {

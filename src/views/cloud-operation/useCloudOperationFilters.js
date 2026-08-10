@@ -48,6 +48,9 @@ export function useCloudOperationFilters() {
   const optionsError = computed(() => {
     return isDcRoute.value ? dcOptionsError.value : regionError.value;
   });
+  const filterDisabled = computed(() => {
+    return loadingOptions.value || Boolean(optionsError.value) || !activeOptions.value;
+  });
   const filters = computed(() => {
     if (isDcRoute.value) {
       return {
@@ -62,6 +65,14 @@ export function useCloudOperationFilters() {
     };
   });
   const filterLabel = computed(() => {
+    if (loadingOptions.value) {
+      return '筛选加载中';
+    }
+
+    if (optionsError.value) {
+      return '筛选加载失败';
+    }
+
     if (isDcRoute.value) {
       return getDcLabel();
     }
@@ -86,12 +97,11 @@ export function useCloudOperationFilters() {
   }
 
   function getDcLabel() {
-    const dataCenters = dcOptions.value.flatMap((city) => city.children);
-
     if (dcAllMode.value) {
       return '全部';
     }
 
+    const dataCenters = dcOptions.value.flatMap((city) => city.children);
     const firstDataCenter = dataCenters.find((dataCenter) => {
       return dataCenter.id === selectedDcIds.value[0];
     });
@@ -144,6 +154,10 @@ export function useCloudOperationFilters() {
   }
 
   function toggleSelector() {
+    if (filterDisabled.value) {
+      return;
+    }
+
     showSelector.value = !showSelector.value;
   }
 
@@ -179,6 +193,7 @@ export function useCloudOperationFilters() {
   return {
     activeRouteName,
     activeOptions,
+    filterDisabled,
     filterLabel,
     filters,
     isDcRoute,

@@ -1,10 +1,19 @@
+import { SIMULATE_BUSINESS_API_FAILURE } from './mockConfig.js';
+
 const MOCK_DELAY = 280;
 
-function resolveMockResponse() {
-  // 故障模拟：业务 Mock 统一 reject，用于验证页面的 catch 处理。
-  return new Promise((_, reject) => {
+function resolveMockResponse(data) {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject(new Error('模拟业务接口请求失败'));
+      if (SIMULATE_BUSINESS_API_FAILURE) {
+        reject(new Error('模拟业务接口请求失败'));
+        return;
+      }
+
+      resolve({
+        status: 200,
+        data,
+      });
     }, MOCK_DELAY);
   });
 }

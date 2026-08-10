@@ -6,7 +6,7 @@
       :show-nav="false"
       :show-help="false"
     >
-      <metric-card :metrics="overviewData" :loading="loading" />
+      <metric-card :metrics="overviewData" :loading="loading" :failed="failed" />
     </card-layout>
     <card-layout
       title="运营概览"
@@ -22,17 +22,20 @@
           barBg="#eeeeee"
           subBarBg="#f5f5f5"
           :loading="loading"
+          :failed="failed"
         ></DcCardItem>
         <DcCardItem
           title="建成"
           :data="buildingData"
           :loading="loading"
+          :failed="failed"
         ></DcCardItem>
         <DcCardItem
           v-if="isAllDataCentersSelected"
           title="使用"
           :data="useData"
           :loading="loading"
+          :failed="failed"
         ></DcCardItem>
       </div>
     </card-layout>
@@ -44,7 +47,7 @@ import { computed, toRef } from 'vue';
 import CardLayout from '@/components/card-layout/index.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import DcCardItem from '@/components/cloud-operation/DcCardItem.vue';
-import { useDcOverview, loading, dcData } from './useDcOverview.js';
+import { useDcOverview, loading, failed, dcData } from './useDcOverview.js';
 import {
   formatNumToLocalStringAndFiexd,
   formatterValue

@@ -1,3 +1,5 @@
+import { SIMULATE_BUSINESS_API_FAILURE } from './mockConfig.js';
+
 const REGION_OPTIONS = [
   { id: 'cn-north-beijing-1', name: '华北-北京一', scope: '国内', area: '华北' },
   { id: 'cn-north-beijing-2', name: '华北-北京二', scope: '国内', area: '华北' },
@@ -125,11 +127,15 @@ const DC_FILTER_OPTIONS = [
   }
 ]
 
-function resolveAfter() {
-  // 故障模拟：业务 Mock 统一 reject，鉴权 Mock 不经过这里。
-  return new Promise((_, reject) => {
+function resolveAfter(response) {
+  return new Promise((resolve, reject) => {
     setTimeout(() => {
-      reject(new Error('模拟业务接口请求失败'));
+      if (SIMULATE_BUSINESS_API_FAILURE) {
+        reject(new Error('模拟业务接口请求失败'));
+        return;
+      }
+
+      resolve(response);
     }, 280);
   });
 }

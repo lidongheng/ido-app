@@ -17,7 +17,7 @@
       }"
     >
       <div class="metric-value-row">
-        <span class="metric-value">{{ metric.value }}</span>
+        <span class="metric-value">{{ formattedValue }}</span>
         <span class="metric-unit">{{ metric.unit }}</span>
       </div>
     </skeleton>
@@ -66,6 +66,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  failed: {
+    type: Boolean,
+    required: true,
+  },
   showRatio: {
     type: Boolean,
     default: false,
@@ -73,6 +77,10 @@ const props = defineProps({
 });
 
 const formattedValue = computed(() => {
+  if (props.failed) {
+    return '--';
+  }
+
   if (typeof props.metric.value === 'number') {
     return props.metric.value.toLocaleString('zh-CN');
   }
@@ -81,6 +89,10 @@ const formattedValue = computed(() => {
 });
 
 const formattedRatioValue = computed(() => {
+  if (props.failed) {
+    return '--';
+  }
+
   if (['**', '--'].includes(props.metric.ratio)) {
     return props.metric.ratio;
   }
@@ -89,6 +101,10 @@ const formattedRatioValue = computed(() => {
 });
 
 const ratioArrow = computed(() => {
+  if (props.failed) {
+    return '';
+  }
+
   if (['**', '--'].includes(props.metric.ratio)) {
     return '';
   }
@@ -99,6 +115,10 @@ const ratioArrow = computed(() => {
 });
 
 const textClass = computed(() => {
+  if (props.failed) {
+    return '';
+  }
+
   if (['**', '--'].includes(props.metric.ratio)) {
     return '';
   }
