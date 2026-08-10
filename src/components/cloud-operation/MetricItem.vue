@@ -9,10 +9,10 @@
       <span>{{ metric.label }}</span>
     </div>
     <skeleton
-      loading="loading"
-      width="60"
-      height="compact ? 20 : 24"
-      style="{
+      :loading="loading"
+      :width="60"
+      :height="compact ? 20 : 24"
+      :style="{
         marginTop: loading ? '6px' : '0px',
       }"
     >
@@ -23,10 +23,10 @@
     </skeleton>
     <skeleton
       v-if="showRatio"
-      loading="loading"
-      width="90"
-      height="16"
-      style="{
+      :loading="loading"
+      :width="90"
+      :height="16"
+      :style="{
         marginTop: loading ? '3px' : '0px',
       }"
     >

@@ -1,5 +1,5 @@
 import { ref, watch } from 'vue';
-import api from '@/service/index';
+import { getDcOverview } from './overviewMock.js';
 
 export const loading = ref(true);
 export const dcData = ref({});
@@ -9,7 +9,7 @@ export function useDcOverview(filters) {
     loading.value = true;
     dcData.value = {};
     try {
-      const res = await api.operate.getDcOverview(filters.value);
+      const res = await getDcOverview(filters.value);
       if (res.status === 200) {
         dcData.value = res.data ?? {};
       }
@@ -19,7 +19,7 @@ export function useDcOverview(filters) {
   };
 
   watch(
-    () => filters,
+    filters,
     () => {
       loadData();
     },

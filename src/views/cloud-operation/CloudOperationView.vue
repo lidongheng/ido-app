@@ -104,7 +104,7 @@ const {
 
 <style lang="less" scoped>
 .cloud-operation-page {
-  height: calc(100vh - 40PX);
+  height: 100vh;
   background: #fff;
   position: relative;
   display: flex;

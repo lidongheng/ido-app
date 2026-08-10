@@ -1,5 +1,9 @@
 import { ref, watch } from 'vue';
-import api from '@/service/index';
+import {
+  getResourceGeneral,
+  getResourceOverview,
+  getResourceXpu,
+} from './overviewMock.js';
 
 export const loading = ref(true);
 export const overviewLoading = ref(true);
@@ -15,7 +19,7 @@ export function useResourceOverview(filters) {
     overviewLoading.value = true;
     resourceOverviewData.value = {};
     try {
-      const res = await api.operate.getResourceOverview(filters.value);
+      const res = await getResourceOverview(filters.value);
       if (res.status === 200) {
         resourceOverviewData.value = res.data ?? {};
       }
@@ -28,7 +32,7 @@ export function useResourceOverview(filters) {
     xpuLoading.value = true;
     resourceXpuData.value = {};
     try {
-      const res = await api.operate.getResourceXpu(filters.value);
+      const res = await getResourceXpu(filters.value);
       if (res.status === 200) {
         resourceXpuData.value = res.data ?? {};
       }
@@ -41,7 +45,7 @@ export function useResourceOverview(filters) {
     generalLoading.value = true;
     resourceGeneralData.value = {};
     try {
-      const res = await api.operate.getResourceGeneral(filters.value);
+      const res = await getResourceGeneral(filters.value);
       if (res.status === 200) {
         resourceGeneralData.value = res.data ?? {};
       }
@@ -51,7 +55,7 @@ export function useResourceOverview(filters) {
   };
 
   watch(
-    () => filters,
+    filters,
     () => {
       loadDataByOverview();
       loadDataByXpu();

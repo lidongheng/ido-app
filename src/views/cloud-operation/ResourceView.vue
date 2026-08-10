@@ -19,16 +19,16 @@
       :show-help="false"
     >
       <metric-card
-        :metrics="intelligentData"
+        :metrics="xpuData"
         :defaultExpanded="true"
         :loading="xpuLoading"
         :showRatio="true"
       >
         <div class="tree-expand">
-          <CardTree :data="intelligentChildren" :cardHeight="74"></CardTree>
+          <CardTree :data="xpuChildren" :cardHeight="74"></CardTree>
           <div class="card-list">
             <metric-card
-              v-for="item in intelligentChildren"
+              v-for="item in xpuChildren"
               :key="item.title"
               :title="item.title"
               :iconName="item.iconName"
@@ -87,7 +87,7 @@ import {
   resourceXpuData,
 } from './useResourceOverview.js';
 import {
-  formatNumToLocalStringAndFixed,
+  formatNumToLocalStringAndFiexd,
   formatterValue,
   formatRateValue,
 } from '@/utils/formatFunction';
@@ -168,17 +168,20 @@ const xpuChildren = computed(() => {
           value: getFormatterValue(resourceXpuData.value.tokenCardTotal, 10000),
           unit: '万卡',
         },
+        {
+          label: '日Token数',
+          value: getFormatterValue(
+            resourceXpuData.value.tokenCardNumD,
+            1000000000,
+          ),
+          unit: '亿',
+        },
+        {
+          label: 'Token利用率',
+          value: formatRateValue(resourceXpuData.value.tokenUseRate),
+          unit: '%',
+        },
       ],
-    },
-    {
-      label: '日Token数',
-      value: getFormatterValue(resourceXpuData.value.tokenCardNumD, 1000000000),
-      unit: '亿',
-    },
-    {
-      label: 'Token利用率',
-      value: formatRateValue(resourceXpuData.value.tokenUseRate),
-      unit: '%',
     },
     {
       title: '算力模式',

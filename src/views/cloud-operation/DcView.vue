@@ -17,22 +17,22 @@
       <div class="flex-columns">
         <DcCardItem
           title="规划"
-          data="planningData"
-          showSubBar="true"
-          barBg="#EEEEEE"
-          subBarBg="#F5F5F5"
-          loading="loading"
+          :data="planningData"
+          :showSubBar="true"
+          barBg="#eeeeee"
+          subBarBg="#f5f5f5"
+          :loading="loading"
         ></DcCardItem>
         <DcCardItem
           title="建成"
-          data="buildingData"
-          loading="loading"
+          :data="buildingData"
+          :loading="loading"
         ></DcCardItem>
         <DcCardItem
           v-if="isAllDataCentersSelected"
           title="使用"
-          data="useData"
-          loading="loading"
+          :data="useData"
+          :loading="loading"
         ></DcCardItem>
       </div>
     </card-layout>
