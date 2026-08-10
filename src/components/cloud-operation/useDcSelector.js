@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const ALL_OPTION = '全部';
 
@@ -11,7 +11,6 @@ export function useDcSelector(props, emit) {
   const pendingIds = ref([]);
   const pendingAllMode = ref(true);
   const expandedCityIds = ref(new Set(props.options.map((city) => city.id)));
-  let lockedScrollTop = 0;
 
   const allDcIds = computed(() => {
     return props.options.flatMap((city) => {
@@ -52,37 +51,13 @@ export function useDcSelector(props, emit) {
 
   watch(() => props.visible, (value) => {
     if (!value) {
-      unlockPageScroll();
       return;
     }
 
-    lockPageScroll();
     pendingIds.value = [...props.selectedIds];
     pendingAllMode.value = props.allMode;
     keyword.value = '';
   });
-
-  onBeforeUnmount(() => {
-    if (props.visible) {
-      unlockPageScroll();
-    }
-  });
-
-  function lockPageScroll() {
-    lockedScrollTop = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${lockedScrollTop}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function unlockPageScroll() {
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    window.scrollTo(0, lockedScrollTop);
-  }
 
   function getScopeIds(scope) {
     return props.options

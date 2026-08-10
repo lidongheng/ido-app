@@ -104,16 +104,22 @@ const {
 
 <style lang="less" scoped>
 .cloud-operation-page {
-  height: 100vh;
+  height: 100%;
+  min-height: 0;
   background: #fff;
   position: relative;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .page-content {
   flex: 1;
-  overflow: auto;
+  /* 旧安卓 WebView 需要明确释放 flex 子项的最小高度，才能形成真实滚动容器。 */
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .shell-status {

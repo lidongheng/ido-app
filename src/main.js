@@ -1,5 +1,7 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
+// 部分安卓内嵌 WebView 没有实现 flatMap，筛选项初始化会因此中断。
+import 'core-js/es/array/flat-map';
 import App from './App.vue'
 import router from './router'
 import bus from '@/utils/bus.js'

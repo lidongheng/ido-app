@@ -18,7 +18,7 @@ const { ready } = useAppInitialization();
 html,
 body,
 #app {
-  min-height: 100%;
+  height: 100%;
 }
 
 body {
@@ -43,7 +43,7 @@ button {
 #app {
   width: 100%;
   max-width: 500PX;
-  min-height: 100vh;
+  height: 100%;
   margin: 0 auto;
   background: #fff;
   box-shadow: 0 0 20PX rgba(24, 31, 54, 0.08);

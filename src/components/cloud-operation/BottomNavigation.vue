@@ -43,10 +43,14 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 <style lang="less" scoped>
 .bottom-navigation {
+  /* 建立独立层叠上下文，避免滚动内容在安卓 WebView 中覆盖导航点击层。 */
+  position: relative;
+  z-index: 10;
   display: grid;
   width: 100%;
   max-width: 500PX;
   height: 54px;
+  flex-shrink: 0;
   grid-template-columns: 1fr 1.2fr 1fr;
   align-items: stretch;
 }

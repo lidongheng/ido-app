@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 const ALL_OPTION = '全部';
 
@@ -10,7 +10,6 @@ export function useRegionSelector(props, emit) {
   const keyword = ref('');
   const pendingIds = ref([]);
   const pendingAllMode = ref(true);
-  let lockedScrollTop = 0;
 
   const allRegionIds = computed(() => props.options.map((option) => option.id));
   const scopeOptions = computed(() => {
@@ -34,37 +33,13 @@ export function useRegionSelector(props, emit) {
 
   watch(() => props.visible, (value) => {
     if (!value) {
-      unlockPageScroll();
       return;
     }
 
-    lockPageScroll();
     pendingIds.value = [...props.selectedIds];
     pendingAllMode.value = props.allMode;
     keyword.value = '';
   });
-
-  onBeforeUnmount(() => {
-    if (props.visible) {
-      unlockPageScroll();
-    }
-  });
-
-  function lockPageScroll() {
-    lockedScrollTop = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${lockedScrollTop}px`;
-    document.body.style.width = '100%';
-    document.body.style.overflow = 'hidden';
-  }
-
-  function unlockPageScroll() {
-    document.body.style.position = '';
-    document.body.style.top = '';
-    document.body.style.width = '';
-    document.body.style.overflow = '';
-    window.scrollTo(0, lockedScrollTop);
-  }
 
   function getScopeIds(scope) {
     return props.options
