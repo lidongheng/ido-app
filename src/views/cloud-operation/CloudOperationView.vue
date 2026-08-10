@@ -1,5 +1,5 @@
 <template>
-  <div class="cloud-operation-page">
+  <div class="cloud-operation-page" :class="{ 'with-nav-bar': hasNavBar }">
     <template v-if="true">
       <filter-bar
         :region-label="filterLabel"
@@ -63,19 +63,32 @@
       <div class="return circle" @click="showAssistant = false">
         <SvgIcon iconName="dashboard" class="icon-dashboard" />
         <span class="text">点我~</span>
-        <span class="text">返回看板</span>
+        <span class="text" style="font-size: 0.22rem;">返回看板</span>
       </div>
-    </template>  
+    </template>
+
+    <div class="box">
+      <div class="notch"></div>
+    </div>
   </div>
 </template>
 
 <script setup>
+import { onMounted, ref } from 'vue';
 import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue';
 import DcSelector from '@/components/cloud-operation/DcSelector.vue';
 import FilterBar from '@/components/cloud-operation/FilterBar.vue';
 import RegionSelector from '@/components/cloud-operation/RegionSelector.vue';
 import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
 import { useCloudOperationFilters } from './useCloudOperationFilters.js';
+
+const hasNavBar = ref(false);
+
+onMounted(() => {
+  setTimeout(() => {
+    hasNavBar.value = !!document.querySelector('.wecode-nav-bar');
+  }, 10);
+});
 
 const {
   activeRouteName,
@@ -114,6 +127,10 @@ const {
   overflow: hidden;
 }
 
+.cloud-operation-page.with-nav-bar {
+  height: calc(100% - 40PX);
+}
+
 .page-content {
   flex: 1;
   /* 旧安卓 WebView 需要明确释放 flex 子项的最小高度，才能形成真实滚动容器。 */
@@ -145,7 +162,10 @@ const {
   border: 0;
   transform-origin: 0 0;
   width: 100vw;
-  height: calc(100vh - 40px);
+  height: 100vh;
+}
+.cloud-operation-page.with-nav-bar {
+  height: calc(100vh - 40PX);
 }
 
 .return {
@@ -165,7 +185,7 @@ const {
 
   .text {
     position: absolute;
-    bottom: 4px;
+    bottom: 6px;
     font-size: 10px;
     font-weight: bold;
     color: #5651ea;

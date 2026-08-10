@@ -1,71 +1,84 @@
 <template>
-  <span
-    :class="loading ? 'skeleton-block' : 'skeleton-content'"
-    :style="loading ? skeletonStyle : null"
-  >
-    <slot v-if="!loading"></slot>
-  </span>
+  <div class="skeleton-box">
+    <div
+      v-if="loading"
+      :class="{
+        'skeleton-content': true,
+        circle: variant === 'circle'
+      }"
+      :style="styleValue"
+    ></div>
+    <slot v-else></slot>
+  </div>
 </template>
 
-<script setup>
-import { computed } from 'vue';
-
-const props = defineProps({
-  loading: {
-    type: Boolean,
-    required: true,
+<script>
+export default {
+  components: {},
+  props: {
+    loading: {
+      type: Boolean,
+      default: false
+    },
+    variant: {
+      type: String,
+      default: ""
+    },
+    width: {
+      type: Number,
+      default: 0
+    },
+    height: {
+      type: Number,
+      default: 0
+    }
   },
-  width: {
-    type: [Number, String],
-    required: true,
+  data() {
+    return {};
   },
-  height: {
-    type: [Number, String],
-    required: true,
+  computed: {
+    styleValue() {
+      let height = 0;
+      if (this.variant === 'circle') {
+        height = this.width ? `${this.width}px` : '100%';
+      } else {
+        height = this.height ? `${this.height}px` : '100%';
+      }
+      const styleValue = {
+        width: this.width ? `${this.width}px` : '100%',
+        height: height,
+      };
+      return styleValue;
+    },
   },
-});
-
-function getSize(value) {
-  if (typeof value === 'number') {
-    return `${value}px`;
-  }
-
-  return value;
-}
-
-const skeletonStyle = computed(() => {
-  return {
-    width: getSize(props.width),
-    height: getSize(props.height),
-  };
-});
+};
 </script>
 
 <style lang="less" scoped>
-.skeleton-block {
-  display: block;
-  border-radius: 4px;
-  background: linear-gradient(
-    90deg,
-    #f1f2f5 25%,
-    #e4e6eb 37%,
-    #f1f2f5 63%
-  );
-  background-size: 400% 100%;
-  animation: skeleton-loading 1.4s ease infinite;
+.skeleton-box {
+  width: inherit;
+  height: inherit;
 }
-
 .skeleton-content {
-  display: contents;
+  width: 60%;
+  height: 18px;
+  background: #f0f2f5;
+  border-radius: 4px;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+.circle {
+  border-radius: 50% !important;
 }
 
 @keyframes skeleton-loading {
   0% {
-    background-position: 100% 50%;
+    opacity: 0.5;
   }
-
+  50% {
+    opacity: 1;
+  }
   100% {
-    background-position: 0 50%;
+    opacity: 0.5;
   }
 }
 </style>

@@ -6,12 +6,20 @@
       type="button"
       @click="emit('navigate', 'resource')"
     >
-      <svg-icon class="nav-svg-icon" icon-name="resource" />
+      <svg-icon
+        class="nav-svg-icon"
+        :icon-name="`resource${active === 'resource' ? '_active' : ''}`"
+      />
       <p class="nav-item-text">资源</p>
     </button>
 
-    <button class="ai-button" type="button" aria-label="AI助手" @click="emit('ai-click')">
-      <span class="ai-symbol">∞</span>
+    <button
+      class="ai-button"
+      type="button"
+      aria-label="AI助手"
+      @click="emit('ai-click')"
+    >
+      <img class="ai-symbol" src="@/assets/cloud-operation/AIlogo.gif" alt="" />
       <span class="ai-label">AI助手</span>
     </button>
 
@@ -21,14 +29,16 @@
       type="button"
       @click="emit('navigate', 'dc')"
     >
-      <van-icon name="wap-home-o" />
+      <SvgIcon
+        class="nav-svg-icon"
+        :icon-name="`dc${active === 'dc' ? '_active' : ''}`"
+      />
       <p class="nav-item-text">DC</p>
     </button>
   </nav>
 </template>
 
 <script setup>
-import '@/icons/resource.svg'
 import SvgIcon from './SvgIcon.vue'
 
 defineProps({
@@ -48,7 +58,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
   z-index: 10;
   display: grid;
   width: 100%;
-  max-width: 500PX;
+  max-width: 500px;
   height: 54px;
   flex-shrink: 0;
   grid-template-columns: 1fr 1.2fr 1fr;
@@ -61,13 +71,14 @@ const emit = defineEmits(['navigate', 'ai-click'])
   right: 0;
   bottom: 0;
   left: 0;
-  height: 76px;
+  height: 66px;
   background-image: url('@/assets/svg/bottom-navigation-bg.svg');
   background-repeat: no-repeat;
   background-position: center bottom;
-  background-size: 100% 100%;
+  background-size: 105% 104%;
   content: '';
   pointer-events: none;
+  transform: translateY(6%);
 }
 
 .nav-item,
@@ -106,10 +117,8 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .nav-item .nav-svg-icon {
-  width: 23px;
-  min-width: 23px;
-  height: 23px;
-  min-height: 23px;
+  width: 18.51px;
+  height: 20px;
 }
 
 .nav-item.active {
@@ -117,33 +126,45 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .ai-button {
-  position: absolute;
-  right: auto;
-  bottom: 3px;
-  left: 50%;
-  width: 66px;
-  height: 66px;
-  flex-direction: column;
-  align-self: end;
-  border: 3px solid #eeefff;
-  border-radius: 50%;
-  color: #4e55cc;
-  background: #fff;
-  box-shadow: 0 -2px 9px rgba(76, 79, 191, .22);
-  transform: translateX(-50%);
+    position: absolute;
+    right: auto;
+    bottom: 3px;
+    left: 50%;
+    width: 66px;
+    height: 66px;
+    flex-direction: column;
+    justify-content: end;
+    border: 3px solid transparent;
+    border-radius: 50%;
+    color: #4e55cc;
+    background: linear-gradient(#fff, #fff) padding-box,
+                linear-gradient(90deg, #5e7ce0, #7693f5, #a78bfa, #7693f5, #5e7ce0)
+                border-box;
+    background-size: 100% 100%, 300% 100%;
+    animation: border-flow 2s linear infinite;
+    box-shadow: 0 -2px 9px rgba(76, 79, 191, 0.22);
+    transform: translate(-54%, -24%);
+    padding-bottom: 4px;
 }
 
 .ai-symbol {
-  height: 28px;
-  font-size: 38px;
-  font-weight: 500;
-  line-height: 27px;
-  transform: rotate(-12deg);
+    width: 1.4rem;
+    position: absolute;
+    top: 6%;
 }
 
 .ai-label {
-  margin-top: 1px;
-  font-size: 10px;
-  font-weight: 600;
+    margin-top: 0.03rem;
+    font-size: 0.3rem;
+    font-weight: 600;
+}
+
+@keyframes border-flow {
+    0% {
+        background-position: 0 0, 0 50%;
+    }
+    100% {
+        background-position: 0 0, 100% 50%;
+    }
 }
 </style>

@@ -6,6 +6,7 @@ import App from './App.vue'
 import router from './router'
 import bus from '@/utils/bus.js'
 import '@/common/css/common.less';
+import '@/common/css/index.less';
 
 // 一次性注册 src/icons 目录下的全部 SVG symbol。
 function loadSvgIcons() {
