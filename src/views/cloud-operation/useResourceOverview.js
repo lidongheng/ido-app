@@ -23,6 +23,8 @@ export function useResourceOverview(filters) {
       if (res.status === 200) {
         resourceOverviewData.value = res.data ?? {};
       }
+    } catch (error) {
+      console.error('资源概览接口请求失败:', error);
     } finally {
       overviewLoading.value = false;
     }
@@ -36,6 +38,8 @@ export function useResourceOverview(filters) {
       if (res.status === 200) {
         resourceXpuData.value = res.data ?? {};
       }
+    } catch (error) {
+      console.error('XPU 概览接口请求失败:', error);
     } finally {
       xpuLoading.value = false;
     }
@@ -49,6 +53,8 @@ export function useResourceOverview(filters) {
       if (res.status === 200) {
         resourceGeneralData.value = res.data ?? {};
       }
+    } catch (error) {
+      console.error('通算概览接口请求失败:', error);
     } finally {
       generalLoading.value = false;
     }

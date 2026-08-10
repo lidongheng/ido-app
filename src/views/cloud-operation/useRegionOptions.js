@@ -51,6 +51,7 @@ export function useRegionOptions() {
       selectedRegionIds.value = [];
       regionError.value = 'Region 筛选项加载失败';
     } catch (error) {
+      console.error('Region 筛选接口请求失败:', error);
       regionOptions.value = null;
       selectedRegionIds.value = [];
       regionError.value = 'Region 筛选项加载失败';

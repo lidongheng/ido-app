@@ -13,6 +13,8 @@ export function useDcOverview(filters) {
       if (res.status === 200) {
         dcData.value = res.data ?? {};
       }
+    } catch (error) {
+      console.error('DC 概览接口请求失败:', error);
     } finally {
       loading.value = false;
     }

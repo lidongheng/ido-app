@@ -1,12 +1,10 @@
 const MOCK_DELAY = 280;
 
-function resolveMockResponse(data) {
-  return new Promise((resolve) => {
+function resolveMockResponse() {
+  // 故障模拟：业务 Mock 统一 reject，用于验证页面的 catch 处理。
+  return new Promise((_, reject) => {
     setTimeout(() => {
-      resolve({
-        status: 200,
-        data,
-      });
+      reject(new Error('模拟业务接口请求失败'));
     }, MOCK_DELAY);
   });
 }

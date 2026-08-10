@@ -70,6 +70,7 @@ export function useDcFilterOptions() {
       selectedDcIds.value = [];
       dcOptionsError.value = 'DC 筛选项加载失败';
     } catch (error) {
+      console.error('DC 筛选接口请求失败:', error);
       dcOptions.value = null;
       selectedDcIds.value = [];
       dcOptionsError.value = 'DC 筛选项加载失败';

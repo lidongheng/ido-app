@@ -64,9 +64,7 @@
         <span class="text">点我~</span>
         <span class="text">返回看板</span>
       </div>
-    </template>
-    
-    divdiv
+    </template>  
   </div>
 </template>
 

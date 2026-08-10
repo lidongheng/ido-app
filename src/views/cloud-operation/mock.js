@@ -125,10 +125,13 @@ const DC_FILTER_OPTIONS = [
   }
 ]
 
-function resolveAfter(response) {
-  return new Promise((resolve) => {
-    setTimeout(() => resolve(response), 280)
-  })
+function resolveAfter() {
+  // 故障模拟：业务 Mock 统一 reject，鉴权 Mock 不经过这里。
+  return new Promise((_, reject) => {
+    setTimeout(() => {
+      reject(new Error('模拟业务接口请求失败'));
+    }, 280);
+  });
 }
 
 function getUniqueValues(values) {
