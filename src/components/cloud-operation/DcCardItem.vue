@@ -49,7 +49,7 @@
             v-if="item.subValue"
           >
             <span class="bar-name" v-if="showSubBar">{{ item.subName }}</span>
-            <span class="bar-value" v-if="showSubBar">{{ item.subValue }}</span>
+            <span class="bar-value" v-if="showSubBar">{{ formatValueText(item.subValue) }}</span>
             <span class="bar-unit" v-if="showSubBar">{{ item.unit }}</span>
           </div>
         </div>
@@ -88,6 +88,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  failed: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const filterData = computed(() => {
@@ -95,6 +99,10 @@ const filterData = computed(() => {
 });
 
 const formatValueText = (value) => {
+  if (props.failed) {
+    return '--';
+  }
+
   if (typeof value === 'number') {
     return value.toLocaleString('zh-CN');
   }

@@ -1,7 +1,7 @@
 <template>
   <header class="filter-bar">
     <div class="filter-left">
-      <strong class="global-label">全球</strong>
+      <strong v-if="regionLabel === '全部'" class="global-label">全球</strong>
       <button class="filter-button date-button" type="button" @click="openDatePicker">
         <span>时间：{{ selectedDate }}</span>
         <van-icon name="arrow-down" />
