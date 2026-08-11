@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 const ALL_OPTION = '全部';
 
@@ -10,6 +10,7 @@ export function useRegionSelector(props, emit) {
   const keyword = ref('');
   const pendingIds = ref([]);
   const pendingAllMode = ref(true);
+  const regionListRef = ref(null);
 
   const allRegionIds = computed(() => props.options.map((option) => option.id));
   const scopeOptions = computed(() => {
@@ -39,7 +40,43 @@ export function useRegionSelector(props, emit) {
     pendingIds.value = [...props.selectedIds];
     pendingAllMode.value = props.allMode;
     keyword.value = '';
+    scrollToFirstSelected(pendingIds.value);
   });
+
+  function scrollToFirstSelected(ids) {
+    const idSet = new Set(ids);
+    const firstSelectedOption = visibleOptions.value.find((option) => {
+      return idSet.has(option.id);
+    });
+
+    if (!firstSelectedOption) {
+      return;
+    }
+
+    nextTick(() => {
+      const container = regionListRef.value;
+      if (!container) {
+        return;
+      }
+
+      const target = [...container.querySelectorAll('[data-selector-id]')].find((element) => {
+        return element.dataset.selectorId === firstSelectedOption.id;
+      });
+      if (!target) {
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const targetVisible = targetRect.top >= containerRect.top - 1
+        && targetRect.bottom <= containerRect.bottom + 1;
+      if (targetVisible) {
+        return;
+      }
+
+      container.scrollTop += targetRect.top - containerRect.top;
+    });
+  }
 
   function getScopeIds(scope) {
     return props.options
@@ -64,8 +101,9 @@ export function useRegionSelector(props, emit) {
 
   function toggleBranch(ids) {
     const selectedIdSet = new Set(pendingIds.value);
+    const selecting = !isBranchSelected(ids);
 
-    if (isBranchSelected(ids)) {
+    if (!selecting) {
       ids.forEach((id) => selectedIdSet.delete(id));
     } else {
       ids.forEach((id) => selectedIdSet.add(id));
@@ -73,6 +111,7 @@ export function useRegionSelector(props, emit) {
 
     pendingIds.value = allRegionIds.value.filter((id) => selectedIdSet.has(id));
     pendingAllMode.value = false;
+    return selecting;
   }
 
   function isScopeSelected(scope) {
@@ -101,10 +140,14 @@ export function useRegionSelector(props, emit) {
 
       pendingIds.value = [...allRegionIds.value];
       pendingAllMode.value = true;
+      scrollToFirstSelected(allRegionIds.value);
       return;
     }
 
-    toggleBranch(getScopeIds(scope));
+    const scopeIds = getScopeIds(scope);
+    if (toggleBranch(scopeIds)) {
+      scrollToFirstSelected(scopeIds);
+    }
   }
 
   function isAreaSelected(area) {
@@ -116,7 +159,10 @@ export function useRegionSelector(props, emit) {
   }
 
   function toggleArea(area) {
-    toggleBranch(getAreaIds(area));
+    const areaIds = getAreaIds(area);
+    if (toggleBranch(areaIds)) {
+      scrollToFirstSelected(areaIds);
+    }
   }
 
   function isRegionSelected(option) {
@@ -160,6 +206,7 @@ export function useRegionSelector(props, emit) {
     isScopeSelected,
     keyword,
     pendingIds,
+    regionListRef,
     scopeOptions,
     toggleArea,
     toggleRegion,

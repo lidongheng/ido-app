@@ -44,7 +44,7 @@
         </div>
 
         <div class="city-list-title">城市</div>
-        <div class="city-list">
+        <div ref="cityListRef" class="city-list">
           <div
             v-if="visibleTree.length > 0"
             class="dc-tree"
@@ -80,6 +80,7 @@
                 <div
                   v-for="dataCenter in city.visibleChildren"
                   :key="dataCenter.id"
+                  :data-selector-id="dataCenter.id"
                   class="tree-option child-option"
                 >
                   <el-checkbox
@@ -137,6 +138,7 @@ const emit = defineEmits(['cancel', 'confirm']);
 const {
   areaOptions,
   cancel,
+  cityListRef,
   confirm,
   isAreaIndeterminate,
   isAreaSelected,

@@ -44,10 +44,11 @@
         </div>
 
         <div class="region-list-title">Region</div>
-        <div class="region-list">
+        <div ref="regionListRef" class="region-list">
           <van-checkbox
             v-for="option in visibleOptions"
             :key="option.id"
+            :data-selector-id="option.id"
             :model-value="isRegionSelected(option)"
             shape="square"
             class="region-row"
@@ -108,6 +109,7 @@ const {
   isScopeSelected,
   keyword,
   pendingIds,
+  regionListRef,
   scopeOptions,
   toggleArea,
   toggleRegion,

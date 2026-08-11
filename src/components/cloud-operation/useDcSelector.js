@@ -1,4 +1,4 @@
-import { computed, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 
 const ALL_OPTION = '全部';
 
@@ -11,6 +11,7 @@ export function useDcSelector(props, emit) {
   const pendingIds = ref([]);
   const pendingAllMode = ref(true);
   const expandedCityIds = ref(new Set(props.options.map((city) => city.id)));
+  const cityListRef = ref(null);
 
   const allDcIds = computed(() => {
     return props.options.flatMap((city) => {
@@ -57,7 +58,57 @@ export function useDcSelector(props, emit) {
     pendingIds.value = [...props.selectedIds];
     pendingAllMode.value = props.allMode;
     keyword.value = '';
+    scrollToFirstSelected(pendingIds.value);
   });
+
+  function scrollToFirstSelected(ids) {
+    const idSet = new Set(ids);
+    let targetCity = null;
+    let targetDataCenter = null;
+
+    visibleTree.value.some((city) => {
+      const dataCenter = city.visibleChildren.find((child) => idSet.has(child.id));
+      if (!dataCenter) {
+        return false;
+      }
+
+      targetCity = city;
+      targetDataCenter = dataCenter;
+      return true;
+    });
+
+    if (!targetDataCenter) {
+      return;
+    }
+
+    if (!expandedCityIds.value.has(targetCity.id)) {
+      expandedCityIds.value = new Set([...expandedCityIds.value, targetCity.id]);
+    }
+
+    nextTick(() => {
+      const container = cityListRef.value;
+      if (!container) {
+        return;
+      }
+
+      const target = [...container.querySelectorAll('[data-selector-id]')].find((element) => {
+        return element.dataset.selectorId === targetDataCenter.id;
+      });
+      if (!target) {
+        return;
+      }
+
+      const containerRect = container.getBoundingClientRect();
+      const targetRect = target.getBoundingClientRect();
+      const targetVisible = targetRect.top >= containerRect.top - 1
+        && targetRect.bottom <= containerRect.bottom + 1;
+      if (targetVisible) {
+        return;
+      }
+
+      container.scrollTop += targetRect.top - containerRect.top;
+    });
+  }
 
   function getScopeIds(scope) {
     return props.options
@@ -82,8 +133,9 @@ export function useDcSelector(props, emit) {
 
   function toggleBranch(ids) {
     const selectedIdSet = new Set(pendingIds.value);
+    const selecting = !isBranchSelected(ids);
 
-    if (isBranchSelected(ids)) {
+    if (!selecting) {
       ids.forEach((id) => selectedIdSet.delete(id));
     } else {
       ids.forEach((id) => selectedIdSet.add(id));
@@ -91,6 +143,7 @@ export function useDcSelector(props, emit) {
 
     pendingIds.value = allDcIds.value.filter((id) => selectedIdSet.has(id));
     pendingAllMode.value = false;
+    return selecting;
   }
 
   function isScopeSelected(scope) {
@@ -119,10 +172,14 @@ export function useDcSelector(props, emit) {
 
       pendingIds.value = [...allDcIds.value];
       pendingAllMode.value = true;
+      scrollToFirstSelected(allDcIds.value);
       return;
     }
 
-    toggleBranch(getScopeIds(scope));
+    const scopeIds = getScopeIds(scope);
+    if (toggleBranch(scopeIds)) {
+      scrollToFirstSelected(scopeIds);
+    }
   }
 
   function isAreaSelected(area) {
@@ -134,7 +191,10 @@ export function useDcSelector(props, emit) {
   }
 
   function toggleArea(area) {
-    toggleBranch(getAreaIds(area));
+    const areaIds = getAreaIds(area);
+    if (toggleBranch(areaIds)) {
+      scrollToFirstSelected(areaIds);
+    }
   }
 
   function isCitySelected(city) {
@@ -211,6 +271,7 @@ export function useDcSelector(props, emit) {
   return {
     areaOptions,
     cancel,
+    cityListRef,
     confirm,
     isAreaIndeterminate,
     isAreaSelected,
