@@ -13,7 +13,10 @@
       :disabled="regionDisabled"
       @click="emit('open-region')"
     >
-      <span>{{ regionLabel }}</span>
+      <span class="region-label">
+        <span class="region-name">{{ regionLabel }}</span>
+        <span v-if="regionCountLabel" class="region-count">{{ regionCountLabel }}</span>
+      </span>
       <van-icon :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
     </button>
 
@@ -47,6 +50,10 @@ function formatDate(value) {
 }
 
 defineProps({
+  regionCountLabel: {
+    type: String,
+    required: true
+  },
   regionLabel: {
     type: String,
     required: true
@@ -120,10 +127,24 @@ function confirmDate(value) {
 }
 
 .date-button span,
-.region-button span {
+.region-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.region-label {
+  display: flex;
+  min-width: 0;
+}
+
+.region-name {
+  min-width: 0;
+}
+
+.region-count,
+.region-button .van-icon {
+  flex-shrink: 0;
 }
 
 .region-button {

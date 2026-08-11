@@ -2,6 +2,7 @@
   <div class="cloud-operation-page" :class="{ 'with-nav-bar': hasNavBar }">
     <template v-if="true">
       <filter-bar
+        :region-count-label="filterCountLabel"
         :region-label="filterLabel"
         :region-open="showSelector"
         :region-disabled="filterDisabled"
@@ -98,6 +99,7 @@ const {
   confirmRegionSelection,
   dcAllMode,
   dcOptions,
+  filterCountLabel,
   filterDisabled,
   filterLabel,
   filters,

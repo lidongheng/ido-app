@@ -79,6 +79,21 @@ export function useCloudOperationFilters() {
 
     return getRegionLabel();
   });
+  const filterCountLabel = computed(() => {
+    if (loadingOptions.value || optionsError.value) {
+      return '';
+    }
+
+    if (isDcRoute.value) {
+      return dcAllMode.value || selectedDcIds.value.length <= 1
+        ? ''
+        : `+${selectedDcIds.value.length - 1}`;
+    }
+
+    return regionAllMode.value || selectedRegionIds.value.length <= 1
+      ? ''
+      : `+${selectedRegionIds.value.length - 1}`;
+  });
 
   function getRegionLabel() {
     if (regionAllMode.value) {
@@ -89,11 +104,7 @@ export function useCloudOperationFilters() {
       return region.id === selectedRegionIds.value[0];
     });
 
-    if (selectedRegionIds.value.length === 1) {
-      return firstRegion.name;
-    }
-
-    return `${firstRegion.name} +${selectedRegionIds.value.length - 1}`;
+    return firstRegion.name;
   }
 
   function getDcLabel() {
@@ -106,11 +117,7 @@ export function useCloudOperationFilters() {
       return dataCenter.id === selectedDcIds.value[0];
     });
 
-    if (selectedDcIds.value.length === 1) {
-      return firstDataCenter.name;
-    }
-
-    return `${firstDataCenter.name} +${selectedDcIds.value.length - 1}`;
+    return firstDataCenter.name;
   }
 
   function getRegionFilterParams() {
@@ -193,6 +200,7 @@ export function useCloudOperationFilters() {
   return {
     activeRouteName,
     activeOptions,
+    filterCountLabel,
     filterDisabled,
     filterLabel,
     filters,
