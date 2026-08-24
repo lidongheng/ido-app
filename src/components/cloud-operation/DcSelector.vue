@@ -45,6 +45,15 @@
 
         <div class="city-list-title">城市</div>
         <div ref="cityListRef" class="city-list">
+          <div class="tree-option all-option" @click="toggleAll">
+            <el-checkbox
+              :model-value="isAllSelected()"
+              @click.stop="toggleAll"
+            >
+              全部
+            </el-checkbox>
+          </div>
+
           <div
             v-if="visibleTree.length > 0"
             class="dc-tree"
@@ -140,6 +149,7 @@ const {
   cancel,
   cityListRef,
   confirm,
+  isAllSelected,
   isAreaIndeterminate,
   isAreaSelected,
   isCityExpanded,
@@ -152,6 +162,7 @@ const {
   pendingIds,
   scopeOptions,
   toggleArea,
+  toggleAll,
   toggleCityExpanded,
   toggleItem,
   toggleScope,
@@ -214,15 +225,8 @@ const {
 
 .chip-list {
   display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 5px;
-}
-
-.scope-chips {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.area-chips {
-  grid-template-columns: repeat(5, 1fr);
 }
 
 .filter-chip {

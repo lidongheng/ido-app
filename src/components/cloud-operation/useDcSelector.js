@@ -27,7 +27,7 @@ export function useDcSelector(props, emit) {
   });
   const areaOptions = computed(() => {
     const areas = props.options.map((city) => city.area);
-    return getUniqueValues(areas);
+    return [ALL_OPTION, ...getUniqueValues(areas)];
   });
   const visibleTree = computed(() => {
     const normalizedKeyword = keyword.value.trim();
@@ -164,15 +164,7 @@ export function useDcSelector(props, emit) {
 
   function toggleScope(scope) {
     if (scope === ALL_OPTION) {
-      if (pendingAllMode.value) {
-        pendingIds.value = [];
-        pendingAllMode.value = false;
-        return;
-      }
-
-      pendingIds.value = [...allDcIds.value];
-      pendingAllMode.value = true;
-      scrollToFirstSelected(allDcIds.value);
+      toggleAll();
       return;
     }
 
@@ -183,18 +175,47 @@ export function useDcSelector(props, emit) {
   }
 
   function isAreaSelected(area) {
+    if (area === ALL_OPTION) {
+      return pendingAllMode.value;
+    }
+
     return isBranchSelected(getAreaIds(area));
   }
 
   function isAreaIndeterminate(area) {
+    if (area === ALL_OPTION) {
+      return false;
+    }
+
     return isBranchIndeterminate(getAreaIds(area));
   }
 
   function toggleArea(area) {
+    if (area === ALL_OPTION) {
+      toggleAll();
+      return;
+    }
+
     const areaIds = getAreaIds(area);
     if (toggleBranch(areaIds)) {
       scrollToFirstSelected(areaIds);
     }
+  }
+
+  function isAllSelected() {
+    return pendingAllMode.value;
+  }
+
+  function toggleAll() {
+    if (pendingAllMode.value) {
+      pendingIds.value = [];
+      pendingAllMode.value = false;
+      return;
+    }
+
+    pendingIds.value = [...allDcIds.value];
+    pendingAllMode.value = true;
+    scrollToFirstSelected(allDcIds.value);
   }
 
   function isCitySelected(city) {
@@ -273,6 +294,7 @@ export function useDcSelector(props, emit) {
     cancel,
     cityListRef,
     confirm,
+    isAllSelected,
     isAreaIndeterminate,
     isAreaSelected,
     isCityExpanded,
@@ -285,6 +307,7 @@ export function useDcSelector(props, emit) {
     pendingIds,
     scopeOptions,
     toggleArea,
+    toggleAll,
     toggleCityExpanded,
     toggleItem,
     toggleScope,

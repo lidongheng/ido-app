@@ -46,6 +46,15 @@
         <div class="region-list-title">Region</div>
         <div ref="regionListRef" class="region-list">
           <van-checkbox
+            :model-value="isAllSelected()"
+            shape="square"
+            class="region-row"
+            @click="toggleAll"
+          >
+            全部
+          </van-checkbox>
+
+          <van-checkbox
             v-for="option in visibleOptions"
             :key="option.id"
             :data-selector-id="option.id"
@@ -102,6 +111,7 @@ const {
   areaOptions,
   cancel,
   confirm,
+  isAllSelected,
   isAreaIndeterminate,
   isAreaSelected,
   isRegionSelected,
@@ -112,6 +122,7 @@ const {
   regionListRef,
   scopeOptions,
   toggleArea,
+  toggleAll,
   toggleRegion,
   toggleScope,
   visibleOptions
@@ -173,15 +184,8 @@ const {
 
 .chip-list {
   display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 5px;
-}
-
-.region-chips {
-  grid-template-columns: repeat(3, 1fr);
-}
-
-.area-chips {
-  grid-template-columns: repeat(5, 1fr);
 }
 
 .filter-chip {
