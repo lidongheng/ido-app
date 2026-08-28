@@ -9,6 +9,7 @@
           <div class="label-group row-center justify-content-center mt0 mb0">
             <span class="blue-line" v-if="showBlueLine"></span>
             <p class="label-text black small bold card-title">{{ title }}</p>
+            <p class="sub-title label-text black small bold card-title" v-if="subTitle">{{ subTitle }}</p>
             <van-tag plain type="warning" class="kpi-icon mini ml6" v-if="showKpi">KPI</van-tag>
             <p class="help-icon ml6" v-if="showHelp" @click.stop="onShowHelp"></p>
           </div>
@@ -37,6 +38,7 @@ export default {
       default: true
     },
     title: String,
+    subTitle: String,
     showKpi: {
       type: Boolean,
       default: false
@@ -119,6 +121,10 @@ export default {
         height: .37rem;
         background: url(../../assets/svg/question.svg) no-repeat;
       }
+    }
+    .sub-title {
+      font-size: 12px;
+      margin-left: 4px;
     }
   }
 }

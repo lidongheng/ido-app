@@ -41,6 +41,15 @@
         <span class="ratio-unit">{{ metric.unit }}</span>
       </div>
     </skeleton>
+    <div class="list" v-if="showList">
+      <div class="list-item" v-for="item in metric.list" :key="item.label">
+        <div class="ratio-label">{{ item.label }}</div>
+        <div class="item-right">
+          <div class="item-value">{{ item.value }}</div>
+          <div class="item-unit">{{ metric.unit }}</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -74,6 +83,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showList: {
+    type: Boolean,
+    default: false,
+  }
 });
 
 const formattedValue = computed(() => {
@@ -116,23 +129,26 @@ const ratioArrow = computed(() => {
 
 const textClass = computed(() => {
   if (props.failed) {
-    return '';
+    return "";
   }
 
   if (['**', '--'].includes(props.metric.ratio)) {
-    return '';
+    return "";
   }
-  if (!props.metric.ratio) {
-    const direction = Number(props.metric.ratio) >= 0 ? 'up' : 'down';
-    let color = "";
-    if (props.upGreen) {
-      color = direction === 'up' ? 'green' : 'red';
-    } else {
-      color = direction === 'up' ? 'red' : 'green';
-    }
-    return color;
+
+  let direction = Number(props.metric.ratio) >= 0 ? 'up' : 'down';
+  if (props.metric.ratio === 0) {
+    direction = props.upGreen ? 'up' : 'down';
   }
-  return 'green';
+
+  let color = 'green';
+  if (props.upGreen) {
+    color = direction === 'up' ? 'green' : 'red';
+  } else {
+    color = direction === 'up' ? 'red' : 'green';
+  }
+
+  return color;
 });
 </script>
 
@@ -284,5 +300,44 @@ const textClass = computed(() => {
 }
 .compact .metric-ratio {
   display: none;
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.list-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-right: 20px;
+}
+
+.item-right {
+  display: flex;
+  gap: 4px;
+}
+
+.item-value {
+  color: rgba(51, 51, 107, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Regular;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 13px;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.item-unit {
+  color: rgba(51, 51, 107, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Regular;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 13px;
+  letter-spacing: 0px;
+  text-align: left;
 }
 </style>

@@ -8,26 +8,28 @@
             :icon-name="iconName"
             class="svg-icon-class"
           ></SvgIcon>
-          <span class="card-title">{{ title }}</span>
-        </span>
-        <span @click="toggle" v-if="expandable" class="expand-label">
-          {{ expanded ? '收起' : '展开' }}
-          <van-icon :name="expanded ? 'arrow-up' : 'arrow-down'" />
-        </span>
-      </div>
-
-      <div class="card-body">
-        <template v-for="(metric, index) in metrics" :key="metric.label">
-          <metric-item
-            class="metric-item"
-            :metric="metric"
-            :compact="compact"
-            :loading="loading"
-            :failed="failed"
-            :showRatio="showRatio"
-          />
-          <div class="line" v-if="index !== metrics.length - 1"></div>
-        </template>
+        <span class="card-title">{{ title }}</span>
+      </span>
+      <span @click="toggle" v-if="expandable" class="expand-label">
+        {{ expanded ? '收起' : '展开' }}
+        <van-icon :name="expanded ? 'arrow-up' : 'arrow-down'" />
+      </span>
+    </div>
+    <div class="card-body">
+      <template v-for="(metric, index) in metrics" :key="metric.label">
+        <metric-item
+          :class="['metric-item', metric.isChild ? 'child-metric-item' : '']"
+          :metric="metric"
+          :compact="compact"
+          :loading="loading"
+          :failed="failed"
+          :showRatio="showRatio || metric.showRatio"
+          :showList="metric.showList"
+          :upGreen="metric.upGreen"
+        />
+        <SvgIcon v-if="metric.hasChild" icon-name="separation-icon" class="separation-icon-class" />
+        <div class="line" v-if="index !== metrics.length - 1 && !metric.hasChild"></div>
+      </template>
       </div>
     </div>
     <div v-if="expanded && $slots.default" class="card-details">
@@ -96,17 +98,19 @@ function toggle() {
   height: 14px;
   width: 14px;
 }
-
+.separation-icon-class {
+  height: 65px;
+  width: 6px;
+  align-self: flex-end;
+}
 .metric-card {
   background: #fff;
 }
-
 .metric-card-box {
   border: 1.6px solid rgba(229, 237, 252, 1);
   border-radius: 8px;
   overflow: hidden;
 }
-
 .card-header {
   display: flex;
   width: 100%;
@@ -118,11 +122,9 @@ function toggle() {
   background: rgba(205, 216, 255, 1);
   text-align: left;
 }
-
 .card-header.expandable {
   cursor: pointer;
 }
-
 .header-left {
   display: flex;
   gap: 2px;
@@ -162,22 +164,23 @@ function toggle() {
   gap: 8px;
   // justify-content: space-between;
 }
-
 .metric-item {
   flex: 1;
 }
-
+.child-metric-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
 .line {
   width: 1px;
   border-right: 1px dashed #e5e6ee;
   margin: 4px 0px;
 }
-
 .compact .card-body {
   padding-top: 0.24rem;
   padding-bottom: 0.27rem;
 }
-
 .compact .card-header {
   background: rgba(229, 237, 252, 1);
 }
