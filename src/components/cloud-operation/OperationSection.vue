@@ -21,23 +21,23 @@ defineProps({
 
 <style lang="less" scoped>
 .operation-section {
-  margin-bottom: 24px;
+  margin-bottom: 26px;
 }
 
 .section-title {
   display: flex;
   align-items: center;
   gap: 7px;
-  margin-bottom: 10px;
+  margin-bottom: 11px;
   color: #251c4e;
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 24px;
 }
 
 .section-mark {
   width: 4px;
-  height: 22px;
+  height: 18px;
   border-radius: 3px;
   background: #536ee7;
 }

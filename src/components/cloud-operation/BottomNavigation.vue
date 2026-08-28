@@ -1,19 +1,6 @@
 <template>
   <nav class="bottom-navigation" aria-label="页面导航">
     <button
-      class="nav-item common-compute-item"
-      :class="{ active: active === 'commonCompute' }"
-      type="button"
-      @click="emit('navigate', 'commonCompute')"
-    >
-      <svg-icon
-        class="nav-svg-icon"
-        icon-name="general-icon-1"
-      />
-      <p class="nav-item-text">通算</p>
-    </button>
-
-    <button
       class="nav-item ai-compute-item"
       :class="{ active: active === 'aiCompute' }"
       type="button"
@@ -27,13 +14,26 @@
     </button>
 
     <button
+      class="nav-item common-compute-item"
+      :class="{ active: active === 'commonCompute' }"
+      type="button"
+      @click="emit('navigate', 'commonCompute')"
+    >
+      <svg-icon
+        class="nav-svg-icon"
+        icon-name="general-icon-1"
+      />
+      <p class="nav-item-text">通算</p>
+    </button>
+
+    <button
       class="ai-button"
       type="button"
       aria-label="AI助手"
       @click="emit('ai-click')"
     >
       <img class="ai-symbol" src="@/assets/cloud-operation/AIlogo.gif" alt="" />
-      <span class="ai-label">AI助手</span>
+      <span class="ai-label">运营Agent</span>
     </button>
 
     <button
@@ -131,11 +131,11 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 /* AI 按钮脱离 Grid 后，明确固定左右导航项所在列。 */
 .common-compute-item {
-  grid-column: 1;
+  grid-column: 2;
 }
 
 .ai-compute-item {
-  grid-column: 2;
+  grid-column: 1;
 }
 
 .region-item {
@@ -189,8 +189,9 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 .ai-label {
     margin-top: 0.03rem;
-    font-size: 0.3rem;
+    font-size: 0.26rem;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 @keyframes border-flow {

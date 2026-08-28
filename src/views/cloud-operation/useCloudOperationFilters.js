@@ -38,7 +38,13 @@ export function useCloudOperationFilters() {
   const { dcOptions, loadingDcOptions, dcOptionsError } = useDcFilterOptions();
 
   const isDcRoute = computed(() => route.name === 'dc');
-  const activeRouteName = computed(() => route.name);
+  const activeRouteName = computed(() => {
+    if (route.name === 'RegionDetail') {
+      return 'Region';
+    }
+
+    return route.name;
+  });
   const activeOptions = computed(() => {
     return isDcRoute.value ? dcOptions.value : regionOptions.value;
   });

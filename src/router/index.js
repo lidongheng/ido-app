@@ -38,6 +38,15 @@ const routes = [
         }
       },
       {
+        path: 'Region/:regionId',
+        name: 'RegionDetail',
+        component: () => import('../views/cloud-operation/RegionDetailView.vue'),
+        meta: {
+          keepAlive: false,
+          title: 'Region'
+        }
+      },
+      {
         path: 'resource',
         name: 'resource',
         component: () => import('../views/cloud-operation/ResourceView.vue'),

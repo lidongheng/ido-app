@@ -1,7 +1,6 @@
 <template>
   <header class="filter-bar">
     <div class="filter-left">
-      <strong v-if="regionLabel === '全部'" class="global-label">全球</strong>
       <button class="filter-button date-button" type="button" @click="openDatePicker">
         <span>时间：{{ selectedDate }}</span>
         <van-icon name="arrow-down" />
@@ -14,7 +13,7 @@
       @click="emit('open-region')"
     >
       <span class="region-label">
-        <span class="region-name">{{ regionLabel }}</span>
+        <span class="region-name">{{ displayRegionLabel }}</span>
         <span v-if="regionCountLabel" class="region-count">{{ regionCountLabel }}</span>
       </span>
       <van-icon :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
@@ -33,7 +32,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useCurrentDate } from '@/stores/useCurrentDate.js'
 
@@ -49,7 +48,7 @@ function formatDate(value) {
   return `${year}-${month}-${day}`
 }
 
-defineProps({
+const props = defineProps({
   regionCountLabel: {
     type: String,
     required: true
@@ -66,13 +65,20 @@ defineProps({
     type: Boolean,
     required: true
   }
-})
+});
 
 const emit = defineEmits(['open-region'])
 const currentDate = useCurrentDate()
 const { date: selectedDate } = storeToRefs(currentDate)
 const showDatePicker = ref(false)
 const pendingDate = ref(parseDate(selectedDate.value))
+const displayRegionLabel = computed(() => {
+  if (props.regionLabel === '全部') {
+    return '全球';
+  }
+
+  return props.regionLabel;
+});
 
 function openDatePicker() {
   pendingDate.value = parseDate(selectedDate.value)
@@ -106,13 +112,6 @@ function confirmDate(value) {
   display: flex;
   min-width: 0;
   align-items: center;
-}
-
-.global-label {
-  flex-shrink: 0;
-  margin-right: 10px;
-  color: #241b4a;
-  font-size: 15px;
 }
 
 .filter-button {
