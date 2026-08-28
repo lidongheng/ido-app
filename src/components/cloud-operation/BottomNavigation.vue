@@ -1,16 +1,29 @@
 <template>
   <nav class="bottom-navigation" aria-label="页面导航">
     <button
-      class="nav-item"
-      :class="{ active: active === 'resource' }"
+      class="nav-item common-compute-item"
+      :class="{ active: active === 'commonCompute' }"
       type="button"
-      @click="emit('navigate', 'resource')"
+      @click="emit('navigate', 'commonCompute')"
     >
       <svg-icon
         class="nav-svg-icon"
-        :icon-name="`resource${active === 'resource' ? '_active' : ''}`"
+        icon-name="general-icon-1"
       />
-      <p class="nav-item-text">资源</p>
+      <p class="nav-item-text">通算</p>
+    </button>
+
+    <button
+      class="nav-item ai-compute-item"
+      :class="{ active: active === 'aiCompute' }"
+      type="button"
+      @click="emit('navigate', 'aiCompute')"
+    >
+      <svg-icon
+        class="nav-svg-icon"
+        icon-name="ai-icon-1"
+      />
+      <p class="nav-item-text">智算</p>
     </button>
 
     <button
@@ -24,7 +37,20 @@
     </button>
 
     <button
-      class="nav-item"
+      class="nav-item region-item"
+      :class="{ active: active === 'Region' }"
+      type="button"
+      @click="emit('navigate', 'Region')"
+    >
+      <SvgIcon
+        class="nav-svg-icon"
+        :icon-name="`resource${active === 'Region' ? '_active' : ''}`"
+      />
+      <p class="nav-item-text">Region</p>
+    </button>
+
+    <button
+      class="nav-item dc-item"
       :class="{ active: active === 'dc' }"
       type="button"
       @click="emit('navigate', 'dc')"
@@ -61,7 +87,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
   max-width: 500px;
   height: 54px;
   flex-shrink: 0;
-  grid-template-columns: 1fr 1.2fr 1fr;
+  grid-template-columns: repeat(5, 1fr);
   align-items: stretch;
 }
 
@@ -104,12 +130,20 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 /* AI 按钮脱离 Grid 后，明确固定左右导航项所在列。 */
-.nav-item:first-child {
+.common-compute-item {
   grid-column: 1;
 }
 
-.nav-item:last-child {
-  grid-column: 3;
+.ai-compute-item {
+  grid-column: 2;
+}
+
+.region-item {
+  grid-column: 4;
+}
+
+.dc-item {
+  grid-column: 5;
 }
 
 .nav-item .van-icon {

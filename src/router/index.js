@@ -8,8 +8,35 @@ const routes = [
   {
     path: '/',
     component: CloudOperationView,
-    redirect: '/resource',
+    redirect: '/commonCompute',
     children: [
+      {
+        path: 'commonCompute',
+        name: 'commonCompute',
+        component: () => import('../views/cloud-operation/CommonComputeView.vue'),
+        meta: {
+          keepAlive: true,
+          title: '通算'
+        }
+      },
+      {
+        path: 'aiCompute',
+        name: 'aiCompute',
+        component: () => import('../views/cloud-operation/AiComputeView.vue'),
+        meta: {
+          keepAlive: true,
+          title: '智算'
+        }
+      },
+      {
+        path: 'Region',
+        name: 'Region',
+        component: () => import('../views/cloud-operation/RegionView.vue'),
+        meta: {
+          keepAlive: true,
+          title: 'Region'
+        }
+      },
       {
         path: 'resource',
         name: 'resource',

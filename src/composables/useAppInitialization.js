@@ -33,7 +33,10 @@ export function useAppInitialization() {
       userStore.setTenant(tokenRes.data['iam-tenant']);
       api.home.appendHeaders(tokenRes.data);
 
-      await router.replace({ name: 'resource' });
+      // 只处理根路径的默认入口，保留用户直接访问具体子路由的能力。
+      if (router.currentRoute.value.path === '/') {
+        await router.replace({ name: 'commonCompute' });
+      }
       userStore.setReady(true);
     } catch (error) {
       console.error('应用初始化失败:', error);
