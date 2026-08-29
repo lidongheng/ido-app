@@ -1,41 +1,7 @@
-<template>
-  <div ref="chartRef" class="trend-chart" :style="chartStyle"></div>
-</template>
-
-<script setup>
-import { computed, ref } from 'vue';
-import { useECharts } from '@/composables/useECharts.js';
-
-const props = defineProps({
-  categories: {
-    type: Array,
-    required: true,
-  },
-  series: {
-    type: Array,
-    required: true,
-  },
-  unit: {
-    type: String,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
-});
-
-const chartRef = ref();
-const chartStyle = computed(() => {
-  return {
-    height: `${props.height}px`,
-  };
-});
-
-const option = computed(() => {
+export function useTrendOptions(categories, series, unit) {
   return {
     animation: false,
-    color: props.series.map((item) => item.color),
+    color: series.map((item) => item.color),
     legend: {
       top: 0,
       right: 0,
@@ -58,7 +24,7 @@ const option = computed(() => {
     },
     xAxis: {
       type: 'category',
-      data: props.categories,
+      data: categories,
       axisTick: {
         show: false,
       },
@@ -74,7 +40,7 @@ const option = computed(() => {
     },
     yAxis: {
       type: 'value',
-      name: props.unit,
+      name: unit,
       nameTextStyle: {
         color: '#8e919d',
         fontSize: 10,
@@ -91,7 +57,7 @@ const option = computed(() => {
         },
       },
     },
-    series: props.series.map((item) => {
+    series: series.map((item) => {
       const isLine = item.type === 'line';
       return {
         name: item.name,
@@ -124,14 +90,4 @@ const option = computed(() => {
       };
     }),
   };
-});
-
-useECharts(chartRef, option);
-</script>
-
-<style lang="less" scoped>
-.trend-chart {
-  width: 100%;
-  min-width: 0;
 }
-</style>

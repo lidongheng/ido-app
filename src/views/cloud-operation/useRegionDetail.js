@@ -1,5 +1,6 @@
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useTrendOptions } from './useTrendOptions.js';
 
 const REGION_DETAILS = {
   'cn-hongkong-1': { name: '中国-香港', code: 'ap-southeast-1', azCount: '7', openTime: '2025-04' },
@@ -133,6 +134,7 @@ export function useRegionDetail() {
     { name: '当月销毛额', type: 'bar', color: '#15bda7', data: [1.11, 0.91, 0.7, 0.5, 0.41, 0.48] },
     { name: '累计销毛额', type: 'line', color: '#16af9f', data: [1.11, 1.35, 1.7, 2.05, 2.55, 3.12] },
   ];
+  const trendOptions = useTrendOptions(trendCategories, trendSeries, trendUnit);
 
   const incomeDistribution = [
     { name: 'A客户', value: 20, displayValue: '20%', color: '#2f9fe6' },
@@ -153,10 +155,10 @@ export function useRegionDetail() {
       label: '年度累计指标',
       align: 'center',
       children: [
-        { prop: 'revenue', label: '收入\n(万元)', minWidth: 78, align: 'right', sortable: true },
-        { prop: 'growth', label: '环比\n增长量', minWidth: 78, align: 'right', sortable: true },
-        { prop: 'ratio', label: '占比', minWidth: 72, align: 'right', sortable: true },
-        { prop: 'secondaryRevenue', label: '收入\n(万元)', minWidth: 78, align: 'right' },
+        { prop: 'revenue', label: '收入\n(万元)', width: 78, align: 'right', sortable: true },
+        { prop: 'growth', label: '环比\n增长量', width: 78, align: 'right', sortable: true },
+        { prop: 'ratio', label: '占比', width: 72, align: 'right', sortable: true },
+        { prop: 'secondaryRevenue', label: '收入\n(万元)', width: 78, align: 'right' },
       ],
     },
   ];
@@ -175,8 +177,8 @@ export function useRegionDetail() {
   };
 
   const rankColumns = [
-    { prop: 'rank', label: '', width: 44, align: 'center', slotName: 'rank' },
-    { prop: 'name', label: '客户名称', width: 136, align: 'left', slotName: 'customer' },
+    { prop: 'rank', label: '', width: 44, align: 'center', showSlot: true },
+    { prop: 'name', label: '客户名称', width: 136, align: 'left', showSlot: true },
     { prop: 'total', label: '售卖总量', minWidth: 84, align: 'right', sortable: true },
     { prop: 'year', label: '年度增量', minWidth: 80, align: 'right', sortable: true },
     { prop: 'month', label: '月度增量', minWidth: 80, align: 'right', sortable: true },
@@ -201,9 +203,6 @@ export function useRegionDetail() {
     serverMetrics,
     tableConfig,
     topColumns,
-    trendCategories,
-    trendSeries,
-    trendUnit,
+    trendOptions,
   };
 }
-

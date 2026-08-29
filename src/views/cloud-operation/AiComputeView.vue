@@ -15,16 +15,15 @@
         :height="245"
       />
       <table-list
-        :columns="cardColumns"
-        :data="cardRows"
-        row-key="id"
+        :table-column="cardColumns"
+        :table-data="cardRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #cardType="{ row }">
-          <div class="type-cell">
-            <span class="color-bullet" :style="{ background: row.color }"></span>
-            <span>{{ row.name }}</span>
+        <template #name="{ scope }">
+          <div v-if="scope.row && scope.row.name !== undefined" class="type-cell">
+            <span class="color-bullet" :style="{ background: scope.row.color }"></span>
+            <span>{{ scope.row.name }}</span>
           </div>
         </template>
       </table-list>
@@ -39,14 +38,17 @@
     >
       <indicator-panel :items="efficiencyMetrics" :columns="3" :bordered="true" />
       <table-list
-        :columns="efficiencyColumns"
-        :data="efficiencyRows"
-        row-key="id"
+        :table-column="efficiencyColumns"
+        :table-data="efficiencyRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
       </table-list>
     </card-layout>
@@ -65,17 +67,25 @@
         :height="265"
       />
       <table-list
-        :columns="customerColumns"
-        :data="customerRows"
-        row-key="id"
+        :table-column="customerColumns"
+        :table-data="customerRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
-        <template #trend="{ row }">
-          <trend-value :value="row.usage" :direction="row.direction" unit="" />
+        <template #usage="{ scope }">
+          <trend-value
+            v-if="scope.row && scope.row.usage !== undefined"
+            :value="scope.row.usage"
+            :direction="scope.row.direction"
+            unit=""
+          />
         </template>
       </table-list>
     </card-layout>
@@ -94,14 +104,17 @@
         :height="255"
       />
       <table-list
-        :columns="regionColumns"
-        :data="regionRows"
-        row-key="id"
+        :table-column="regionColumns"
+        :table-data="regionRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
       </table-list>
     </card-layout>
@@ -115,9 +128,8 @@
     >
       <indicator-panel :items="tokenMetrics" :columns="3" :bordered="false" />
       <table-list
-        :columns="tokenColumns"
-        :data="tokenRows"
-        row-key="id"
+        :table-column="tokenColumns"
+        :table-data="tokenRows"
         :default-sort="{}"
         :table-config="tableConfig"
       />

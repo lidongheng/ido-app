@@ -15,9 +15,8 @@
         :bordered="true"
       />
       <table-list
-        :columns="columns"
-        :data="rows"
-        row-key="id"
+        :table-column="columns"
+        :table-data="rows"
         :default-sort="{}"
         :table-config="drawerTableConfig"
       />

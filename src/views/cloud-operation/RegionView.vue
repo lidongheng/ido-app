@@ -27,12 +27,7 @@
       :show-nav="false"
       :show-help="false"
     >
-      <trend-chart
-        :categories="trendCategories"
-        :series="trendSeries"
-        :unit="trendUnit"
-        :height="275"
-      />
+      <common-echarts :options="trendOptions" />
     </card-layout>
 
     <card-layout
@@ -42,17 +37,24 @@
       :show-help="false"
     >
       <table-list
-        :columns="columns"
-        :data="domesticRows"
-        row-key="id"
+        :table-column="columns"
+        :table-data="domesticRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #regionLink="{ row }">
-          <data-link :text="row.name" @click="openRegion(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openRegion(scope.row)"
+          />
         </template>
-        <template #status="{ row }">
-          <status-dot :tone="row.status" label="经营状态" />
+        <template #status="{ scope }">
+          <status-dot
+            v-if="scope.row && scope.row.status !== undefined"
+            :tone="scope.row.status"
+            label="经营状态"
+          />
         </template>
       </table-list>
     </card-layout>
@@ -64,17 +66,24 @@
       :show-help="false"
     >
       <table-list
-        :columns="columns"
-        :data="overseasRows"
-        row-key="id"
+        :table-column="columns"
+        :table-data="overseasRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #regionLink="{ row }">
-          <data-link :text="row.name" @click="openRegion(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openRegion(scope.row)"
+          />
         </template>
-        <template #status="{ row }">
-          <status-dot :tone="row.status" label="经营状态" />
+        <template #status="{ scope }">
+          <status-dot
+            v-if="scope.row && scope.row.status !== undefined"
+            :tone="scope.row.status"
+            label="经营状态"
+          />
         </template>
       </table-list>
     </card-layout>
@@ -83,11 +92,11 @@
 
 <script setup>
 import CardLayout from '@/components/card-layout/index.vue';
+import CommonEcharts from '@/components/common-echarts/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import StatusDot from '@/components/cloud-operation/StatusDot.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
-import TrendChart from '@/components/cloud-operation/TrendChart.vue';
 import { useRegionOverview } from './useRegionOverview.js';
 
 const {
@@ -100,9 +109,7 @@ const {
   overviewLoading,
   overseasRows,
   tableConfig,
-  trendCategories,
-  trendSeries,
-  trendUnit,
+  trendOptions,
 } = useRegionOverview();
 </script>
 

@@ -22,12 +22,7 @@
       :show-nav="false"
       :show-help="false"
     >
-      <trend-chart
-        :categories="trendCategories"
-        :series="trendSeries"
-        :unit="trendUnit"
-        :height="275"
-      />
+      <common-echarts :options="trendOptions" />
     </card-layout>
 
     <card-layout
@@ -53,9 +48,8 @@
       :show-help="false"
     >
       <table-list
-        :columns="topColumns"
-        :data="revenueRows"
-        row-key="id"
+        :table-column="topColumns"
+        :table-data="revenueRows"
         :default-sort="{}"
         :table-config="tableConfig"
       />
@@ -69,9 +63,8 @@
       :show-help="false"
     >
       <table-list
-        :columns="topColumns"
-        :data="growthRows"
-        row-key="id"
+        :table-column="topColumns"
+        :table-data="growthRows"
         :default-sort="{}"
         :table-config="tableConfig"
       />
@@ -85,9 +78,8 @@
       :show-help="false"
     >
       <table-list
-        :columns="topColumns"
-        :data="declineRows"
-        row-key="id"
+        :table-column="topColumns"
+        :table-data="declineRows"
         :default-sort="{}"
         :table-config="tableConfig"
       />
@@ -108,52 +100,52 @@
       />
       <h3 class="subsection-title">国内客户排行榜</h3>
       <table-list
-        :columns="rankColumns"
-        :data="domesticRankRows"
-        row-key="id"
+        :table-column="rankColumns"
+        :table-data="domesticRankRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #rank="{ row }">
+        <template #rank="{ scope }">
           <rank-cell
-            :rank="row.rank"
-            :movement="row.movement"
-            :direction="row.movementDirection"
+            v-if="scope.row && scope.row.rank !== undefined"
+            :rank="scope.row.rank"
+            :movement="scope.row.movement"
+            :direction="scope.row.movementDirection"
           />
         </template>
-        <template #customer="{ row }">
-          <div class="customer-cell">
+        <template #name="{ scope }">
+          <div v-if="scope.row && scope.row.name !== undefined" class="customer-cell">
             <div class="customer-name-row">
-              <span>{{ row.name }}</span>
-              <em v-if="row.isNew" class="new-tag">NEW</em>
+              <span>{{ scope.row.name }}</span>
+              <em v-if="scope.row.isNew" class="new-tag">NEW</em>
             </div>
-            <span class="customer-subtitle">{{ row.subtitle }}</span>
+            <span class="customer-subtitle">{{ scope.row.subtitle }}</span>
           </div>
         </template>
       </table-list>
 
       <h3 class="subsection-title overseas-title">海外客户排行榜</h3>
       <table-list
-        :columns="rankColumns"
-        :data="overseasRankRows"
-        row-key="id"
+        :table-column="rankColumns"
+        :table-data="overseasRankRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #rank="{ row }">
+        <template #rank="{ scope }">
           <rank-cell
-            :rank="row.rank"
-            :movement="row.movement"
-            :direction="row.movementDirection"
+            v-if="scope.row && scope.row.rank !== undefined"
+            :rank="scope.row.rank"
+            :movement="scope.row.movement"
+            :direction="scope.row.movementDirection"
           />
         </template>
-        <template #customer="{ row }">
-          <div class="customer-cell">
+        <template #name="{ scope }">
+          <div v-if="scope.row && scope.row.name !== undefined" class="customer-cell">
             <div class="customer-name-row">
-              <span>{{ row.name }}</span>
-              <em v-if="row.isNew" class="new-tag">NEW</em>
+              <span>{{ scope.row.name }}</span>
+              <em v-if="scope.row.isNew" class="new-tag">NEW</em>
             </div>
-            <span class="customer-subtitle">{{ row.subtitle }}</span>
+            <span class="customer-subtitle">{{ scope.row.subtitle }}</span>
           </div>
         </template>
       </table-list>
@@ -163,11 +155,11 @@
 
 <script setup>
 import CardLayout from '@/components/card-layout/index.vue';
+import CommonEcharts from '@/components/common-echarts/index.vue';
 import DonutChart from '@/components/cloud-operation/DonutChart.vue';
 import IndicatorPanel from '@/components/cloud-operation/IndicatorPanel.vue';
 import RankCell from '@/components/cloud-operation/RankCell.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
-import TrendChart from '@/components/cloud-operation/TrendChart.vue';
 import { useRegionDetail } from './useRegionDetail.js';
 
 const {
@@ -186,9 +178,7 @@ const {
   serverMetrics,
   tableConfig,
   topColumns,
-  trendCategories,
-  trendSeries,
-  trendUnit,
+  trendOptions,
 } = useRegionDetail();
 </script>
 

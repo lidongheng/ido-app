@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
+import { useTrendOptions } from './useTrendOptions.js';
 
 const tableConfig = {
   size: 'small',
@@ -84,19 +85,20 @@ export function useRegionOverview() {
     { name: '当月销毛额', type: 'bar', color: '#15bda7', data: [1.11, 0.91, 0.7, 0.5, 0.41, 0.48] },
     { name: '累计销毛额', type: 'line', color: '#16af9f', data: [1.11, 1.35, 1.7, 2.05, 2.55, 3.12] },
   ];
+  const trendOptions = useTrendOptions(trendCategories, trendSeries, trendUnit);
   const columns = [
-    { prop: 'name', label: 'Region', width: 125, align: 'left', slotName: 'regionLink' },
+    { prop: 'name', label: 'Region', width: 125, align: 'left', showSlot: true },
     { prop: 'marginRate', label: '销毛率', minWidth: 78, align: 'right', sortable: true },
-    { prop: 'status', label: '经营\n状态', minWidth: 62, align: 'center', slotName: 'status' },
+    { prop: 'status', label: '经营\n状态', minWidth: 62, align: 'center', showSlot: true },
     {
       prop: 'annual',
       label: '年度累计指标',
       align: 'center',
       children: [
-        { prop: 'revenue', label: '收入\n(万元)', minWidth: 78, align: 'right', sortable: true },
-        { prop: 'cost', label: '成本\n(万元)', minWidth: 78, align: 'right', sortable: true },
-        { prop: 'allocationRate', label: '分配率', minWidth: 76, align: 'right', sortable: true },
-        { prop: 'serviceRate', label: '服务率', minWidth: 76, align: 'right' },
+        { prop: 'revenue', label: '收入\n(万元)', width: 78, align: 'right', sortable: true },
+        { prop: 'cost', label: '成本\n(万元)', width: 78, align: 'right', sortable: true },
+        { prop: 'allocationRate', label: '分配率', width: 76, align: 'right', sortable: true },
+        { prop: 'serviceRate', label: '服务率', width: 76, align: 'right' },
       ],
     },
   ];
@@ -122,8 +124,6 @@ export function useRegionOverview() {
     overviewLoading,
     overseasRows,
     tableConfig,
-    trendCategories,
-    trendSeries,
-    trendUnit,
+    trendOptions,
   };
 }

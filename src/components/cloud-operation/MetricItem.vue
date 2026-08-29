@@ -43,10 +43,15 @@
     </skeleton>
     <div class="list" v-if="showList">
       <div class="list-item" v-for="item in metric.list" :key="item.label">
-        <div class="ratio-label">{{ item.label }}</div>
+        <div class="ratio-label">
+          {{ item.label }}
+          <span v-if="item.tips" class="question">
+            <SvgIcon icon-name="question" :useStyle="{ width: 12, height: 12 }" />
+          </span>
+        </div>
         <div class="item-right">
           <div class="item-value">{{ item.value }}</div>
-          <div class="item-unit">{{ metric.unit }}</div>
+          <div class="item-unit">{{ item.unit }}</div>
         </div>
       </div>
     </div>
@@ -230,6 +235,9 @@ const textClass = computed(() => {
   font-weight: 400;
   line-height: 16px;
   white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
 }
 
 .ratio-value-row {

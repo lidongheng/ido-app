@@ -50,17 +50,25 @@
       <segment-tabs v-model="customerTab" :options="customerOptions" variant="underline" />
       <h3 class="subsection-title">总量排行榜</h3>
       <table-list
-        :columns="customerColumns"
-        :data="customerRows"
-        row-key="id"
+        :table-column="customerColumns"
+        :table-data="customerRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
-        <template #trend="{ row }">
-          <trend-value :value="row.increase" :direction="row.direction" unit="" />
+        <template #increase="{ scope }">
+          <trend-value
+            v-if="scope.row && scope.row.increase !== undefined"
+            :value="scope.row.increase"
+            :direction="scope.row.direction"
+            unit=""
+          />
         </template>
       </table-list>
 
@@ -69,17 +77,25 @@
         <segment-tabs v-model="increasePeriod" :options="periodOptions" variant="block" />
       </div>
       <table-list
-        :columns="changeColumns"
-        :data="increaseRows"
-        row-key="id"
+        :table-column="changeColumns"
+        :table-data="increaseRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
-        <template #trend="{ row }">
-          <trend-value :value="row.value" :direction="row.direction" unit="" />
+        <template #value="{ scope }">
+          <trend-value
+            v-if="scope.row && scope.row.value !== undefined"
+            :value="scope.row.value"
+            :direction="scope.row.direction"
+            unit=""
+          />
         </template>
       </table-list>
 
@@ -88,17 +104,25 @@
         <segment-tabs v-model="decreasePeriod" :options="periodOptions" variant="block" />
       </div>
       <table-list
-        :columns="decreaseChangeColumns"
-        :data="decreaseRows"
-        row-key="id"
+        :table-column="decreaseChangeColumns"
+        :table-data="decreaseRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #link="{ row }">
-          <data-link :text="row.name" @click="openDetail(row)" />
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
         </template>
-        <template #trend="{ row }">
-          <trend-value :value="row.value" :direction="row.direction" unit="" />
+        <template #value="{ scope }">
+          <trend-value
+            v-if="scope.row && scope.row.value !== undefined"
+            :value="scope.row.value"
+            :direction="scope.row.direction"
+            unit=""
+          />
         </template>
       </table-list>
     </card-layout>
@@ -120,26 +144,32 @@
       />
       <h3 class="subsection-title">流量高地</h3>
       <table-list
-        :columns="regionColumns"
-        :data="domesticRows"
-        row-key="id"
+        :table-column="regionColumns"
+        :table-data="domesticRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #status="{ row }">
-          <status-dot :tone="row.status" label="增长状态" />
+        <template #status="{ scope }">
+          <status-dot
+            v-if="scope.row && scope.row.status !== undefined"
+            :tone="scope.row.status"
+            label="增长状态"
+          />
         </template>
       </table-list>
       <h3 class="subsection-title">资源中心</h3>
       <table-list
-        :columns="regionColumns"
-        :data="resourceCenterRows"
-        row-key="id"
+        :table-column="regionColumns"
+        :table-data="resourceCenterRows"
         :default-sort="{}"
         :table-config="tableConfig"
       >
-        <template #status="{ row }">
-          <status-dot :tone="row.status" label="增长状态" />
+        <template #status="{ scope }">
+          <status-dot
+            v-if="scope.row && scope.row.status !== undefined"
+            :tone="scope.row.status"
+            label="增长状态"
+          />
         </template>
       </table-list>
     </card-layout>
@@ -161,14 +191,17 @@
       />
       <h3 class="subsection-title">流量高地</h3>
       <table-list
-        :columns="overseasColumns"
-        :data="overseasRows"
-        row-key="id"
+        :table-column="overseasColumns"
+        :table-data="overseasRows"
         :default-sort="{}"
         :table-config="overseasTableConfig"
       >
-        <template #status="{ row }">
-          <status-dot :tone="row.status" label="增长状态" />
+        <template #status="{ scope }">
+          <status-dot
+            v-if="scope.row && scope.row.status !== undefined"
+            :tone="scope.row.status"
+            label="增长状态"
+          />
         </template>
       </table-list>
     </card-layout>

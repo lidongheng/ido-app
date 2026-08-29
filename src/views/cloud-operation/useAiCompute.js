@@ -44,7 +44,7 @@ export function useAiCompute() {
   };
 
   const cardColumns = [
-    { prop: 'name', label: '类型', width: 90, align: 'left', slotName: 'cardType' },
+    { prop: 'name', label: '类型', width: 90, align: 'left', showSlot: true },
     { prop: 'cards', label: '卡数', minWidth: 92, align: 'right' },
     { prop: 'plan', label: '年度计划', minWidth: 90, align: 'right' },
     { prop: 'increase', label: '年度新增', minWidth: 90, align: 'right' },
@@ -63,7 +63,7 @@ export function useAiCompute() {
   ];
 
   const efficiencyColumns = [
-    { prop: 'name', label: '卡类型', width: 72, align: 'left', slotName: 'link' },
+    { prop: 'name', label: '卡类型', width: 72, align: 'left', showSlot: true },
     { prop: 'total', label: '总卡数\n(万卡)', minWidth: 70, align: 'right' },
     { prop: 'assigned', label: '已分配\n(卡)', minWidth: 70, align: 'right' },
     { prop: 'e2e', label: 'E2E卡时\n分配率', minWidth: 78, align: 'right' },
@@ -89,10 +89,10 @@ export function useAiCompute() {
   };
 
   const customerColumns = [
-    { prop: 'name', label: '客户分类', width: 125, align: 'left', slotName: 'link' },
+    { prop: 'name', label: '客户分类', width: 125, align: 'left', showSlot: true },
     { prop: 'total', label: '总卡数\n(万卡)', minWidth: 74, align: 'right', sortable: true },
     { prop: 'increase', label: '年度增量', minWidth: 78, align: 'right', sortable: true },
-    { prop: 'usage', label: '卡时使用率', minWidth: 84, align: 'right', sortable: true, slotName: 'trend' },
+    { prop: 'usage', label: '卡时使用率', minWidth: 84, align: 'right', sortable: true, showSlot: true },
     { prop: 'coreUsage', label: 'AI Core利用率', minWidth: 92, align: 'right', sortable: true },
   ];
 
@@ -117,7 +117,7 @@ export function useAiCompute() {
   };
 
   const regionColumns = [
-    { prop: 'name', label: 'Region', width: 145, align: 'left', slotName: 'link' },
+    { prop: 'name', label: 'Region', width: 145, align: 'left', showSlot: true },
     { prop: 'total', label: '总卡数\n(万卡)', minWidth: 72, align: 'right' },
     { prop: 'assigned', label: '已分配\n(卡)', minWidth: 72, align: 'right' },
     { prop: 'usage', label: '卡时使用率', minWidth: 84, align: 'right' },
@@ -190,4 +190,3 @@ export function useAiCompute() {
     tokenRows,
   };
 }
-

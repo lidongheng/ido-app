@@ -205,9 +205,9 @@ export function useCommonCompute() {
   };
 
   const customerColumns = [
-    { prop: 'name', label: '客户名', width: 125, align: 'left', slotName: 'link' },
+    { prop: 'name', label: '客户名', width: 125, align: 'left', showSlot: true },
     { prop: 'total', label: '总量', minWidth: 78, align: 'right' },
-    { prop: 'increase', label: '年度变化', minWidth: 92, align: 'right', slotName: 'trend' },
+    { prop: 'increase', label: '年度变化', minWidth: 92, align: 'right', showSlot: true },
     { prop: 'rate', label: '变化率', minWidth: 72, align: 'right' },
   ];
   const customerRowMap = {
@@ -217,13 +217,13 @@ export function useCommonCompute() {
   const customerRows = computed(() => customerRowMap[customerTab.value]);
 
   const changeColumns = [
-    { prop: 'name', label: '客户名', width: 125, align: 'left', slotName: 'link' },
-    { prop: 'value', label: '增量', minWidth: 90, align: 'right', slotName: 'trend' },
+    { prop: 'name', label: '客户名', width: 125, align: 'left', showSlot: true },
+    { prop: 'value', label: '增量', minWidth: 90, align: 'right', showSlot: true },
     { prop: 'change', label: '总量变化', minWidth: 135, align: 'right' },
   ];
   const decreaseChangeColumns = [
-    { prop: 'name', label: '客户名', width: 125, align: 'left', slotName: 'link' },
-    { prop: 'value', label: '掉量', minWidth: 90, align: 'right', slotName: 'trend' },
+    { prop: 'name', label: '客户名', width: 125, align: 'left', showSlot: true },
+    { prop: 'value', label: '掉量', minWidth: 90, align: 'right', showSlot: true },
     { prop: 'change', label: '总量变化', minWidth: 135, align: 'right' },
   ];
   const increaseRowMap = {
@@ -258,7 +258,7 @@ export function useCommonCompute() {
     { prop: 'total', label: '售卖总量\n(万核)', minWidth: 78, align: 'right' },
     { prop: 'year', label: '年度增量\n(万核)', minWidth: 78, align: 'right' },
     { prop: 'month', label: '月度增量\n(万核)', minWidth: 78, align: 'right' },
-    { prop: 'status', label: '增长状态', minWidth: 72, align: 'center', slotName: 'status' },
+    { prop: 'status', label: '增长状态', minWidth: 72, align: 'center', showSlot: true },
   ];
   const domesticNames = [
     '华北-北京四',
@@ -317,7 +317,7 @@ export function useCommonCompute() {
     { prop: 'total', label: '售卖总量\n(万核)', minWidth: 78, align: 'right', sortable: true },
     { prop: 'year', label: '年度增量\n(万核)', minWidth: 78, align: 'right', sortable: true },
     { prop: 'month', label: '月度增量\n(万核)', minWidth: 78, align: 'right', sortable: true },
-    { prop: 'status', label: '增长状态', minWidth: 72, align: 'center', slotName: 'status' },
+    { prop: 'status', label: '增长状态', minWidth: 72, align: 'center', showSlot: true },
   ];
   const overseasRows = [
     { id: 'overseas-1', area: '亚太', name: '新加坡', tone: 'success' },
@@ -405,4 +405,3 @@ export function useCommonCompute() {
     tableConfig,
   };
 }
-
