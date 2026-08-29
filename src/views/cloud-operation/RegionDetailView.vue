@@ -15,25 +15,43 @@
       <indicator-panel class="server-panel" :items="serverMetrics" :columns="4" :bordered="false" />
     </div>
 
-    <operation-section title="经营趋势">
+    <card-layout
+      class="operation-card"
+      title="经营趋势"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <trend-chart
         :categories="trendCategories"
         :series="trendSeries"
         :unit="trendUnit"
         :height="275"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="收入来源">
+    <card-layout
+      class="operation-card"
+      title="收入来源"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <donut-chart
         :data="incomeDistribution"
         :center-value="incomeDistributionSummary.value"
         :center-label="incomeDistributionSummary.label"
         :height="270"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="收入TOP5">
+    <card-layout
+      class="operation-card"
+      title="收入TOP5"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <table-list
         :columns="topColumns"
         :data="revenueRows"
@@ -41,9 +59,15 @@
         :default-sort="{}"
         :table-config="tableConfig"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="收入增长TOP5">
+    <card-layout
+      class="operation-card"
+      title="收入增长TOP5"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <table-list
         :columns="topColumns"
         :data="growthRows"
@@ -51,9 +75,15 @@
         :default-sort="{}"
         :table-config="tableConfig"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="收入降低TOP5">
+    <card-layout
+      class="operation-card"
+      title="收入降低TOP5"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <table-list
         :columns="topColumns"
         :data="declineRows"
@@ -61,9 +91,15 @@
         :default-sort="{}"
         :table-config="tableConfig"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="客户资源">
+    <card-layout
+      class="operation-card"
+      title="客户资源"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <donut-chart
         :data="customerDistribution"
         :center-value="customerDistributionSummary.value"
@@ -121,14 +157,14 @@
           </div>
         </template>
       </table-list>
-    </operation-section>
+    </card-layout>
   </div>
 </template>
 
 <script setup>
+import CardLayout from '@/components/card-layout/index.vue';
 import DonutChart from '@/components/cloud-operation/DonutChart.vue';
 import IndicatorPanel from '@/components/cloud-operation/IndicatorPanel.vue';
-import OperationSection from '@/components/cloud-operation/OperationSection.vue';
 import RankCell from '@/components/cloud-operation/RankCell.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import TrendChart from '@/components/cloud-operation/TrendChart.vue';
@@ -161,6 +197,10 @@ const {
   min-height: 100%;
   padding: 14px 10px 24px;
   background: #fff;
+}
+
+:deep(.operation-card .body > :not(.title) + *) {
+  margin-top: 10px;
 }
 
 .region-intro {

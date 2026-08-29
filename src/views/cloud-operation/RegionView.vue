@@ -1,20 +1,46 @@
 <template>
   <div class="dashboard-view">
-    <operation-section title="Region经营概览">
-      <indicator-panel :items="primaryMetrics" :columns="2" :bordered="true" />
-      <indicator-panel :items="businessMetrics" :columns="2" :bordered="true" />
-    </operation-section>
+    <card-layout
+      title="Region经营概览"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
+      <metric-card
+        :metrics="overviewData"
+        :loading="overviewLoading"
+        :failed="overviewFailed"
+        :show-ratio="false"
+      />
+      <metric-card
+        class="mgt8"
+        :metrics="overviewData2"
+        :loading="overviewLoading"
+        :failed="overviewFailed"
+        :show-ratio="false"
+      />
+    </card-layout>
 
-    <operation-section title="趋势分析">
+    <card-layout
+      title="趋势分析"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <trend-chart
         :categories="trendCategories"
         :series="trendSeries"
         :unit="trendUnit"
         :height="275"
       />
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="国内Region经营详情">
+    <card-layout
+      title="国内Region经营详情"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <table-list
         :columns="columns"
         :data="domesticRows"
@@ -29,9 +55,14 @@
           <status-dot :tone="row.status" label="经营状态" />
         </template>
       </table-list>
-    </operation-section>
+    </card-layout>
 
-    <operation-section title="海外Region经营详情">
+    <card-layout
+      title="海外Region经营详情"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
       <table-list
         :columns="columns"
         :data="overseasRows"
@@ -46,26 +77,28 @@
           <status-dot :tone="row.status" label="经营状态" />
         </template>
       </table-list>
-    </operation-section>
+    </card-layout>
   </div>
 </template>
 
 <script setup>
+import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
-import IndicatorPanel from '@/components/cloud-operation/IndicatorPanel.vue';
-import OperationSection from '@/components/cloud-operation/OperationSection.vue';
+import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import StatusDot from '@/components/cloud-operation/StatusDot.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import TrendChart from '@/components/cloud-operation/TrendChart.vue';
 import { useRegionOverview } from './useRegionOverview.js';
 
 const {
-  businessMetrics,
   columns,
   domesticRows,
   openRegion,
+  overviewData,
+  overviewData2,
+  overviewFailed,
+  overviewLoading,
   overseasRows,
-  primaryMetrics,
   tableConfig,
   trendCategories,
   trendSeries,
@@ -78,5 +111,9 @@ const {
   min-height: 100%;
   padding: 14px 10px 24px;
   background: #fff;
+}
+
+.mgt8 {
+  margin-top: 8px;
 }
 </style>

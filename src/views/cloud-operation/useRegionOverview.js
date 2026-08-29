@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 const tableConfig = {
@@ -41,16 +42,18 @@ function createRows(scope) {
 
 export function useRegionOverview() {
   const router = useRouter();
-  const primaryMetrics = [
-    { label: 'Region', value: '35', unit: '个', icon: 'cluster-o', help: false },
-    { label: '在线服务器', value: '88.18', unit: '万台', icon: 'desktop-o', help: false },
+  const overviewLoading = ref(false);
+  const overviewFailed = ref(false);
+  const overviewData = [
+    { label: 'Region', value: '35', unit: '个', iconName: 'overview-icon-2', help: false },
+    { label: '在线服务器', value: '88.18', unit: '万台', iconName: 'overview-icon-1', help: false },
   ];
-  const businessMetrics = [
+  const overviewData2 = [
     {
       label: '年度销毛额',
       value: '38.93',
       unit: '亿元(RMB)',
-      icon: 'balance-list-o',
+      iconName: 'overview-icon-3',
       help: false,
       trend: { label: '环比增长量', value: '1.82亿元', direction: 'up', unit: '' },
       details: [
@@ -63,7 +66,7 @@ export function useRegionOverview() {
       label: '月度销毛额',
       value: '4.93',
       unit: '亿元(RMB)',
-      icon: 'balance-list-o',
+      iconName: 'overview-icon-3',
       help: false,
       trend: { label: '环比增长量', value: '0.79亿元', direction: 'up', unit: '' },
       details: [
@@ -110,16 +113,17 @@ export function useRegionOverview() {
   }
 
   return {
-    businessMetrics,
     columns,
     domesticRows,
     openRegion,
+    overviewData,
+    overviewData2,
+    overviewFailed,
+    overviewLoading,
     overseasRows,
-    primaryMetrics,
     tableConfig,
     trendCategories,
     trendSeries,
     trendUnit,
   };
 }
-
