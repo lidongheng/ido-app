@@ -31,7 +31,7 @@
         </div>
       </div>
       <segment-tabs v-model="resourceTab" :options="resourceOptions" variant="underline" />
-      <indicator-panel :items="resourceMetrics" :columns="3" :bordered="true" />
+      <metric-card :metrics="resourceMetrics" :loading="false" :failed="false" />
     </card-layout>
 
     <card-layout
@@ -134,7 +134,7 @@
       :show-nav="false"
       :show-help="false"
     >
-      <indicator-panel :items="domesticMetrics" :columns="3" :bordered="true" />
+      <metric-card :metrics="domesticMetrics" :loading="false" :failed="false" />
       <h3 class="subsection-title">国内</h3>
       <donut-chart
         :data="domesticDistribution"
@@ -181,7 +181,7 @@
       :show-nav="false"
       :show-help="false"
     >
-      <indicator-panel :items="overseasMetrics" :columns="3" :bordered="true" />
+      <metric-card :metrics="overseasMetrics" :loading="false" :failed="false" />
       <h3 class="subsection-title">海外</h3>
       <donut-chart
         :data="overseasDistribution"
@@ -206,8 +206,6 @@
       </table-list>
     </card-layout>
 
-    <div class="bottom-agent-tip">松开，Agent将为你服务...</div>
-
     <detail-drawer
       v-model:visible="drawerVisible"
       :title="drawerTitle"
@@ -223,7 +221,7 @@ import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import DetailDrawer from '@/components/cloud-operation/DetailDrawer.vue';
 import DonutChart from '@/components/cloud-operation/DonutChart.vue';
-import IndicatorPanel from '@/components/cloud-operation/IndicatorPanel.vue';
+import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import SegmentTabs from '@/components/cloud-operation/SegmentTabs.vue';
 import StatusDot from '@/components/cloud-operation/StatusDot.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
@@ -365,12 +363,4 @@ const {
   margin-top: 12px;
 }
 
-.bottom-agent-tip {
-  margin-top: 20px;
-  margin-bottom: 12px;
-  text-align: center;
-  font-size: 11px;
-  color: #a4a1b7;
-  letter-spacing: 0.5px;
-}
 </style>

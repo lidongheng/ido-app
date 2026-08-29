@@ -29,8 +29,6 @@ export function useAiCompute() {
     { label: '年度计划', value: '7.2', unit: '万卡', icon: 'todo-list-o', help: false },
     { label: '年度新增', value: '4.8', unit: '万卡', icon: 'balance-list-o', help: false },
     { label: '已分配', value: '2.4', unit: '万卡', icon: 'records-o', help: false },
-    { label: '卡时利用率', value: '95.19', unit: '%', icon: 'clock-o', help: true },
-    { label: 'AI Core利用率', value: '96.18', unit: '%', icon: 'chart-trending-o', help: true },
   ];
 
   const cardDistribution = [
@@ -57,7 +55,7 @@ export function useAiCompute() {
   ];
 
   const efficiencyMetrics = [
-    { label: 'E2E卡时分配率', value: '46.3', unit: '万卡', icon: 'apps-o', help: true },
+    { label: 'E2E卡时分配率', value: '46.3', unit: '%', icon: 'apps-o', help: true },
     { label: '卡时利用率', value: '95.19', unit: '%', icon: 'clock-o', help: true },
     { label: 'AI Core利用率', value: '96.18', unit: '%', icon: 'chart-trending-o', help: true },
   ];
@@ -133,16 +131,16 @@ export function useAiCompute() {
   ];
 
   const tokenMetrics = [
-    { label: 'Token卡数', value: '1.56', unit: '万卡', icon: 'apps-o', help: false },
-    { label: '日Token数', value: '8,053', unit: '亿', icon: 'chart-trending-o', help: false },
-    { label: 'Token利用率', value: '40.13', unit: '%', icon: 'clock-o', help: false },
+    { label: 'Token卡数', value: '1.56', unit: '万卡', help: false },
+    { label: '日Token数', value: '8,053', unit: '亿', help: false },
+    { label: 'Token利用率', value: '40.13', unit: '%', help: false },
   ];
 
   const tokenColumns = [
-    { prop: 'name', label: '模型', width: 105, align: 'left' },
-    { prop: 'cards', label: '卡数', minWidth: 72, align: 'right', sortable: true },
-    { prop: 'daily', label: '日Token数', minWidth: 88, align: 'right', sortable: true },
-    { prop: 'usage', label: 'Token利用率', minWidth: 90, align: 'right', sortable: true },
+    { prop: 'name', label: '模型', width: 90, align: 'left' },
+    { prop: 'cards', label: '卡数', minWidth: 65, align: 'right', sortable: true },
+    { prop: 'daily', label: '日Token数', minWidth: 82, align: 'right', sortable: true },
+    { prop: 'usage', label: 'Token利用率', minWidth: 88, align: 'right', sortable: true },
   ];
 
   const tokenRows = [

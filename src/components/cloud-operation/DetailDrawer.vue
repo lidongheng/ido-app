@@ -9,11 +9,7 @@
   >
     <div class="detail-drawer">
       <h2>{{ title }}</h2>
-      <indicator-panel
-        :items="metrics"
-        :columns="2"
-        :bordered="true"
-      />
+      <metric-card :metrics="metrics" :loading="false" :failed="false" />
       <table-list
         :table-column="columns"
         :table-data="rows"
@@ -25,7 +21,7 @@
 </template>
 
 <script setup>
-import IndicatorPanel from './IndicatorPanel.vue';
+import MetricCard from './MetricCard.vue';
 import TableList from './TableList.vue';
 
 defineProps({

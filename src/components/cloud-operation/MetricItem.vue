@@ -6,7 +6,9 @@
         :icon-name="metric.iconName"
         class="svg-icon-class"
       ></SvgIcon>
+      <van-icon v-else-if="metric.icon" :name="metric.icon" class="van-icon-class" />
       <span>{{ metric.label }}</span>
+      <van-icon v-if="metric.help" class="help-icon" name="question-o" />
     </div>
     <skeleton
       :loading="loading"
@@ -21,6 +23,35 @@
         <span class="metric-unit">{{ metric.unit }}</span>
       </div>
     </skeleton>
+    <div v-if="metric.trend" class="metric-trend">
+      <span>{{ metric.trend.label }}</span>
+      <trend-value
+        :value="metric.trend.value"
+        :direction="metric.trend.direction"
+        :unit="metric.trend.unit"
+      />
+    </div>
+    <div v-if="metric.trends" class="metric-trends-group">
+      <div v-for="trend in metric.trends" :key="trend.label" class="metric-trend">
+        <span>{{ trend.label }}</span>
+        <trend-value
+          :value="trend.value"
+          :direction="trend.direction"
+          :unit="trend.unit"
+        />
+      </div>
+    </div>
+    <div v-if="metric.details" class="metric-details">
+      <div v-for="detail in metric.details" :key="detail.label" class="detail-row">
+        <span class="detail-label">
+          {{ detail.label }}
+          <van-icon v-if="detail.help !== false" class="help-icon-small" name="question-o" />
+        </span>
+        <strong :class="{ 'trend-up': detail.highlight === 'up', 'trend-down': detail.highlight === 'down' }">
+          {{ detail.value }}
+        </strong>
+      </div>
+    </div>
     <skeleton
       v-if="showRatio"
       :loading="loading"
@@ -61,6 +92,7 @@
 <script setup>
 import { computed } from 'vue';
 import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
+import TrendValue from '@/components/cloud-operation/TrendValue.vue';
 import skeleton from '@/components/skeleton/index.vue';
 
 const props = defineProps({
@@ -134,11 +166,11 @@ const ratioArrow = computed(() => {
 
 const textClass = computed(() => {
   if (props.failed) {
-    return "";
+    return '';
   }
 
   if (['**', '--'].includes(props.metric.ratio)) {
-    return "";
+    return '';
   }
 
   let direction = Number(props.metric.ratio) >= 0 ? 'up' : 'down';
@@ -161,6 +193,14 @@ const textClass = computed(() => {
 .svg-icon-class {
   width: 14px;
   height: 14px;
+}
+.van-icon-class {
+  color: #5e63c8;
+  font-size: 14px;
+}
+.help-icon {
+  color: #8e919d;
+  font-size: 11px;
 }
 .metric-content {
   position: relative;
@@ -219,6 +259,63 @@ const textClass = computed(() => {
   line-height: 16px;
   letter-spacing: 0px;
   text-align: left;
+}
+
+.metric-trend,
+.metric-trends-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: 4px;
+}
+
+.metric-trend {
+  flex-direction: row;
+  align-items: center;
+  gap: 3px;
+  color: #8b86a2;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.metric-details {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  color: #77718f;
+  font-size: 10px;
+}
+
+.detail-label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.help-icon-small {
+  margin-left: 2px;
+  color: #a4a7b5;
+  font-size: 10px;
+}
+
+.detail-row strong {
+  color: #4f4a7b;
+  font-weight: 500;
+}
+
+.detail-row strong.trend-up {
+  color: #19bfa8;
+}
+
+.detail-row strong.trend-down {
+  color: #ef5370;
 }
 
 .metric-ratio {

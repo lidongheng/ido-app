@@ -5,14 +5,14 @@
       <p>AZ数量：<strong>{{ region.azCount }}</strong><span>开服时间：{{ region.openTime }}</span></p>
     </header>
 
-    <indicator-panel :items="financialMetrics" :columns="2" :bordered="true" />
+    <metric-card :metrics="financialMetrics" :loading="false" :failed="false" />
 
     <div class="server-card">
       <div class="server-card-header">
         <van-icon name="balance-list-o" class="server-icon" />
         <span>服务器</span>
       </div>
-      <indicator-panel class="server-panel" :items="serverMetrics" :columns="4" :bordered="false" />
+      <metric-card class="server-panel" :metrics="serverMetrics" :loading="false" :failed="false" />
     </div>
 
     <card-layout
@@ -157,7 +157,7 @@
 import CardLayout from '@/components/card-layout/index.vue';
 import CommonEcharts from '@/components/common-echarts/index.vue';
 import DonutChart from '@/components/cloud-operation/DonutChart.vue';
-import IndicatorPanel from '@/components/cloud-operation/IndicatorPanel.vue';
+import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import RankCell from '@/components/cloud-operation/RankCell.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import { useRegionDetail } from './useRegionDetail.js';
@@ -247,8 +247,8 @@ const {
   font-size: 14px;
 }
 
-.server-panel {
-  border: none !important;
+:deep(.server-panel .metric-card-box) {
+  border: 0;
 }
 
 .subsection-title {

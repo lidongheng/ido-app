@@ -118,25 +118,26 @@ export default {
 .back-top {
   position: fixed;
   right: .43rem;
-  width: 1.07rem;
-  height: 1.07rem;
-  background: #1989fa;
-  border-radius: 50%;
+  width: 1.12rem;
+  height: 1.44rem;
+  background: rgba(246, 249, 255, 0.96);
+  border: 1PX solid rgba(224, 230, 241, 0.88);
+  border-radius: .4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  z-index: 999;
-  box-shadow: 0 .08rem .27rem rgba(25, 137, 250, 0.3);
+  z-index: 20;
+  box-shadow: 0 .11rem .32rem rgba(74, 91, 133, 0.2);
   transition: all 0.3s ease;
   
   &:active {
     transform: scale(0.9);
-    box-shadow: 0 .05rem .16rem rgba(25, 137, 250, 0.4);
+    box-shadow: 0 .05rem .16rem rgba(74, 91, 133, 0.25);
   }
   
   .van-icon {
-    color: #fff;
+    color: #3474d4;
   }
 }
 
@@ -157,4 +158,3 @@ export default {
   transform: scale(1);
 }
 </style>
-

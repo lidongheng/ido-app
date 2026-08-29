@@ -26,7 +26,16 @@
             :filters="filters"
           />
         </router-view>
+
+        <agent-panel />
       </main>
+
+      <back-top
+        target=".page-content"
+        :visibility-height="300"
+        bottom="120px"
+        icon-size="24px"
+      />
 
       <region-selector
         v-if="!isDcRoute && regionOptions"
@@ -76,6 +85,8 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
+import BackTop from '@/components/back-top/index.vue';
+import AgentPanel from '@/components/cloud-operation/AgentPanel.vue';
 import BottomNavigation from '@/components/cloud-operation/BottomNavigation.vue';
 import DcSelector from '@/components/cloud-operation/DcSelector.vue';
 import FilterBar from '@/components/cloud-operation/FilterBar.vue';
