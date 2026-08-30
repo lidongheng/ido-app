@@ -1,10 +1,10 @@
 <template>
-  <div ref="chartRef" class="donut-chart" :style="chartStyle"></div>
+  <common-echarts class="donut-chart" :options="option" :style="chartStyle" />
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
-import { useECharts } from '@/composables/useECharts.js';
+import { computed } from 'vue';
+import CommonEcharts from '@/components/common-echarts/index.vue';
 
 const props = defineProps({
   data: {
@@ -25,7 +25,6 @@ const props = defineProps({
   },
 });
 
-const chartRef = ref();
 const chartStyle = computed(() => {
   return {
     height: `${props.height}px`,
@@ -139,8 +138,6 @@ const option = computed(() => {
     ],
   };
 });
-
-useECharts(chartRef, option);
 </script>
 
 <style lang="less" scoped>
