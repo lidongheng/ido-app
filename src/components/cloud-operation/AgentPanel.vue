@@ -20,14 +20,30 @@
     </div>
 
     <div class="agent-composer">
-      <div class="composer-placeholder">
-        <span class="camera-icon" aria-hidden="true"></span>
-        <span>请您描述问题或输入@选择技能</span>
-      </div>
+      <span class="camera-icon" aria-hidden="true"></span>
+      <textarea
+        ref="textareaRef"
+        class="composer-input"
+        rows="3"
+        placeholder="请您描述问题或输入@选择技能"
+        aria-label="请输入问题"
+        @focus="handleComposerFocus"
+        @blur="handleComposerBlur"
+      ></textarea>
       <van-icon class="send-icon" name="guide-o" />
     </div>
   </section>
 </template>
+
+<script setup>
+import { useAgentPanel } from './useAgentPanel.js';
+
+const {
+  handleComposerBlur,
+  handleComposerFocus,
+  textareaRef
+} = useAgentPanel();
+</script>
 
 <style lang="less" scoped>
 .agent-panel {
@@ -119,23 +135,36 @@
   box-shadow: 0 6px 20px rgba(81, 97, 139, 0.06);
 }
 
-.composer-placeholder {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 14px;
+.composer-input {
+  width: 100%;
+  height: 100%;
+  padding: 14px 48px 34px 46px;
+  border: 0;
+  border-radius: 12px;
+  color: #494461;
+  background: transparent;
+  font-family: inherit;
+  font-size: 16PX;
+  line-height: 20px;
+  resize: none;
+  -webkit-appearance: none;
+}
+
+.composer-input::placeholder {
   color: #8e91a4;
-  font-size: 14px;
-  white-space: nowrap;
+  opacity: 1;
 }
 
 .camera-icon {
-  position: relative;
+  position: absolute;
+  z-index: 1;
+  top: 17px;
+  left: 15px;
   width: 22px;
   height: 17px;
   border: 2PX solid #56637e;
   border-radius: 4px;
-  flex-shrink: 0;
+  pointer-events: none;
 }
 
 .camera-icon::before {
