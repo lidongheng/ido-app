@@ -8,7 +8,7 @@
 </template>
 
 <script setup>
-import DonutChart from '@/components/cloud-operation/DonutChart.vue';
+import DonutChart from '@/components/ai-compute/DonutChart.vue';
 
 defineProps({
   data: {

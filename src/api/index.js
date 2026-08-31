@@ -1,3 +1,5 @@
+import * as operate from '@/views/cloud-operation/overviewMock.js';
+
 const authmgt = {
   async logout() {
     return {
@@ -24,6 +26,7 @@ const home = {
 const api = {
   authmgt,
   home,
+  operate,
 };
 
 export default api;

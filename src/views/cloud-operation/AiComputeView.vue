@@ -128,12 +128,21 @@
       </table-list>
     </card-layout>
 
-    <token-card
-      :metrics="tokenMetrics"
-      :columns="tokenColumns"
-      :rows="tokenRows"
-      :table-config="tableConfig"
-    />
+    <card-layout
+      class="operation-card"
+      title="Tokens"
+      :show-blue-line="true"
+      :show-nav="false"
+      :show-help="false"
+    >
+      <token-card :metrics="tokenMetrics" />
+      <table-list
+        :table-column="tokenColumns"
+        :table-data="tokenRows"
+        :default-sort="{}"
+        :table-config="tableConfig"
+      />
+    </card-layout>
 
     <detail-drawer
       v-model:visible="drawerVisible"
@@ -147,12 +156,12 @@
 import { toRef } from 'vue';
 import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
-import DetailDrawer from '@/components/cloud-operation/DetailDrawer.vue';
-import DonutChart from '@/components/cloud-operation/DonutChart.vue';
+import DetailDrawer from '@/components/ai-compute/DetailDrawer.vue';
+import DonutChart from '@/components/ai-compute/DonutChart.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
-import TokenCard from '@/components/cloud-operation/TokenCard.vue';
-import TrendValue from '@/components/cloud-operation/TrendValue.vue';
+import TokenCard from '@/components/ai-compute/TokenCard.vue';
+import TrendValue from '@/components/ai-compute/TrendValue.vue';
 import { useAiCompute } from './useAiCompute.js';
 
 const props = defineProps({

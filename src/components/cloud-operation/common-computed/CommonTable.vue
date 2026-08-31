@@ -45,7 +45,7 @@
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import StatusDot from '@/components/cloud-operation/StatusDot.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
-import TrendValue from '@/components/cloud-operation/TrendValue.vue';
+import TrendValue from '@/components/ai-compute/TrendValue.vue';
 
 defineProps({
   title: {

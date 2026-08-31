@@ -45,7 +45,7 @@
 
 <script setup>
 import { computed } from 'vue';
-import TrendValue from './TrendValue.vue';
+import TrendValue from '@/components/ai-compute/TrendValue.vue';
 
 const props = defineProps({
   items: {

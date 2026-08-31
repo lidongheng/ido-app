@@ -92,7 +92,7 @@
 <script setup>
 import { computed } from 'vue';
 import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
-import TrendValue from '@/components/cloud-operation/TrendValue.vue';
+import TrendValue from '@/components/ai-compute/TrendValue.vue';
 import skeleton from '@/components/skeleton/index.vue';
 
 const props = defineProps({

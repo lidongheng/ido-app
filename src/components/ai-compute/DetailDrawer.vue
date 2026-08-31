@@ -42,7 +42,7 @@
 </template>
 
 <script setup>
-import TableList from './TableList.vue';
+import TableList from '@/components/cloud-operation/TableList.vue';
 import { useDetailDrawer } from './useDetailDrawer.js';
 
 const props = defineProps({

@@ -156,7 +156,7 @@
 <script setup>
 import CardLayout from '@/components/card-layout/index.vue';
 import CommonEcharts from '@/components/common-echarts/index.vue';
-import DonutChart from '@/components/cloud-operation/DonutChart.vue';
+import DonutChart from '@/components/ai-compute/DonutChart.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import RankCell from '@/components/cloud-operation/RankCell.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';

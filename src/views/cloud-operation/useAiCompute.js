@@ -5,10 +5,7 @@ import {
   toBillion,
   toWan,
 } from '@/utils/index.js';
-import {
-  getAiComputeOverview,
-  getAiComputeTokenOverview,
-} from './overviewMock.js';
+import api from '@/api/index.js';
 import { createResourcePoolDetailRows } from './detailDrawerMock.js';
 
 const CARD_MODEL_COLORS = {
@@ -248,7 +245,7 @@ export function useAiCompute(filters) {
     clearXpuData();
 
     try {
-      const response = await getAiComputeOverview(filters.value);
+      const response = await api.operate.getAiComputeOverview(filters.value);
 
       if (requestSequence !== xpuRequestSequence) {
         return;
@@ -279,7 +276,7 @@ export function useAiCompute(filters) {
     clearTokenData();
 
     try {
-      const response = await getAiComputeTokenOverview(filters.value);
+      const response = await api.operate.getAiComputeTokenOverview(filters.value);
 
       if (requestSequence !== tokenRequestSequence) {
         return;
