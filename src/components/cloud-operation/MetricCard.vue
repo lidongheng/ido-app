@@ -17,15 +17,16 @@
     </div>
     <div class="card-body">
       <template v-for="(metric, index) in metrics" :key="metric.label">
-        <metric-item
+        <component
+          :is="metricComponent"
           :class="['metric-item', metric.isChild ? 'child-metric-item' : '']"
           :metric="metric"
           :compact="compact"
           :loading="loading"
           :failed="failed"
           :showRatio="showRatio || metric.showRatio"
-          :showList="metric.showList"
-          :upGreen="metric.upGreen"
+          :show-list="metric.showList"
+          :up-green="metric.upGreen"
         />
         <SvgIcon v-if="metric.hasChild" icon-name="separation-icon" class="separation-icon-class" />
         <div class="line" v-if="index !== metrics.length - 1 && !metric.hasChild"></div>
@@ -39,9 +40,17 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 import SvgIcon from './SvgIcon.vue';
 import MetricItem from './MetricItem.vue';
+import GeneralCommonItem from './common-computed/GeneralCommonItem.vue';
+import GeneralMetricItem from './common-computed/GeneralMetricItem.vue';
+
+const METRIC_COMPONENTS = {
+  MetricItem,
+  GeneralCommonItem,
+  GeneralMetricItem,
+};
 
 const props = defineProps({
   title: {
@@ -80,9 +89,17 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  metricType: {
+    type: String,
+    default: 'MetricItem',
+    validator(value) {
+      return ['MetricItem', 'GeneralCommonItem', 'GeneralMetricItem'].includes(value);
+    },
+  },
 });
 
 const expanded = ref(props.defaultExpanded);
+const metricComponent = computed(() => METRIC_COMPONENTS[props.metricType]);
 
 function toggle() {
   if (!props.expandable) {

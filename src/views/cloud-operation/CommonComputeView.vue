@@ -1,366 +1,339 @@
 <template>
-  <div class="dashboard-view">
+  <div class="dashboard-page">
     <card-layout
-      class="operation-card"
       title="通算概览"
       :show-blue-line="true"
       :show-nav="false"
       :show-help="false"
     >
-      <div class="power-overview-card">
-        <div class="power-total">
-          <strong>{{ powerOverview.value }}</strong>
-          <span>{{ powerOverview.label }}</span>
-          <div class="power-trend">
-            <span v-if="powerOverview.trendPrefix">{{ powerOverview.trendPrefix }}</span>
-            <trend-value
-              :value="powerOverview.trendValue"
-              :direction="powerOverview.trendDirection"
-              unit=""
-            />
+      <metric-card
+        :metrics="generalData"
+        metric-type="GeneralMetricItem"
+        :loading="false"
+        :failed="false"
+        :show-ratio="true"
+      />
+    </card-layout>
+
+    <div class="general-content">
+      <div class="btn-box">
+        <div class="btn-list">
+          <div
+            v-for="item in btnList"
+            :key="item"
+            class="btn-item"
+            :class="{ active: activeBtn === item }"
+            @click="selectBtn(item)"
+          >
+            {{ item }}
           </div>
         </div>
-        <div class="power-bars">
-          <div v-for="bar in powerBars" :key="bar.label" class="power-bar-row">
-            <span>{{ bar.label }}</span>
-            <div class="power-track">
-              <i :style="{ width: `${bar.percent}%`, background: bar.color }"></i>
-            </div>
-            <strong>{{ bar.value }}</strong>
+      </div>
+
+      <div class="content-box">
+        <metric-card
+          :metrics="totalData"
+          metric-type="GeneralCommonItem"
+          :loading="false"
+          :failed="false"
+          :show-ratio="true"
+        />
+
+        <div class="card-title">
+          <span class="blue-line"></span>
+          <span class="card-title-text">客户资源</span>
+        </div>
+
+        <customer-resources-trend
+          :data="customerDistribution"
+          :summary="customerDistributionSummary"
+        />
+
+        <div class="customer-list">
+          <div
+            v-for="item in customerList"
+            :key="item"
+            class="customer-item"
+            :class="{ active: activeCustomer === item }"
+            @click="selectCustomer(item)"
+          >
+            {{ item }}
           </div>
         </div>
+
+        <common-table
+          title="总量排行榜"
+          :columns="customerColumns"
+          :rows="customerRows"
+          :table-config="tableConfig"
+        />
+        <common-table
+          title="增量排行榜"
+          :columns="changeColumns"
+          :rows="increaseRows"
+          :table-config="tableConfig"
+        />
+        <common-table
+          title="掉量排行榜"
+          :columns="decreaseColumns"
+          :rows="decreaseRows"
+          :table-config="tableConfig"
+        />
       </div>
-      <segment-tabs v-model="resourceTab" :options="resourceOptions" variant="underline" />
-      <metric-card :metrics="resourceMetrics" :loading="false" :failed="false" />
-    </card-layout>
+    </div>
 
     <card-layout
-      class="operation-card"
-      title="客户资源"
+      title="国内 Region 分布"
       :show-blue-line="true"
       :show-nav="false"
       :show-help="false"
     >
-      <donut-chart
-        :data="customerDistribution"
-        :center-value="customerDistributionSummary.value"
-        :center-label="customerDistributionSummary.label"
-        :height="245"
-      />
-      <segment-tabs v-model="customerTab" :options="customerOptions" variant="underline" />
-      <h3 class="subsection-title">总量排行榜</h3>
-      <table-list
-        :table-column="customerColumns"
-        :table-data="customerRows"
-        :default-sort="{}"
-        :table-config="tableConfig"
-      >
-        <template #name="{ scope }">
-          <data-link
-            v-if="scope.row && scope.row.name !== undefined"
-            :text="scope.row.name"
-            @click="openDetail(scope.row)"
-          />
-        </template>
-        <template #increase="{ scope }">
-          <trend-value
-            v-if="scope.row && scope.row.increase !== undefined"
-            :value="scope.row.increase"
-            :direction="scope.row.direction"
-            unit=""
-          />
-        </template>
-      </table-list>
-
-      <div class="subsection-header">
-        <h3>增量排行榜</h3>
-        <segment-tabs v-model="increasePeriod" :options="periodOptions" variant="block" />
+      <div class="flex-column-gap-12">
+        <metric-card
+          :metrics="domesticData"
+          :loading="false"
+          :failed="false"
+        />
+        <div class="card-title">
+          <span class="card-title-text">国内</span>
+        </div>
+        <region-pie
+          :data="domesticDistribution"
+          :summary="regionDistributionSummary"
+          :height="285"
+        />
+        <common-table
+          title="流量高地"
+          :columns="regionColumns"
+          :rows="domesticRows"
+          :table-config="tableConfig"
+        />
+        <common-table
+          title="资源中心"
+          :columns="regionColumns"
+          :rows="resourceCenterRows"
+          :table-config="tableConfig"
+        />
       </div>
-      <table-list
-        :table-column="changeColumns"
-        :table-data="increaseRows"
-        :default-sort="{}"
-        :table-config="tableConfig"
-      >
-        <template #name="{ scope }">
-          <data-link
-            v-if="scope.row && scope.row.name !== undefined"
-            :text="scope.row.name"
-            @click="openDetail(scope.row)"
-          />
-        </template>
-        <template #value="{ scope }">
-          <trend-value
-            v-if="scope.row && scope.row.value !== undefined"
-            :value="scope.row.value"
-            :direction="scope.row.direction"
-            unit=""
-          />
-        </template>
-      </table-list>
-
-      <div class="subsection-header">
-        <h3>掉量排行榜</h3>
-        <segment-tabs v-model="decreasePeriod" :options="periodOptions" variant="block" />
-      </div>
-      <table-list
-        :table-column="decreaseChangeColumns"
-        :table-data="decreaseRows"
-        :default-sort="{}"
-        :table-config="tableConfig"
-      >
-        <template #name="{ scope }">
-          <data-link
-            v-if="scope.row && scope.row.name !== undefined"
-            :text="scope.row.name"
-            @click="openDetail(scope.row)"
-          />
-        </template>
-        <template #value="{ scope }">
-          <trend-value
-            v-if="scope.row && scope.row.value !== undefined"
-            :value="scope.row.value"
-            :direction="scope.row.direction"
-            unit=""
-          />
-        </template>
-      </table-list>
     </card-layout>
 
     <card-layout
-      class="operation-card"
-      title="国内Region分布"
+      title="海外 Region 分布"
       :show-blue-line="true"
       :show-nav="false"
       :show-help="false"
     >
-      <metric-card :metrics="domesticMetrics" :loading="false" :failed="false" />
-      <h3 class="subsection-title">国内</h3>
-      <donut-chart
-        :data="domesticDistribution"
-        :center-value="regionDistributionSummary.value"
-        :center-label="regionDistributionSummary.label"
-        :height="285"
-      />
-      <h3 class="subsection-title">流量高地</h3>
-      <table-list
-        :table-column="regionColumns"
-        :table-data="domesticRows"
-        :default-sort="{}"
-        :table-config="tableConfig"
-      >
-        <template #status="{ scope }">
-          <status-dot
-            v-if="scope.row && scope.row.status !== undefined"
-            :tone="scope.row.status"
-            label="增长状态"
-          />
-        </template>
-      </table-list>
-      <h3 class="subsection-title">资源中心</h3>
-      <table-list
-        :table-column="regionColumns"
-        :table-data="resourceCenterRows"
-        :default-sort="{}"
-        :table-config="tableConfig"
-      >
-        <template #status="{ scope }">
-          <status-dot
-            v-if="scope.row && scope.row.status !== undefined"
-            :tone="scope.row.status"
-            label="增长状态"
-          />
-        </template>
-      </table-list>
+      <div class="flex-column-gap-12">
+        <metric-card
+          :metrics="overseasData"
+          :loading="false"
+          :failed="false"
+        />
+        <div class="card-title">
+          <span class="card-title-text">海外</span>
+        </div>
+        <region-pie
+          :data="overseasDistribution"
+          :summary="regionDistributionSummary"
+          :height="250"
+        />
+        <overseas-table
+          :columns="overseasColumns"
+          :rows="overseasRows"
+          :table-config="overseasTableConfig"
+        />
+      </div>
     </card-layout>
-
-    <card-layout
-      class="operation-card"
-      title="海外Region分布"
-      :show-blue-line="true"
-      :show-nav="false"
-      :show-help="false"
-    >
-      <metric-card :metrics="overseasMetrics" :loading="false" :failed="false" />
-      <h3 class="subsection-title">海外</h3>
-      <donut-chart
-        :data="overseasDistribution"
-        :center-value="regionDistributionSummary.value"
-        :center-label="regionDistributionSummary.label"
-        :height="250"
-      />
-      <h3 class="subsection-title">流量高地</h3>
-      <table-list
-        :table-column="overseasColumns"
-        :table-data="overseasRows"
-        :default-sort="{}"
-        :table-config="overseasTableConfig"
-      >
-        <template #status="{ scope }">
-          <status-dot
-            v-if="scope.row && scope.row.status !== undefined"
-            :tone="scope.row.status"
-            label="增长状态"
-          />
-        </template>
-      </table-list>
-    </card-layout>
-
-    <detail-drawer
-      v-model:visible="drawerVisible"
-      :title="drawerTitle"
-      :metrics="drawerMetrics"
-      :columns="drawerColumns"
-      :rows="drawerRows"
-    />
   </div>
 </template>
 
 <script setup>
 import CardLayout from '@/components/card-layout/index.vue';
-import DataLink from '@/components/cloud-operation/DataLink.vue';
-import DetailDrawer from '@/components/cloud-operation/DetailDrawer.vue';
-import DonutChart from '@/components/cloud-operation/DonutChart.vue';
+import CommonTable from '@/components/cloud-operation/common-computed/CommonTable.vue';
+import CustomerResourcesTrend from '@/components/cloud-operation/common-computed/CustomerResourcesTrend.vue';
+import OverseasTable from '@/components/cloud-operation/common-computed/OverseasTable.vue';
+import RegionPie from '@/components/cloud-operation/common-computed/RegionPie.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
-import SegmentTabs from '@/components/cloud-operation/SegmentTabs.vue';
-import StatusDot from '@/components/cloud-operation/StatusDot.vue';
-import TableList from '@/components/cloud-operation/TableList.vue';
-import TrendValue from '@/components/cloud-operation/TrendValue.vue';
-import { useCommonCompute } from './useCommonCompute.js';
+import { useCommonComputeOverview } from './useCommonComputeOverview.js';
+
+defineProps({
+  filters: {
+    type: Object,
+    required: true,
+  },
+});
 
 const {
+  activeBtn,
+  activeCustomer,
+  btnList,
   changeColumns,
   customerColumns,
   customerDistribution,
   customerDistributionSummary,
-  customerOptions,
+  customerList,
   customerRows,
-  customerTab,
-  decreaseChangeColumns,
-  decreasePeriod,
+  decreaseColumns,
   decreaseRows,
+  domesticData,
   domesticDistribution,
-  domesticMetrics,
   domesticRows,
-  drawerColumns,
-  drawerMetrics,
-  drawerRows,
-  drawerTitle,
-  drawerVisible,
-  increasePeriod,
+  generalData,
   increaseRows,
-  openDetail,
   overseasColumns,
+  overseasData,
   overseasDistribution,
-  overseasMetrics,
   overseasRows,
   overseasTableConfig,
-  periodOptions,
-  powerBars,
-  powerOverview,
   regionColumns,
   regionDistributionSummary,
   resourceCenterRows,
-  resourceMetrics,
-  resourceOptions,
-  resourceTab,
+  selectBtn,
+  selectCustomer,
   tableConfig,
-} = useCommonCompute();
+  totalData,
+} = useCommonComputeOverview();
 </script>
 
 <style lang="less" scoped>
-.dashboard-view {
-  min-height: 100%;
-  padding: 14px 10px 24px;
-  background: #fff;
+.dashboard-page {
+  padding: 8px;
+  margin-bottom: 20px;
+  background: rgba(248, 248, 248, 1);
 }
 
-:deep(.operation-card .body > :not(.title) + *) {
-  margin-top: 10px;
+.tree-expand {
+  display: flex;
 }
 
-.power-overview-card {
-  display: grid;
-  grid-template-columns: 110px minmax(0, 1fr);
-  gap: 12px;
-  padding: 12px 10px;
-  border: 1PX solid #e5eaf5;
-  border-radius: 9px;
-}
-
-.power-total {
+.card-list {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  color: #353575;
-}
-
-.power-total strong {
-  font-size: 26px;
-  line-height: 30px;
-}
-
-.power-total > span {
-  color: #77718f;
-  font-size: 11px;
-}
-
-.power-trend {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: 10px;
-  color: #77718f;
-}
-
-.power-bars {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
   gap: 8px;
+  margin-top: 8px;
 }
 
-.power-bar-row {
-  display: grid;
-  grid-template-columns: 36px minmax(0, 1fr) 92px;
+.placeholder-box {
+  height: 12px;
+  font-size: 16px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 5px;
-  color: #6f6a87;
-  font-size: 10px;
 }
 
-.power-bar-row strong {
-  color: #595a8a;
-  font-weight: 500;
-  text-align: right;
-  font-size: 9.5px;
+.general-content {
+  position: relative;
+  padding: 0px;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: visible;
+  margin-bottom: 8px;
 }
 
-.power-track {
-  height: 7px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: #eef0f7;
+.btn-box {
+  /* top 写在样式中，由 postcss-pxtorem 按不同屏宽转换。 */
+  position: sticky;
+  z-index: 10;
+  top: 80px;
 }
 
-.power-track i {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
+.btn-list {
+  height: 24px;
+  display: flex;
+  background: rgba(234, 241, 254, 1);
 }
 
-.subsection-title,
-.subsection-header h3 {
-  color: #35304f;
+.btn-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px 16px;
+  color: rgba(37, 43, 58, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Regular;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 400;
+  line-height: 20px;
+  letter-spacing: 0px;
+  text-align: left;
+  background: rgba(234, 241, 254, 1);
 }
 
-.subsection-header {
+.btn-item.active {
+  border-radius: 8px 8px -8px -8px;
+  font-style: Bold;
+  font-weight: 700;
+  background-color: #fff;
+}
+
+.content-box {
+  padding: 12px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.flex-column-gap-12 {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.card-title {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-top: 12px;
+  gap: 4px;
 }
 
+.card-title-text {
+  color: rgba(37, 43, 58, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Bold;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: left;
+}
+
+.blue-line {
+  width: 4px;
+  height: 12px;
+  background: #5f7de0;
+  border-radius: 4px;
+}
+
+.customer-list {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(246, 246, 246, 1);
+}
+
+.customer-item {
+  color: rgba(37, 43, 58, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Regular;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: left;
+  border-bottom: 2px solid #fff;
+  padding-bottom: 4px;
+}
+
+.customer-item.active {
+  color: rgba(37, 43, 58, 1);
+  font-family: 'Microsoft YaHei';
+  font-style: Bold;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0px;
+  text-align: left;
+  border-bottom: 2px solid rgba(94, 124, 224, 1);
+}
 </style>
