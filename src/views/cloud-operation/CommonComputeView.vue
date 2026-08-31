@@ -15,21 +15,21 @@
       />
     </card-layout>
 
-    <div class="general-content">
-      <div class="btn-box">
-        <div class="btn-list">
-          <div
-            v-for="item in btnList"
-            :key="item"
-            class="btn-item"
-            :class="{ active: activeBtn === item }"
-            @click="selectBtn(item)"
-          >
-            {{ item }}
-          </div>
+    <div class="btn-box">
+      <div class="btn-list">
+        <div
+          v-for="item in btnList"
+          :key="item"
+          class="btn-item"
+          :class="{ active: activeBtn === item }"
+          @click="selectBtn(item)"
+        >
+          {{ item }}
         </div>
       </div>
+    </div>
 
+    <div class="general-content">
       <div class="content-box">
         <metric-card
           :metrics="totalData"
@@ -242,7 +242,7 @@ const {
   padding: 0px;
   background: #ffffff;
   border-radius: 8px;
-  overflow: visible;
+  overflow: hidden;
   margin-bottom: 8px;
 }
 
@@ -250,7 +250,7 @@ const {
   /* top 写在样式中，由 postcss-pxtorem 按不同屏宽转换。 */
   position: sticky;
   z-index: 10;
-  top: 80px;
+  top: 0px;
 }
 
 .btn-list {
