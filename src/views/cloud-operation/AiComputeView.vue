@@ -10,8 +10,8 @@
       <metric-card
         class="overview-panel"
         :metrics="overviewMetrics"
-        :loading="false"
-        :failed="false"
+        :loading="xpuLoading"
+        :failed="xpuFailed"
       />
       <donut-chart
         :data="cardDistribution"
@@ -43,8 +43,8 @@
     >
       <metric-card
         :metrics="efficiencyMetrics"
-        :loading="false"
-        :failed="false"
+        :loading="xpuLoading"
+        :failed="xpuFailed"
       />
       <table-list
         :table-column="efficiencyColumns"
@@ -146,6 +146,7 @@
 </template>
 
 <script setup>
+import { toRef } from 'vue';
 import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import DetailDrawer from '@/components/cloud-operation/DetailDrawer.vue';
@@ -155,6 +156,13 @@ import TableList from '@/components/cloud-operation/TableList.vue';
 import TokenCard from '@/components/cloud-operation/TokenCard.vue';
 import TrendValue from '@/components/cloud-operation/TrendValue.vue';
 import { useAiCompute } from './useAiCompute.js';
+
+const props = defineProps({
+  filters: {
+    type: Object,
+    required: true,
+  },
+});
 
 const {
   cardColumns,
@@ -183,7 +191,9 @@ const {
   tokenColumns,
   tokenMetrics,
   tokenRows,
-} = useAiCompute();
+  xpuFailed,
+  xpuLoading,
+} = useAiCompute(toRef(props, 'filters'));
 </script>
 
 <style lang="less" scoped>

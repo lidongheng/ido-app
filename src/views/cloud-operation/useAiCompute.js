@@ -1,4 +1,20 @@
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
+import {
+  formatNumToLocalStringAndFiexd,
+  formatRateValue,
+  toBillion,
+  toWan,
+} from '@/utils/index.js';
+import {
+  getAiComputeOverview,
+  getAiComputeTokenOverview,
+} from './overviewMock.js';
+
+const CARD_MODEL_COLORS = {
+  A5: '#12bca8',
+  A3: '#6857dd',
+  A2: '#2d9be6',
+};
 
 const tableConfig = {
   size: 'small',
@@ -18,28 +34,39 @@ function createDetails(prefix, value) {
   ];
 }
 
-export function useAiCompute() {
+function formatPercent(value) {
+  return `${formatRateValue(value)}%`;
+}
+
+function createCardDetails(item, id) {
+  return [
+    { id: `${id}-1`, label: '当前总量', value: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡` },
+    { id: `${id}-2`, label: '年度计划', value: `${formatNumToLocalStringAndFiexd(item.yearPlan, 0)}卡` },
+    { id: `${id}-3`, label: '年度新增', value: `${formatNumToLocalStringAndFiexd(item.yearAddTotal, 0)}卡` },
+    { id: `${id}-4`, label: '当前利用率', value: formatPercent(item.cardTimeUseRate) },
+  ];
+}
+
+export function useAiCompute(filters) {
   const drawerVisible = ref(false);
   const drawerTitle = ref('智算详情');
   const drawerMetrics = ref([]);
   const drawerRows = ref([]);
+  const xpuLoading = ref(true);
+  const xpuFailed = ref(false);
+  const tokenLoading = ref(true);
+  const tokenFailed = ref(false);
+  // 筛选快速切换时只允许最后一次请求更新页面，避免旧响应覆盖新筛选结果。
+  let xpuRequestSequence = 0;
+  let tokenRequestSequence = 0;
 
-  const overviewMetrics = [
-    { label: '总卡数', value: '46.3', unit: '万卡', icon: 'apps-o', help: false },
-    { label: '年度计划', value: '7.2', unit: '万卡', icon: 'todo-list-o', help: false },
-    { label: '年度新增', value: '4.8', unit: '万卡', icon: 'balance-list-o', help: false },
-    { label: '已分配', value: '2.4', unit: '万卡', icon: 'records-o', help: false },
-  ];
+  const overviewMetrics = ref([]);
 
-  const cardDistribution = [
-    { name: 'A5', value: 15, displayValue: '1,647卡 | 15%', color: '#12bca8' },
-    { name: 'A3', value: 33, displayValue: '45,678卡 | 33%', color: '#6857dd' },
-    { name: 'A2', value: 52, displayValue: '143,647卡 | 52%', color: '#2d9be6' },
-  ];
-  const cardDistributionSummary = {
-    value: '463,511',
+  const cardDistribution = ref([]);
+  const cardDistributionSummary = ref({
+    value: '',
     label: '智算总数(卡)',
-  };
+  });
 
   const cardColumns = [
     { prop: 'name', label: '类型', width: 90, align: 'left', showSlot: true },
@@ -48,17 +75,9 @@ export function useAiCompute() {
     { prop: 'increase', label: '年度新增', minWidth: 90, align: 'right' },
   ];
 
-  const cardRows = [
-    { id: 'a5', name: 'A5', color: '#12bca8', cards: '11,647', plan: '2,000', increase: '1,000' },
-    { id: 'a3', name: 'A3', color: '#6857dd', cards: '255,678', plan: '5,000', increase: '3,000' },
-    { id: 'a2', name: 'A2', color: '#2d9be6', cards: '233,648', plan: '5,000', increase: '3,000' },
-  ];
+  const cardRows = ref([]);
 
-  const efficiencyMetrics = [
-    { label: 'E2E卡时分配率', value: '46.3', unit: '%', icon: 'apps-o', help: true },
-    { label: '卡时利用率', value: '95.19', unit: '%', icon: 'clock-o', help: true },
-    { label: 'AI Core利用率', value: '96.18', unit: '%', icon: 'chart-trending-o', help: true },
-  ];
+  const efficiencyMetrics = ref([]);
 
   const efficiencyColumns = [
     { prop: 'name', label: '卡类型', width: 72, align: 'left', showSlot: true },
@@ -69,11 +88,7 @@ export function useAiCompute() {
     { prop: 'coreUsage', label: 'AI Core\n利用率', minWidth: 78, align: 'right' },
   ];
 
-  const efficiencyRows = [
-    { id: 'eff-a5', name: 'A5', total: '17.8', assigned: '1,232', e2e: '90.1%', usage: '90.1%', coreUsage: '89.8%', drawerValue: '90.1%', details: createDetails('eff-a5', '90.1%') },
-    { id: 'eff-a3', name: 'A3', total: '17.8', assigned: '2,156', e2e: '90.1%', usage: '90.1%', coreUsage: '89.8%', drawerValue: '90.1%', details: createDetails('eff-a3', '90.1%') },
-    { id: 'eff-a2', name: 'A2', total: '17.8', assigned: '2,156', e2e: '90.1%', usage: '90.1%', coreUsage: '89.8%', drawerValue: '90.1%', details: createDetails('eff-a2', '90.1%') },
-  ];
+  const efficiencyRows = ref([]);
 
   const customerDistribution = [
     { name: '外部客户', value: 6.75, displayValue: '6/6.75 %', color: '#2e6fe0' },
@@ -130,11 +145,7 @@ export function useAiCompute() {
     { id: 'ai-region-5', name: '华北三', total: '17.8', assigned: '3,225', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-5', '17.8万卡') },
   ];
 
-  const tokenMetrics = [
-    { label: 'Token卡数', value: '1.56', unit: '万卡', help: false },
-    { label: '日Token数', value: '8,053', unit: '亿', help: false },
-    { label: 'Token利用率', value: '40.13', unit: '%', help: false },
-  ];
+  const tokenMetrics = ref([]);
 
   const tokenColumns = [
     { prop: 'name', label: '模型', width: 90, align: 'left' },
@@ -143,11 +154,167 @@ export function useAiCompute() {
     { prop: 'usage', label: 'Token利用率', minWidth: 88, align: 'right', sortable: true },
   ];
 
-  const tokenRows = [
-    { id: 'token-1', name: 'GLM-5.1', cards: '1,230', daily: '90.8%', usage: '90.8%' },
-    { id: 'token-2', name: 'GLM-5.1', cards: '2,200', daily: '90.8%', usage: '90.8%' },
-    { id: 'token-3', name: 'GLM-5.1', cards: '2,699', daily: '90.8%', usage: '90.8%' },
-  ];
+  const tokenRows = ref([]);
+
+  function clearXpuData() {
+    overviewMetrics.value = [];
+    cardDistribution.value = [];
+    cardDistributionSummary.value = {
+      value: '',
+      label: '智算总数(卡)',
+    };
+    cardRows.value = [];
+    efficiencyMetrics.value = [];
+    efficiencyRows.value = [];
+  }
+
+  function setXpuData(data) {
+    const overview = data.xpuOverview;
+
+    overviewMetrics.value = [
+      { label: '总卡数', value: toWan(overview.operationsTotal), unit: '万卡', icon: 'apps-o', help: false },
+      { label: '年度计划', value: toWan(overview.yearPlan), unit: '万卡', icon: 'todo-list-o', help: false },
+      { label: '年度新增', value: toWan(overview.yearAddTotal), unit: '万卡', icon: 'balance-list-o', help: false },
+      { label: '已分配', value: toWan(overview.allocationTotal), unit: '万卡', icon: 'records-o', help: false },
+    ];
+    efficiencyMetrics.value = [
+      { label: 'E2E卡时分配率', value: formatRateValue(overview.e2eCardHourRate), unit: '%', icon: 'apps-o', help: true },
+      { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', icon: 'clock-o', help: true },
+      { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', icon: 'chart-trending-o', help: true },
+    ];
+    cardDistributionSummary.value = {
+      value: formatNumToLocalStringAndFiexd(overview.operationsTotal, 0),
+      label: '智算总数(卡)',
+    };
+    cardDistribution.value = data.cardModelList.map((item) => {
+      return {
+        name: item.cardModelName,
+        value: Number(item.operationsTotalScale) * 100,
+        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
+        color: CARD_MODEL_COLORS[item.cardModel],
+      };
+    });
+    cardRows.value = data.cardModelList.map((item, index) => {
+      return {
+        id: `card-${index}`,
+        name: item.cardModelName,
+        color: CARD_MODEL_COLORS[item.cardModel],
+        cards: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
+        plan: formatNumToLocalStringAndFiexd(item.yearPlan, 0),
+        increase: formatNumToLocalStringAndFiexd(item.yearAddTotal, 0),
+      };
+    });
+    efficiencyRows.value = data.cardModelList.map((item, index) => {
+      const id = `eff-${index}`;
+
+      return {
+        id,
+        name: item.cardModelName,
+        total: toWan(item.operationsTotal),
+        assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
+        e2e: formatPercent(item.e2eCardTimeUseRate),
+        usage: formatPercent(item.cardTimeUseRate),
+        coreUsage: formatPercent(item.aiCoreUtilization),
+        drawerValue: formatPercent(item.cardTimeUseRate),
+        details: createCardDetails(item, id),
+      };
+    });
+  }
+
+  function clearTokenData() {
+    tokenMetrics.value = [];
+    tokenRows.value = [];
+  }
+
+  function setTokenData(data) {
+    const overview = data.tokenOverview;
+
+    tokenMetrics.value = [
+      { label: 'Token卡数', value: toWan(overview.tokenCardTotal), unit: '万卡', help: false },
+      { label: '日Token数', value: toBillion(overview.dayTokenTotal), unit: '亿', help: false },
+      { label: 'Token利用率', value: formatRateValue(overview.tokenUtilization), unit: '%', help: false },
+    ];
+    tokenRows.value = data.modelList.map((item, index) => {
+      return {
+        id: `token-${index}`,
+        name: item.model,
+        cards: formatNumToLocalStringAndFiexd(item.tokenCardTotal, 0),
+        daily: toBillion(item.dayTokenTotal),
+        usage: formatPercent(item.tokenUtilization),
+      };
+    });
+  }
+
+  async function loadXpuData() {
+    const requestSequence = ++xpuRequestSequence;
+
+    xpuLoading.value = true;
+    xpuFailed.value = false;
+    clearXpuData();
+
+    try {
+      const response = await getAiComputeOverview(filters.value);
+
+      if (requestSequence !== xpuRequestSequence) {
+        return;
+      }
+
+      if (response.status === 200) {
+        setXpuData(response.data);
+      }
+    } catch (error) {
+      if (requestSequence !== xpuRequestSequence) {
+        return;
+      }
+
+      xpuFailed.value = true;
+      console.error('智算概览接口请求失败:', error);
+    } finally {
+      if (requestSequence === xpuRequestSequence) {
+        xpuLoading.value = false;
+      }
+    }
+  }
+
+  async function loadTokenData() {
+    const requestSequence = ++tokenRequestSequence;
+
+    tokenLoading.value = true;
+    tokenFailed.value = false;
+    clearTokenData();
+
+    try {
+      const response = await getAiComputeTokenOverview(filters.value);
+
+      if (requestSequence !== tokenRequestSequence) {
+        return;
+      }
+
+      if (response.status === 200) {
+        setTokenData(response.data);
+      }
+    } catch (error) {
+      if (requestSequence !== tokenRequestSequence) {
+        return;
+      }
+
+      tokenFailed.value = true;
+      console.error('Token 概览接口请求失败:', error);
+    } finally {
+      if (requestSequence === tokenRequestSequence) {
+        tokenLoading.value = false;
+      }
+    }
+  }
+
+  watch(
+    filters,
+    () => {
+      loadXpuData();
+      loadTokenData();
+    },
+    { deep: true, immediate: true }
+  );
 
   function openDetail(row) {
     drawerTitle.value = `${row.name} 详情`;
@@ -184,7 +351,11 @@ export function useAiCompute() {
     regionRows,
     tableConfig,
     tokenColumns,
+    tokenFailed,
+    tokenLoading,
     tokenMetrics,
     tokenRows,
+    xpuFailed,
+    xpuLoading,
   };
 }

@@ -18,6 +18,120 @@ function resolveMockResponse(data) {
   });
 }
 
+function resolveAiComputeMockResponse(data) {
+  return resolveMockResponse(data).then((response) => {
+    return {
+      ...response,
+      message: 'SUCCESS',
+      messageEn: 'SUCCESS',
+    };
+  });
+}
+
+export function getAiComputeOverview(filters) {
+  return resolveAiComputeMockResponse({
+    xpuOverview: {
+      id: null,
+      operationsTotal: 10000.000000,
+      allocationTotal: 123.000000,
+      yearPlan: 1233.000000,
+      yearAddTotal: 1234.000000,
+      e2eCardHourRate: 0.920000,
+      cardHourRate: 0.980000,
+      aiCoreRate: 0.990000,
+      dataYear: '2026',
+      dataMonth: '202603',
+      dataDate: '20260313',
+      delFlag: null,
+    },
+    cardModelList: [
+      {
+        id: null,
+        regionId: 'svc',
+        regionName: '华西',
+        cardModel: 'A2',
+        computePower: null,
+        maosPoolName: null,
+        customerCategoryL1: '外部客户',
+        customerCategoryL2: null,
+        customerCategoryL3: null,
+        operationsTotal: 10000.000000,
+        operationsTotalScale: 1.0000000000,
+        allocationTotal: 123.000000,
+        minXpuQty: 123.000000,
+        usedXpuQty: 123.000000,
+        operationsXpuQty: 22.000000,
+        cardModelName: 'A2',
+        cardModelDesc: 'A2卡',
+        cardModelType: 'A2',
+        cardModelTypeDesc: 'A2卡',
+        allocateXpuQty: 33.000000,
+        aiCoreRate: 0.9900000,
+        yearPlan: 123.000000,
+        lastYearTotal: 123.000000,
+        yearAddTotal: 123.000000,
+        dataYear: '2026',
+        dataMonth: '202603',
+        dataDate: '20260313',
+        delFlag: null,
+        cardTimeUseRate: 1.0000000000,
+        aiCoreTemporaryValue: 9900.0000000000,
+        e2eCardTimeUseRate: 1.5000000000,
+        aiCoreUtilization: 0.9900000000,
+      },
+    ],
+    regionList: [],
+    customerList: [],
+  });
+}
+
+export function getAiComputeTokenOverview(filters) {
+  return resolveAiComputeMockResponse({
+    tokenOverview: {
+      id: null,
+      model: 'DeepSeek-V3.2',
+      poolNameGroup: '',
+      cardModel: 'A3',
+      customerType: '',
+      customerName: '',
+      xpuTotal: '0',
+      tokenCardTotal: '16084',
+      dayTokenTotal: '4962.75425572',
+      theoryDayTokenTotal: '15336.07299072',
+      peakTpm: '1304433570',
+      theoryTpmCapacity: '106500.50688',
+      avgTpm: '344635.712203146',
+      peakRpm: '405782',
+      theoryRpmCapacity: '422029.04415319',
+      avgRpm: '175432.321527699',
+      dataDate: '20260313',
+      tokenUtilization: '0.323600068',
+    },
+    modelList: [
+      {
+        id: null,
+        model: 'DeepSeek-V3.2',
+        poolNameGroup: '',
+        cardModel: 'A3',
+        customerType: '',
+        customerName: '',
+        xpuTotal: '0',
+        tokenCardTotal: '16084',
+        dayTokenTotal: '4962.75425572',
+        theoryDayTokenTotal: '15336.07299072',
+        peakTpm: '1304433570',
+        theoryTpmCapacity: '106500.50688',
+        avgTpm: '344635.712203146',
+        peakRpm: '405782',
+        theoryRpmCapacity: '422029.04415319',
+        avgRpm: '175432.321527699',
+        dataDate: '20260313',
+        tokenUtilization: '0.323600068',
+      },
+    ],
+  });
+}
+
 export function getDcOverview() {
   return resolveMockResponse({
     inProductCampusNum: 87,
