@@ -66,18 +66,21 @@
           :columns="customerColumns"
           :rows="customerRows"
           :table-config="tableConfig"
+          @open-detail="openDetail"
         />
         <common-table
           title="增量排行榜"
           :columns="changeColumns"
           :rows="increaseRows"
           :table-config="tableConfig"
+          @open-detail="openDetail"
         />
         <common-table
           title="掉量排行榜"
           :columns="decreaseColumns"
           :rows="decreaseRows"
           :table-config="tableConfig"
+          @open-detail="openDetail"
         />
       </div>
     </div>
@@ -144,6 +147,12 @@
         />
       </div>
     </card-layout>
+
+    <detail-drawer
+      v-model:visible="drawerVisible"
+      :title="drawerTitle"
+      :rows="drawerRows"
+    />
   </div>
 </template>
 
@@ -151,6 +160,7 @@
 import CardLayout from '@/components/card-layout/index.vue';
 import CommonTable from '@/components/cloud-operation/common-computed/CommonTable.vue';
 import CustomerResourcesTrend from '@/components/cloud-operation/common-computed/CustomerResourcesTrend.vue';
+import DetailDrawer from '@/components/cloud-operation/DetailDrawer.vue';
 import OverseasTable from '@/components/cloud-operation/common-computed/OverseasTable.vue';
 import RegionPie from '@/components/cloud-operation/common-computed/RegionPie.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
@@ -178,6 +188,9 @@ const {
   domesticData,
   domesticDistribution,
   domesticRows,
+  drawerRows,
+  drawerTitle,
+  drawerVisible,
   generalData,
   increaseRows,
   overseasColumns,
@@ -185,6 +198,7 @@ const {
   overseasDistribution,
   overseasRows,
   overseasTableConfig,
+  openDetail,
   regionColumns,
   regionDistributionSummary,
   resourceCenterRows,

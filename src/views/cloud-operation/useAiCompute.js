@@ -9,6 +9,7 @@ import {
   getAiComputeOverview,
   getAiComputeTokenOverview,
 } from './overviewMock.js';
+import { createResourcePoolDetailRows } from './detailDrawerMock.js';
 
 const CARD_MODEL_COLORS = {
   A5: '#12bca8',
@@ -19,11 +20,6 @@ const CARD_MODEL_COLORS = {
 const tableConfig = {
   size: 'small',
 };
-
-const drawerColumns = [
-  { prop: 'label', label: '指标', minWidth: 120, align: 'left' },
-  { prop: 'value', label: '详细数据', minWidth: 150, align: 'right' },
-];
 
 function createDetails(prefix, value) {
   return [
@@ -50,7 +46,6 @@ function createCardDetails(item, id) {
 export function useAiCompute(filters) {
   const drawerVisible = ref(false);
   const drawerTitle = ref('智算详情');
-  const drawerMetrics = ref([]);
   const drawerRows = ref([]);
   const xpuLoading = ref(true);
   const xpuFailed = ref(false);
@@ -317,12 +312,8 @@ export function useAiCompute(filters) {
   );
 
   function openDetail(row) {
-    drawerTitle.value = `${row.name} 详情`;
-    drawerMetrics.value = [
-      { label: '业务对象', value: row.name, unit: '', icon: 'records-o', help: false },
-      { label: '当前指标', value: row.drawerValue || row.total || row.cards || '', unit: '', icon: 'chart-trending-o', help: false },
-    ];
-    drawerRows.value = row.details || createDetails(row.id, row.drawerValue || '17.8万卡');
+    drawerTitle.value = `${row.name}资源池详情`;
+    drawerRows.value = createResourcePoolDetailRows(row.id);
     drawerVisible.value = true;
   }
 
@@ -335,8 +326,6 @@ export function useAiCompute(filters) {
     customerDistribution,
     customerDistributionSummary,
     customerRows,
-    drawerColumns,
-    drawerMetrics,
     drawerRows,
     drawerTitle,
     drawerVisible,

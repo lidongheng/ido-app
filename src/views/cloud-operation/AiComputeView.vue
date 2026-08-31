@@ -138,8 +138,6 @@
     <detail-drawer
       v-model:visible="drawerVisible"
       :title="drawerTitle"
-      :metrics="drawerMetrics"
-      :columns="drawerColumns"
       :rows="drawerRows"
     />
   </div>
@@ -173,8 +171,6 @@ const {
   customerDistribution,
   customerDistributionSummary,
   customerRows,
-  drawerColumns,
-  drawerMetrics,
   drawerRows,
   drawerTitle,
   drawerVisible,

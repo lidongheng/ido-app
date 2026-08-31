@@ -11,6 +11,7 @@
         <data-link
           v-if="scope.row && scope.row.name !== undefined"
           :text="scope.row.name"
+          @click="emit('openDetail', scope.row)"
         />
       </template>
       <template #increase="{ scope }">
@@ -64,6 +65,8 @@ defineProps({
     required: true,
   },
 });
+
+const emit = defineEmits(['openDetail']);
 </script>
 
 <style lang="less" scoped>
