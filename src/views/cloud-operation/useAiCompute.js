@@ -6,12 +6,19 @@ import {
   toWan,
 } from '@/utils/index.js';
 import api from '@/api/index.js';
-import { createResourcePoolDetailRows } from './detailDrawerMock.js';
 
 const CARD_MODEL_COLORS = {
   A5: '#12bca8',
   A3: '#6857dd',
   A2: '#2d9be6',
+};
+
+const REGION_ID_BY_NAME = {
+  '西南-贵阳一': 'cn-southwest-guiyang-1',
+  '华东二': 'cn-east-2',
+  '华北-乌兰察布一': 'cn-north-ulanchabu-1',
+  '西南-贵阳二零二': 'cn-southwest-guiyang-202',
+  '华北三': 'cn-north-3',
 };
 
 const tableConfig = {
@@ -38,6 +45,45 @@ function createCardDetails(item, id) {
     { id: `${id}-3`, label: '年度新增', value: `${formatNumToLocalStringAndFiexd(item.yearAddTotal, 0)}卡` },
     { id: `${id}-4`, label: '当前利用率', value: formatPercent(item.cardTimeUseRate) },
   ];
+}
+
+function createDetailParams(filters, row) {
+  const params = {
+    date: filters.date.replaceAll('-', ''),
+    cardModelList: [],
+    customerCategoryL1List: [],
+    regionIdList: [],
+    regionNameList: [],
+    detailType: row.detailType,
+  };
+
+  if (row.detailType === 'card') {
+    params.cardModelList = [row.cardModel];
+  }
+
+  if (row.detailType === 'customer') {
+    params.customerCategoryL1List = [row.customerCategoryL1];
+  }
+
+  if (row.detailType === 'region') {
+    params.regionIdList = [row.regionId];
+    params.regionNameList = [row.regionName];
+  }
+
+  return params;
+}
+
+function createDrawerRows(data) {
+  return data.map((item, index) => {
+    return {
+      id: `ai-detail-${index}`,
+      computeType: item.cardModel,
+      total: toWan(item.operationsTotal),
+      assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
+      usage: formatPercent(item.cardTimeUseRate),
+      coreUsage: formatPercent(item.aiCoreUtilization),
+    };
+  });
 }
 
 export function useAiCompute(filters) {
@@ -108,7 +154,13 @@ export function useAiCompute(filters) {
     { id: 'customer-4', name: 'YW', total: '17.8', increase: '2,156', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-4', '17.8万卡') },
     { id: 'customer-5', name: '外部客户', total: '17.8', increase: '3,225', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-5', '17.8万卡') },
     { id: 'customer-6', name: 'Tokens', total: '17.8', increase: '3,225', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-6', '17.8万卡') },
-  ];
+  ].map((row) => {
+    return {
+      ...row,
+      customerCategoryL1: row.name,
+      detailType: 'customer',
+    };
+  });
 
   const regionDistribution = [
     { name: '西南-贵阳一', value: 50.1, displayValue: '24万/50.1 %', color: '#2e6fe0' },
@@ -135,7 +187,14 @@ export function useAiCompute(filters) {
     { id: 'ai-region-3', name: '华北-乌兰察布一', total: '17.8', assigned: '2,156', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-3', '17.8万卡') },
     { id: 'ai-region-4', name: '西南-贵阳二零二', total: '17.8', assigned: '2,156', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-4', '17.8万卡') },
     { id: 'ai-region-5', name: '华北三', total: '17.8', assigned: '3,225', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-5', '17.8万卡') },
-  ];
+  ].map((row) => {
+    return {
+      ...row,
+      regionId: REGION_ID_BY_NAME[row.name],
+      regionName: row.name,
+      detailType: 'region',
+    };
+  });
 
   const tokenMetrics = ref([]);
 
@@ -202,6 +261,8 @@ export function useAiCompute(filters) {
       return {
         id,
         name: item.cardModelName,
+        cardModel: item.cardModel,
+        detailType: 'card',
         total: toWan(item.operationsTotal),
         assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
         e2e: formatPercent(item.e2eCardTimeUseRate),
@@ -308,10 +369,21 @@ export function useAiCompute(filters) {
     { deep: true, immediate: true }
   );
 
-  function openDetail(row) {
+  async function openDetail(row) {
     drawerTitle.value = `${row.name}资源池详情`;
-    drawerRows.value = createResourcePoolDetailRows(row.id);
+    drawerRows.value = [];
     drawerVisible.value = true;
+
+    try {
+      const params = createDetailParams(filters.value, row);
+      const response = await api.operate.getAiComputeDetail(params);
+
+      if (response.status === 200) {
+        drawerRows.value = createDrawerRows(response.data);
+      }
+    } catch (error) {
+      console.error('智算详情接口请求失败:', error);
+    }
   }
 
   return {

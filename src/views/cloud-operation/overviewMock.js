@@ -132,6 +132,41 @@ export function getAiComputeTokenOverview(filters) {
   });
 }
 
+export function getAiComputeDetail(params) {
+  return resolveAiComputeMockResponse([
+    {
+      id: null,
+      regionId: 'svc',
+      regionName: '华西',
+      cardModel: 'A2',
+      computePower: null,
+      maosPoolName: null,
+      customerCategoryL1: '外部客户',
+      customerCategoryL2: null,
+      customerCategoryL3: null,
+      operationsTotal: 10000.000000,
+      operationsTotalScale: null,
+      allocationTotal: 123.000000,
+      minXpuQty: 123.000000,
+      usedXpuQty: 123.000000,
+      operationsXpuQty: 22.000000,
+      allocationXpuQty: 33.000000,
+      aiCoreRate: 0.990000,
+      yearPlan: 123.000000,
+      lastYearTotal: 123.000000,
+      yearAddTotal: 123.000000,
+      dataYear: '2026',
+      dataMonth: '202603',
+      dataDate: '20260313',
+      delFlag: null,
+      cardTimeUseRate: 1.0000000000,
+      aiCoreTemporaryValue: 9900.0000000000,
+      e2eCardTimeUseRate: 1.5000000000,
+      aiCoreUtilization: 0.9900000000,
+    },
+  ]);
+}
+
 export function getDcOverview() {
   return resolveMockResponse({
     inProductCampusNum: 87,
