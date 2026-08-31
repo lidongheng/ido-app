@@ -223,15 +223,15 @@ export function useAiCompute(filters) {
     const overview = data.xpuOverview;
 
     overviewMetrics.value = [
-      { label: '总卡数', value: toWan(overview.operationsTotal), unit: '万卡', icon: 'apps-o', help: false },
-      { label: '年度计划', value: toWan(overview.yearPlan), unit: '万卡', icon: 'todo-list-o', help: false },
-      { label: '年度新增', value: toWan(overview.yearAddTotal), unit: '万卡', icon: 'balance-list-o', help: false },
-      { label: '已分配', value: toWan(overview.allocationTotal), unit: '万卡', icon: 'records-o', help: false },
+      { label: '总卡数', value: toWan(overview.operationsTotal), unit: '万卡', iconName: '', help: false },
+      { label: '年度计划', value: toWan(overview.yearPlan), unit: '万卡', iconName: '', help: false },
+      { label: '年度新增', value: toWan(overview.yearAddTotal), unit: '万卡', iconName: '', help: false },
+      { label: '已分配', value: toWan(overview.allocationTotal), unit: '万卡', iconName: '', help: false },
     ];
     efficiencyMetrics.value = [
-      { label: 'E2E卡时分配率', value: formatRateValue(overview.e2eCardHourRate), unit: '%', icon: 'apps-o', help: true },
-      { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', icon: 'clock-o', help: true },
-      { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', icon: 'chart-trending-o', help: true },
+      { label: 'E2E卡时分配率', value: formatRateValue(overview.e2eCardHourRate), unit: '%', iconName: '', help: true },
+      { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', iconName: '', help: true },
+      { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', iconName: '', help: true },
     ];
     cardDistributionSummary.value = {
       value: formatNumToLocalStringAndFiexd(overview.operationsTotal, 0),
