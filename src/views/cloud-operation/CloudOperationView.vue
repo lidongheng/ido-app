@@ -1,15 +1,15 @@
 <template>
   <div class="cloud-operation-page" :class="{ 'with-nav-bar': hasNavBar }">
     <template v-if="true">
-      <main class="page-content">
-        <filter-bar
-          :region-count-label="filterCountLabel"
-          :region-label="filterLabel"
-          :region-open="showSelector"
-          :region-disabled="filterDisabled"
-          @open-region="toggleSelector"
-        />
+      <filter-bar
+        :region-count-label="filterCountLabel"
+        :region-label="filterLabel"
+        :region-open="showSelector"
+        :region-disabled="filterDisabled"
+        @open-region="toggleSelector"
+      />
 
+      <main class="page-content">
         <router-view v-slot="{ Component, route: currentRoute }">
           <keep-alive>
             <component

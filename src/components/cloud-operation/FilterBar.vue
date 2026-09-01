@@ -94,7 +94,7 @@ function confirmDate(value) {
 <style lang="less" scoped>
 .filter-bar {
   position: relative;
-  z-index: 10;
+  z-index: 30;
   display: flex;
   width: 100%;
   max-width: 500PX;
