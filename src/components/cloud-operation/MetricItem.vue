@@ -11,16 +11,19 @@
       ></SvgIcon>
       <van-icon v-else-if="metric.icon" :name="metric.icon" class="van-icon-class" />
       <span>{{ metric.label }}</span>
-      <van-popover
+      <el-popover
         v-if="metric.help && metric.helpText"
-        v-model:show="helpVisible"
+        v-model:visible="helpVisible"
         placement="bottom"
+        trigger="click"
+        :width="180"
+        popper-class="metric-help-popover"
       >
         <div class="metric-help-content">{{ metric.helpText }}</div>
         <template #reference>
           <van-icon class="help-icon" name="question-o" />
         </template>
-      </van-popover>
+      </el-popover>
       <van-icon v-else-if="metric.help" class="help-icon" name="question-o" />
     </div>
     <skeleton
@@ -256,12 +259,14 @@ const textClass = computed(() => {
 }
 
 .metric-help-content {
-  width: 180px;
-  padding: 10px 12px;
   color: #595a8a;
   font-size: 12px;
   font-weight: 400;
   line-height: 18px;
+}
+
+:global(.metric-help-popover.el-popover.el-popper) {
+  --el-popover-padding: 5px 6px;
 }
 
 .metric-icon {

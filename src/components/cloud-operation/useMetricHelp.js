@@ -10,7 +10,14 @@ export function useMetricHelp() {
       return activeHelpId.value === helpId;
     },
     set(value) {
-      activeHelpId.value = value ? helpId : null;
+      if (value) {
+        activeHelpId.value = helpId;
+        return;
+      }
+
+      if (activeHelpId.value === helpId) {
+        activeHelpId.value = null;
+      }
     },
   });
 
