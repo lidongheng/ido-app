@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
 import { useCurrentDate } from '@/stores/useCurrentDate.js';
@@ -25,7 +25,8 @@ export function useCloudOperationFilters() {
   const route = useRoute();
   const router = useRouter();
   const showSelector = ref(false);
-  const { date: selectedDate } = storeToRefs(useCurrentDate());
+  const currentDate = useCurrentDate();
+  const { date: selectedDate } = storeToRefs(currentDate);
   const {
     allMode: dcAllMode,
     dcIds: selectedDcIds
@@ -54,6 +55,15 @@ export function useCloudOperationFilters() {
   const optionsError = computed(() => {
     return isDcRoute.value ? dcOptionsError.value : regionError.value;
   });
+
+  watch(
+    () => route.name,
+    (routeName) => {
+      currentDate.setDateByRoute(routeName);
+    },
+    { immediate: true }
+  );
+
   const filterDisabled = computed(() => {
     return loadingOptions.value || Boolean(optionsError.value) || !activeOptions.value;
   });

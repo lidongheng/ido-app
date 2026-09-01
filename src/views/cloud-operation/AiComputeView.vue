@@ -206,7 +206,7 @@ const {
 .dashboard-view {
   min-height: 100%;
   padding: 14px 10px 24px;
-  background: #fff;
+  background: #f8f8f8;
 }
 
 :deep(.operation-card .body > :not(.title) + *) {
