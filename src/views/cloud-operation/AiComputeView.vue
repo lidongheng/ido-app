@@ -45,6 +45,7 @@
         :metrics="efficiencyMetrics"
         :loading="xpuLoading"
         :failed="xpuFailed"
+        :separate-icon-row="true"
       />
       <table-list
         :table-column="efficiencyColumns"

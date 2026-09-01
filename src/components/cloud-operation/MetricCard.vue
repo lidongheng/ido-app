@@ -27,6 +27,7 @@
           :showRatio="showRatio || metric.showRatio"
           :show-list="metric.showList"
           :up-green="metric.upGreen"
+          :separate-icon-row="separateIconRow"
         />
         <SvgIcon v-if="metric.hasChild" icon-name="separation-icon" class="separation-icon-class" />
         <div class="line" v-if="index !== metrics.length - 1 && !metric.hasChild"></div>
@@ -86,6 +87,10 @@ const props = defineProps({
     required: true,
   },
   showRatio: {
+    type: Boolean,
+    default: false,
+  },
+  separateIconRow: {
     type: Boolean,
     default: false,
   },

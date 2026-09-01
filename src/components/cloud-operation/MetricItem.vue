@@ -1,6 +1,9 @@
 <template>
   <div class="metric-content" :class="{ compact }">
-    <div class="metric-label flex-center">
+    <div
+      class="metric-label flex-center"
+      :class="{ 'separate-icon-row': separateIconRow }"
+    >
       <SvgIcon
         v-if="metric.iconName"
         :icon-name="metric.iconName"
@@ -8,7 +11,17 @@
       ></SvgIcon>
       <van-icon v-else-if="metric.icon" :name="metric.icon" class="van-icon-class" />
       <span>{{ metric.label }}</span>
-      <van-icon v-if="metric.help" class="help-icon" name="question-o" />
+      <van-popover
+        v-if="metric.help && metric.helpText"
+        v-model:show="helpVisible"
+        placement="bottom"
+      >
+        <div class="metric-help-content">{{ metric.helpText }}</div>
+        <template #reference>
+          <van-icon class="help-icon" name="question-o" />
+        </template>
+      </van-popover>
+      <van-icon v-else-if="metric.help" class="help-icon" name="question-o" />
     </div>
     <skeleton
       :loading="loading"
@@ -94,6 +107,7 @@ import { computed } from 'vue';
 import SvgIcon from '@/components/cloud-operation/SvgIcon.vue';
 import TrendValue from '@/components/ai-compute/TrendValue.vue';
 import skeleton from '@/components/skeleton/index.vue';
+import { useMetricHelp } from './useMetricHelp.js';
 
 const props = defineProps({
   metric: {
@@ -123,8 +137,14 @@ const props = defineProps({
   showList: {
     type: Boolean,
     default: false,
-  }
+  },
+  separateIconRow: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+const { helpVisible } = useMetricHelp();
 
 const formattedValue = computed(() => {
   if (props.failed) {
@@ -220,6 +240,28 @@ const textClass = computed(() => {
   line-height: 18px;
   letter-spacing: 0px;
   text-align: left;
+}
+
+.metric-label.separate-icon-row {
+  display: grid;
+  grid-template-columns: max-content max-content;
+  column-gap: 4px;
+  row-gap: 2px;
+}
+
+.metric-label.separate-icon-row > .svg-icon-class,
+.metric-label.separate-icon-row > .van-icon-class {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
+
+.metric-help-content {
+  width: 180px;
+  padding: 10px 12px;
+  color: #595a8a;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 18px;
 }
 
 .metric-icon {

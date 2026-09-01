@@ -6,6 +6,7 @@ import {
   toWan,
 } from '@/utils/index.js';
 import api from '@/api/index.js';
+import { CLOUD_OPERATION_METRIC_DESCRIPTIONS } from '@/data/cloudOperationMetricDescriptions.js';
 
 const CARD_MODEL_COLORS = {
   A5: '#12bca8',
@@ -229,9 +230,9 @@ export function useAiCompute(filters) {
       { label: '已分配', value: toWan(overview.allocationTotal), unit: '万卡', iconName: '', help: false },
     ];
     efficiencyMetrics.value = [
-      { label: 'E2E卡时分配率', value: formatRateValue(overview.e2eCardHourRate), unit: '%', iconName: '', help: true },
-      { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', iconName: '', help: true },
-      { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', iconName: '', help: true },
+      { label: 'E2E卡时分配率', value: formatRateValue(overview.e2eCardHourRate), unit: '%', icon: 'apps-o', help: true, helpText: CLOUD_OPERATION_METRIC_DESCRIPTIONS.e2eCardHourRate },
+      { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', icon: 'clock-o', help: true, helpText: CLOUD_OPERATION_METRIC_DESCRIPTIONS.cardHourRate },
+      { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', icon: 'chart-trending-o', help: true, helpText: CLOUD_OPERATION_METRIC_DESCRIPTIONS.aiCoreRate },
     ];
     cardDistributionSummary.value = {
       value: formatNumToLocalStringAndFiexd(overview.operationsTotal, 0),
