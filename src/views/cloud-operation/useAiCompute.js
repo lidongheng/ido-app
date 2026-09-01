@@ -14,26 +14,12 @@ const CARD_MODEL_COLORS = {
   A2: '#2d9be6',
 };
 
-const REGION_ID_BY_NAME = {
-  '西南-贵阳一': 'cn-southwest-guiyang-1',
-  '华东二': 'cn-east-2',
-  '华北-乌兰察布一': 'cn-north-ulanchabu-1',
-  '西南-贵阳二零二': 'cn-southwest-guiyang-202',
-  '华北三': 'cn-north-3',
-};
+const CUSTOMER_DISTRIBUTION_COLOR = '#2e6fe0';
+const REGION_DISTRIBUTION_COLOR = '#2e6fe0';
 
 const tableConfig = {
   size: 'small',
 };
-
-function createDetails(prefix, value) {
-  return [
-    { id: `${prefix}-1`, label: '当前总量', value },
-    { id: `${prefix}-2`, label: '年度计划', value: '12,000' },
-    { id: `${prefix}-3`, label: '年度新增', value: '3,168' },
-    { id: `${prefix}-4`, label: '当前利用率', value: '90.18%' },
-  ];
-}
 
 function formatPercent(value) {
   return `${formatRateValue(value)}%`;
@@ -129,73 +115,33 @@ export function useAiCompute(filters) {
 
   const efficiencyRows = ref([]);
 
-  const customerDistribution = [
-    { name: '外部客户', value: 6.75, displayValue: '6/6.75 %', color: '#2e6fe0' },
-    { name: 'YW', value: 27.65, displayValue: '28/27.65 %', color: '#ef8b32' },
-    { name: '流程IT', value: 12.5, displayValue: '15万/12.5 %', color: '#48b33e' },
-    { name: '终端', value: 31.19, displayValue: '32/31.19 %', color: '#18a4c4' },
-  ];
-  const customerDistributionSummary = {
-    value: '63,511',
-    label: '客户数量',
-  };
+  const customerDistribution = ref([]);
+  const customerDistributionSummary = ref({
+    value: '',
+    label: '上线量（卡）',
+  });
 
   const customerColumns = [
     { prop: 'name', label: '客户分类', width: 125, align: 'left', showSlot: true },
-    { prop: 'total', label: '总卡数\n(万卡)', minWidth: 74, align: 'right', sortable: true },
-    { prop: 'increase', label: '年度增量', minWidth: 78, align: 'right', sortable: true },
-    { prop: 'usage', label: '卡时使用率', minWidth: 84, align: 'right', sortable: true, showSlot: true },
-    { prop: 'coreUsage', label: 'AI Core利用率', minWidth: 92, align: 'right', sortable: true },
+    { prop: 'total', label: '上线量\n(万卡)', minWidth: 90, align: 'right', sortable: true },
+    { prop: 'scale', label: '上线量占比', minWidth: 90, align: 'right', sortable: true },
   ];
 
-  const customerRows = [
-    { id: 'customer-1', name: '流程IT', total: '17.8', increase: '1,232', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-1', '17.8万卡') },
-    { id: 'customer-2', name: '流程IT-基础大模型', total: '17.8', increase: '2,156', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-2', '17.8万卡') },
-    { id: 'customer-3', name: '终端', total: '17.8', increase: '2,156', usage: '90.1%', direction: 'down', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-3', '17.8万卡') },
-    { id: 'customer-4', name: 'YW', total: '17.8', increase: '2,156', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-4', '17.8万卡') },
-    { id: 'customer-5', name: '外部客户', total: '17.8', increase: '3,225', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-5', '17.8万卡') },
-    { id: 'customer-6', name: 'Tokens', total: '17.8', increase: '3,225', usage: '90.1%', direction: 'up', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('customer-6', '17.8万卡') },
-  ].map((row) => {
-    return {
-      ...row,
-      customerCategoryL1: row.name,
-      detailType: 'customer',
-    };
+  const customerRows = ref([]);
+
+  const regionDistribution = ref([]);
+  const regionDistributionSummary = ref({
+    value: '',
+    label: '上线量（卡）',
   });
-
-  const regionDistribution = [
-    { name: '西南-贵阳一', value: 50.1, displayValue: '24万/50.1 %', color: '#2e6fe0' },
-    { name: '华东二', value: 13.2, displayValue: '6.4万/13.2 %', color: '#48b33e' },
-    { name: '华北-乌兰察布一', value: 11.9, displayValue: '5.8万/11.9 %', color: '#684bdd' },
-    { name: '其他', value: 24.8, displayValue: '12万/24.8 %', color: '#18a4c4' },
-  ];
-  const regionDistributionSummary = {
-    value: '463,511',
-    label: '智算卡数',
-  };
 
   const regionColumns = [
     { prop: 'name', label: 'Region', width: 145, align: 'left', showSlot: true },
-    { prop: 'total', label: '总卡数\n(万卡)', minWidth: 72, align: 'right' },
-    { prop: 'assigned', label: '已分配\n(卡)', minWidth: 72, align: 'right' },
-    { prop: 'usage', label: '卡时使用率', minWidth: 84, align: 'right' },
-    { prop: 'coreUsage', label: 'AI Core利用率', minWidth: 88, align: 'right' },
+    { prop: 'total', label: '上线量\n(万卡)', minWidth: 90, align: 'right' },
+    { prop: 'scale', label: '上线量占比', minWidth: 90, align: 'right' },
   ];
 
-  const regionRows = [
-    { id: 'ai-region-1', name: '西南-贵阳一', total: '17.8', assigned: '1,232', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-1', '17.8万卡') },
-    { id: 'ai-region-2', name: '华东二', total: '17.8', assigned: '2,156', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-2', '17.8万卡') },
-    { id: 'ai-region-3', name: '华北-乌兰察布一', total: '17.8', assigned: '2,156', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-3', '17.8万卡') },
-    { id: 'ai-region-4', name: '西南-贵阳二零二', total: '17.8', assigned: '2,156', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-4', '17.8万卡') },
-    { id: 'ai-region-5', name: '华北三', total: '17.8', assigned: '3,225', usage: '90.1%', coreUsage: '89.8%', drawerValue: '17.8万卡', details: createDetails('ai-region-5', '17.8万卡') },
-  ].map((row) => {
-    return {
-      ...row,
-      regionId: REGION_ID_BY_NAME[row.name],
-      regionName: row.name,
-      detailType: 'region',
-    };
-  });
+  const regionRows = ref([]);
 
   const tokenMetrics = ref([]);
 
@@ -218,6 +164,18 @@ export function useAiCompute(filters) {
     cardRows.value = [];
     efficiencyMetrics.value = [];
     efficiencyRows.value = [];
+    customerDistribution.value = [];
+    customerDistributionSummary.value = {
+      value: '',
+      label: '上线量（卡）',
+    };
+    customerRows.value = [];
+    regionDistribution.value = [];
+    regionDistributionSummary.value = {
+      value: '',
+      label: '上线量（卡）',
+    };
+    regionRows.value = [];
   }
 
   function setXpuData(data) {
@@ -271,6 +229,57 @@ export function useAiCompute(filters) {
         coreUsage: formatPercent(item.aiCoreUtilization),
         drawerValue: formatPercent(item.cardTimeUseRate),
         details: createCardDetails(item, id),
+      };
+    });
+    const customerOperationsTotal = data.customerList.reduce((total, item) => {
+      return total + Number(item.operationsTotal);
+    }, 0);
+    customerDistributionSummary.value = {
+      value: formatNumToLocalStringAndFiexd(customerOperationsTotal, 0),
+      label: '上线量（卡）',
+    };
+    customerDistribution.value = data.customerList.map((item) => {
+      return {
+        name: item.customerCategoryL1,
+        value: Number(item.operationsTotalScale) * 100,
+        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
+        color: CUSTOMER_DISTRIBUTION_COLOR,
+      };
+    });
+    customerRows.value = data.customerList.map((item, index) => {
+      return {
+        id: `customer-${index}`,
+        name: item.customerCategoryL1,
+        customerCategoryL1: item.customerCategoryL1,
+        detailType: 'customer',
+        total: toWan(item.operationsTotal),
+        scale: formatPercent(item.operationsTotalScale),
+      };
+    });
+    const regionOperationsTotal = data.regionList.reduce((total, item) => {
+      return total + Number(item.operationsTotal);
+    }, 0);
+    regionDistributionSummary.value = {
+      value: formatNumToLocalStringAndFiexd(regionOperationsTotal, 0),
+      label: '上线量（卡）',
+    };
+    regionDistribution.value = data.regionList.map((item) => {
+      return {
+        name: item.regionName,
+        value: Number(item.operationsTotalScale) * 100,
+        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
+        color: REGION_DISTRIBUTION_COLOR,
+      };
+    });
+    regionRows.value = data.regionList.map((item, index) => {
+      return {
+        id: `region-${index}`,
+        name: item.regionName,
+        regionId: item.regionId,
+        regionName: item.regionName,
+        detailType: 'region',
+        total: toWan(item.operationsTotal),
+        scale: formatPercent(item.operationsTotalScale),
       };
     });
   }

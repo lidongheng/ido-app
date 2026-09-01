@@ -89,14 +89,6 @@
             @click="openDetail(scope.row)"
           />
         </template>
-        <template #usage="{ scope }">
-          <trend-value
-            v-if="scope.row && scope.row.usage !== undefined"
-            :value="scope.row.usage"
-            :direction="scope.row.direction"
-            unit=""
-          />
-        </template>
       </table-list>
     </card-layout>
 
@@ -162,7 +154,6 @@ import DonutChart from '@/components/ai-compute/DonutChart.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import TokenCard from '@/components/ai-compute/TokenCard.vue';
-import TrendValue from '@/components/ai-compute/TrendValue.vue';
 import { useAiCompute } from './useAiCompute.js';
 
 const props = defineProps({

@@ -80,8 +80,21 @@ export function getAiComputeOverview(filters) {
         aiCoreUtilization: 0.9900000000,
       },
     ],
-    regionList: [],
-    customerList: [],
+    regionList: [
+      {
+        regionId: 'svc',
+        regionName: '华西',
+        operationsTotal: 10000.000000,
+        operationsTotalScale: 1.0000000000,
+      },
+    ],
+    customerList: [
+      {
+        customerCategoryL1: '外部客户',
+        operationsTotal: 10000.000000,
+        operationsTotalScale: 1.0000000000,
+      },
+    ],
   });
 }
 
