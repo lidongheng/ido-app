@@ -117,7 +117,7 @@ function confirmDate(value) {
 .filter-button {
   display: flex;
   min-width: 0;
-  align-items: center;
+  align-items: flex-end;
   gap: 3px;
   color: #3e365f;
   background: transparent;
@@ -135,6 +135,7 @@ function confirmDate(value) {
 .region-label {
   display: flex;
   min-width: 0;
+  align-items: flex-end;
 }
 
 .region-name {
