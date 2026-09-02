@@ -26,7 +26,7 @@ export function useCloudOperationFilters() {
   const router = useRouter();
   const showSelector = ref(false);
   const currentDate = useCurrentDate();
-  const { date: selectedDate } = storeToRefs(currentDate);
+  const { dataForApi, date: selectedDate } = storeToRefs(currentDate);
   const {
     allMode: dcAllMode,
     dcIds: selectedDcIds
@@ -70,13 +70,13 @@ export function useCloudOperationFilters() {
   const filters = computed(() => {
     if (isDcRoute.value) {
       return {
-        date: selectedDate.value,
+        date: dataForApi.value,
         ...getDcFilterParams()
       };
     }
 
     return {
-      date: selectedDate.value,
+      date: dataForApi.value,
       ...getRegionFilterParams()
     };
   });

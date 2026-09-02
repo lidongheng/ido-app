@@ -8,8 +8,14 @@ function formatDate(date) {
   return `${year}-${month}-${day}`;
 }
 
-function getCurrentDate() {
-  return formatDate(new Date());
+function getCurrentDate(currentDate) {
+  const yesterday = new Date(
+    currentDate.getFullYear(),
+    currentDate.getMonth(),
+    currentDate.getDate() - 1
+  );
+
+  return formatDate(yesterday);
 }
 
 function getRegionDate(currentDate) {
@@ -22,16 +28,21 @@ function getRegionDate(currentDate) {
 
 export const useCurrentDate = defineStore('currentDate', {
   state: () => ({
-    date: getCurrentDate()
+    date: getCurrentDate(new Date())
   }),
+  getters: {
+    dataForApi(state) {
+      return state.date.replaceAll('-', '');
+    }
+  },
   actions: {
     setDateByRoute(routeName) {
       const currentDate = new Date();
 
-      // Region 数据按月结算，进入概览时使用对应账期，离开后恢复当天。
+      // Region 数据按月结算，进入概览时使用对应账期，离开后恢复昨天。
       this.date = routeName === 'Region'
         ? formatDate(getRegionDate(currentDate))
-        : formatDate(currentDate);
+        : getCurrentDate(currentDate);
     }
   }
 });

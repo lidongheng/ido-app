@@ -36,7 +36,7 @@ function createCardDetails(item, id) {
 
 function createDetailParams(filters, row) {
   const params = {
-    date: filters.date.replaceAll('-', ''),
+    date: filters.date,
     cardModelList: [],
     customerCategoryL1List: [],
     regionIdList: [],
