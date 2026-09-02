@@ -200,13 +200,17 @@ export function useCloudOperationFilters() {
     closeSelector();
   }
 
-  function navigate(name) {
+  async function navigate(name) {
     if (route.name === name) {
       return;
     }
 
     showSelector.value = false;
-    router.push({ name });
+    await router.push({ name });
+
+    // 子路由共用该滚动容器，切换底部导航后需要主动回到顶部。
+    const pageContent = document.querySelector('.page-content');
+    pageContent.scrollTop = 0;
   }
 
   function onAiClick() {

@@ -1,23 +1,33 @@
 <template>
-  <section class="agent-panel" aria-label="运营 Agent">
-    <div class="recommendation-header">
-      <h2>为你推荐</h2>
-      <div class="refresh-label">
-        <van-icon name="replay" />
-        <span>换一换</span>
+  <section
+    class="agent-panel"
+    :class="{ 'input-only': recommendations.length === 0 }"
+    aria-label="运营 Agent"
+  >
+    <template v-if="recommendations.length">
+      <div class="recommendation-header">
+        <h2>为你推荐</h2>
+        <div class="refresh-label">
+          <van-icon name="replay" />
+          <span>换一换</span>
+        </div>
       </div>
-    </div>
 
-    <div class="recommendation-list">
-      <div class="recommendation-item">全国有多少智算卡？</div>
-      <div class="recommendation-item">智算卡top20用户</div>
-      <div class="recommendation-item">各地域各多少卡？</div>
-    </div>
+      <div class="recommendation-list">
+        <div
+          v-for="recommendation in recommendations"
+          :key="recommendation"
+          class="recommendation-item"
+        >
+          {{ recommendation }}
+        </div>
+      </div>
 
-    <div class="agent-sparkles" aria-hidden="true">
-      <span class="sparkle-large">✦</span>
-      <span class="sparkle-small">✦</span>
-    </div>
+      <div class="agent-sparkles" aria-hidden="true">
+        <span class="sparkle-large">✦</span>
+        <span class="sparkle-small">✦</span>
+      </div>
+    </template>
 
     <div class="agent-composer">
       <span class="camera-icon" aria-hidden="true"></span>
@@ -41,6 +51,7 @@ import { useAgentPanel } from './useAgentPanel.js';
 const {
   handleComposerBlur,
   handleComposerFocus,
+  recommendations,
   textareaRef
 } = useAgentPanel();
 </script>
@@ -51,6 +62,10 @@ const {
   min-height: 320px;
   padding: 22px 18px 18px;
   background: linear-gradient(180deg, #fff 0%, #f8faff 25%, #eef4fd 100%);
+}
+
+.agent-panel.input-only {
+  min-height: 130px;
 }
 
 .recommendation-header {
