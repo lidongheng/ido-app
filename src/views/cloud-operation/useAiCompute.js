@@ -118,13 +118,15 @@ export function useAiCompute(filters) {
   const customerDistribution = ref([]);
   const customerDistributionSummary = ref({
     value: '',
-    label: '上线量（卡）',
+    label: '客户数量',
   });
 
   const customerColumns = [
-    { prop: 'name', label: '客户分类', width: 125, align: 'left', showSlot: true },
-    { prop: 'total', label: '上线量\n(万卡)', minWidth: 90, align: 'right', sortable: true },
-    { prop: 'scale', label: '上线量占比', minWidth: 90, align: 'right', sortable: true },
+    { prop: 'name', label: '客户分类', width: 105, align: 'left', showSlot: true },
+    { prop: 'total', label: '卡数\n(卡)', minWidth: 55, align: 'right', sortable: true },
+    { prop: 'increase', label: '年度增量', minWidth: 60, align: 'right', sortable: true },
+    { prop: 'usage', label: '卡时使用率', minWidth: 65, align: 'right', sortable: true },
+    { prop: 'coreUsage', label: 'AI Core利用率', minWidth: 65, align: 'right', sortable: true },
   ];
 
   const customerRows = ref([]);
@@ -132,13 +134,15 @@ export function useAiCompute(filters) {
   const regionDistribution = ref([]);
   const regionDistributionSummary = ref({
     value: '',
-    label: '上线量（卡）',
+    label: '智算卡数',
   });
 
   const regionColumns = [
-    { prop: 'name', label: 'Region', width: 145, align: 'left', showSlot: true },
-    { prop: 'total', label: '上线量\n(万卡)', minWidth: 90, align: 'right' },
-    { prop: 'scale', label: '上线量占比', minWidth: 90, align: 'right' },
+    { prop: 'name', label: 'Region', width: 105, align: 'left', showSlot: true },
+    { prop: 'total', label: '卡数\n(卡)', minWidth: 60, align: 'right' },
+    { prop: 'assigned', label: '已分配\n(卡)', minWidth: 60, align: 'right' },
+    { prop: 'usage', label: '卡时使用率', minWidth: 60, align: 'right' },
+    { prop: 'coreUsage', label: 'AI Core利用率', minWidth: 65, align: 'right' },
   ];
 
   const regionRows = ref([]);
@@ -167,13 +171,13 @@ export function useAiCompute(filters) {
     customerDistribution.value = [];
     customerDistributionSummary.value = {
       value: '',
-      label: '上线量（卡）',
+      label: '客户数量',
     };
     customerRows.value = [];
     regionDistribution.value = [];
     regionDistributionSummary.value = {
       value: '',
-      label: '上线量（卡）',
+      label: '智算卡数',
     };
     regionRows.value = [];
   }
@@ -231,18 +235,15 @@ export function useAiCompute(filters) {
         details: createCardDetails(item, id),
       };
     });
-    const customerOperationsTotal = data.customerList.reduce((total, item) => {
-      return total + Number(item.operationsTotal);
-    }, 0);
     customerDistributionSummary.value = {
-      value: formatNumToLocalStringAndFiexd(customerOperationsTotal, 0),
-      label: '上线量（卡）',
+      value: '',
+      label: '客户数量',
     };
     customerDistribution.value = data.customerList.map((item) => {
       return {
         name: item.customerCategoryL1,
         value: Number(item.operationsTotalScale) * 100,
-        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
+        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}/${formatPercent(item.operationsTotalScale)}`,
         color: CUSTOMER_DISTRIBUTION_COLOR,
       };
     });
@@ -252,8 +253,10 @@ export function useAiCompute(filters) {
         name: item.customerCategoryL1,
         customerCategoryL1: item.customerCategoryL1,
         detailType: 'customer',
-        total: toWan(item.operationsTotal),
-        scale: formatPercent(item.operationsTotalScale),
+        total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
+        increase: formatNumToLocalStringAndFiexd(item.yearAddTotal, 0),
+        usage: formatPercent(item.cardTimeUseRate),
+        coreUsage: formatPercent(item.aiCoreUtilization),
       };
     });
     const regionOperationsTotal = data.regionList.reduce((total, item) => {
@@ -261,13 +264,13 @@ export function useAiCompute(filters) {
     }, 0);
     regionDistributionSummary.value = {
       value: formatNumToLocalStringAndFiexd(regionOperationsTotal, 0),
-      label: '上线量（卡）',
+      label: '智算卡数',
     };
     regionDistribution.value = data.regionList.map((item) => {
       return {
         name: item.regionName,
         value: Number(item.operationsTotalScale) * 100,
-        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
+        displayValue: `${toWan(item.operationsTotal)}万/${formatPercent(item.operationsTotalScale)}`,
         color: REGION_DISTRIBUTION_COLOR,
       };
     });
@@ -278,8 +281,10 @@ export function useAiCompute(filters) {
         regionId: item.regionId,
         regionName: item.regionName,
         detailType: 'region',
-        total: toWan(item.operationsTotal),
-        scale: formatPercent(item.operationsTotalScale),
+        total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
+        assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
+        usage: formatPercent(item.cardTimeUseRate),
+        coreUsage: formatPercent(item.aiCoreUtilization),
       };
     });
   }
