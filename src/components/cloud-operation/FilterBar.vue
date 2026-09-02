@@ -8,15 +8,16 @@
     </div>
     <button
       class="filter-button region-button"
+      :class="{ 'is-static': regionStatic }"
       type="button"
-      :disabled="regionDisabled"
+      :disabled="regionDisabled || regionStatic"
       @click="emit('open-region')"
     >
       <span class="region-label">
         <span class="region-name">{{ displayRegionLabel }}</span>
         <span v-if="regionCountLabel" class="region-count">{{ regionCountLabel }}</span>
       </span>
-      <van-icon :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
+      <van-icon v-if="!regionStatic" :name="regionOpen ? 'arrow-up' : 'arrow-down'" />
     </button>
 
     <van-popup v-model:show="showDatePicker" position="bottom" round>
@@ -62,6 +63,10 @@ const props = defineProps({
     required: true
   },
   regionDisabled: {
+    type: Boolean,
+    required: true
+  },
+  regionStatic: {
     type: Boolean,
     required: true
   }
@@ -156,6 +161,10 @@ function confirmDate(value) {
 .region-button:disabled {
   color: #9a96aa;
   cursor: default;
+}
+
+.region-button.is-static:disabled {
+  color: #3e365f;
 }
 
 :deep(.van-popup) {

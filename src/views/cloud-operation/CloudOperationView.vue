@@ -1,11 +1,13 @@
 <template>
   <div class="cloud-operation-page" :class="{ 'with-nav-bar': hasNavBar }">
     <template v-if="true">
+      <!-- Region/DC 筛选逻辑暂时保留，当前入口只展示“全球”。 -->
       <filter-bar
-        :region-count-label="filterCountLabel"
-        :region-label="filterLabel"
+        region-count-label=""
+        region-label="全球"
         :region-open="showSelector"
         :region-disabled="filterDisabled"
+        :region-static="true"
         @open-region="toggleSelector"
       />
 
