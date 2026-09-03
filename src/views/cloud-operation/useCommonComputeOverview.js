@@ -1,6 +1,16 @@
 import { computed, ref, watch } from 'vue';
 import { useCommonCompute } from './useCommonCompute.js';
 
+export const colors = [
+  '#007AFF',
+  '#FF9500',
+  '#FF2D55',
+  '#FF3B30',
+  '#FF4500',
+  '#FF5722',
+  '#FF69B4',
+];
+
 const RESOURCE_KEY_BY_LABEL = {
   ECS: 'ecs',
   EVS: 'evs',

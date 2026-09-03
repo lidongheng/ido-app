@@ -13,12 +13,14 @@
         :loading="xpuLoading"
         :failed="xpuFailed"
       />
-      <donut-chart
+      <RegionPie
+        name="智算总数"
+        unit="卡"
+        :gap="1"
+        :fixed="0"
+        :loading="false"
         :data="cardDistribution"
-        :center-value="cardDistributionSummary.value"
-        :center-label="cardDistributionSummary.label"
-        :height="245"
-      />
+      ></RegionPie>
       <table-list
         :table-column="cardColumns"
         :table-data="cardRows"
@@ -70,12 +72,14 @@
       :show-nav="false"
       :show-help="false"
     >
-      <donut-chart
+      <RegionPie
+        name="总卡数"
+        unit="卡"
+        :gap="1"
+        :fixed="0"
+        :loading="false"
         :data="customerDistribution"
-        :center-value="customerDistributionSummary.value"
-        :center-label="customerDistributionSummary.label"
-        :height="265"
-      />
+      ></RegionPie>
       <table-list
         :table-column="customerColumns"
         :table-data="customerRows"
@@ -99,12 +103,14 @@
       :show-nav="false"
       :show-help="false"
     >
-      <donut-chart
-        :data="regionDistribution"
-        :center-value="regionDistributionSummary.value"
-        :center-label="regionDistributionSummary.label"
-        :height="255"
-      />
+      <RegionPie
+        name="智算卡数"
+        unit="卡"
+        :gap="1"
+        :fixed="0"
+        :loading="false"
+        :data="regionDistributionComputed"
+      ></RegionPie>
       <table-list
         :table-column="regionColumns"
         :table-data="regionRows"
@@ -150,7 +156,7 @@ import { toRef } from 'vue';
 import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import DetailDrawer from '@/components/ai-compute/DetailDrawer.vue';
-import DonutChart from '@/components/ai-compute/DonutChart.vue';
+import RegionPie from '@/components/cloud-operation/common-computed/RegionPie.vue';
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import TokenCard from '@/components/ai-compute/TokenCard.vue';
@@ -191,6 +197,29 @@ const {
   xpuFailed,
   xpuLoading,
 } = useAiCompute(toRef(props, 'filters'));
+
+const regionDistributionComputed = computed(() => {
+  const data = regionDistribution.value
+    .sort((a, b) => b.operationsTotal - a.operationsTotal)
+    .map((v) => {
+      return {
+        region: v.regionName,
+        num: v.operationsTotal,
+        percent: v.operationsTotalScale,
+      };
+    });
+  const data1 = data.slice(0, 4);
+  const other = data.slice(4) ?? [];
+  const sumOtherNum = other.reduce((sum, item) => sum + item.num, 0);
+  const sumOtherPercent = other.reduce((sum, item) => sum + item.percent, 0);
+  const otherItem = {
+    region: '其他',
+    num: sumOtherNum,
+    percent: sumOtherPercent,
+    tips: other,
+  };
+  return [...data1, otherItem];
+});
 </script>
 
 <style lang="less" scoped>
