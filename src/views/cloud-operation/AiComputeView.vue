@@ -109,7 +109,7 @@
         :gap="1"
         :fixed="0"
         :loading="false"
-        :data="regionDistributionComputed"
+        :data="regionDistribution"
       ></RegionPie>
       <table-list
         :table-column="regionColumns"
@@ -145,6 +145,7 @@
 
     <detail-drawer
       v-model:visible="drawerVisible"
+      :detail-type="drawerDetailType"
       :title="drawerTitle"
       :rows="drawerRows"
     />
@@ -172,12 +173,11 @@ const props = defineProps({
 const {
   cardColumns,
   cardDistribution,
-  cardDistributionSummary,
   cardRows,
   customerColumns,
   customerDistribution,
-  customerDistributionSummary,
   customerRows,
+  drawerDetailType,
   drawerRows,
   drawerTitle,
   drawerVisible,
@@ -188,7 +188,6 @@ const {
   overviewMetrics,
   regionColumns,
   regionDistribution,
-  regionDistributionSummary,
   regionRows,
   tableConfig,
   tokenColumns,
@@ -197,29 +196,6 @@ const {
   xpuFailed,
   xpuLoading,
 } = useAiCompute(toRef(props, 'filters'));
-
-const regionDistributionComputed = computed(() => {
-  const data = regionDistribution.value
-    .sort((a, b) => b.operationsTotal - a.operationsTotal)
-    .map((v) => {
-      return {
-        region: v.regionName,
-        num: v.operationsTotal,
-        percent: v.operationsTotalScale,
-      };
-    });
-  const data1 = data.slice(0, 4);
-  const other = data.slice(4) ?? [];
-  const sumOtherNum = other.reduce((sum, item) => sum + item.num, 0);
-  const sumOtherPercent = other.reduce((sum, item) => sum + item.percent, 0);
-  const otherItem = {
-    region: '其他',
-    num: sumOtherNum,
-    percent: sumOtherPercent,
-    tips: other,
-  };
-  return [...data1, otherItem];
-});
 </script>
 
 <style lang="less" scoped>
@@ -238,8 +214,12 @@ const regionDistributionComputed = computed(() => {
   padding: 12px 6px 11px;
 }
 
+:deep(.overview-panel .metric-item) {
+  min-width: 0;
+}
+
 :deep(.overview-panel .metric-content) {
-  padding: 0 6px;
+  padding: 0 2px;
 }
 
 :deep(.overview-panel .metric-label) {
@@ -249,11 +229,17 @@ const regionDistributionComputed = computed(() => {
 }
 
 :deep(.overview-panel .metric-value-row) {
+  gap: 2px;
   margin-top: 8px;
+  white-space: nowrap;
 }
 
 :deep(.overview-panel .metric-value) {
-  font-size: 20px;
+  font-size: clamp(14PX, 4.5vw, 18PX);
+}
+
+:deep(.overview-panel .metric-unit) {
+  flex-shrink: 0;
 }
 
 .type-cell {

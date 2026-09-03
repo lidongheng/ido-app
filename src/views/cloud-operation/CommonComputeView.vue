@@ -150,6 +150,7 @@
 
     <detail-drawer
       v-model:visible="drawerVisible"
+      detail-type="common"
       :title="drawerTitle"
       :rows="drawerRows"
     />

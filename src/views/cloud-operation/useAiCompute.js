@@ -14,9 +14,6 @@ const CARD_MODEL_COLORS = {
   A2: '#2d9be6',
 };
 
-const CUSTOMER_DISTRIBUTION_COLOR = '#2e6fe0';
-const REGION_DISTRIBUTION_COLOR = '#2e6fe0';
-
 const tableConfig = {
   size: 'small',
 };
@@ -64,7 +61,10 @@ function createDrawerRows(data) {
   return data.map((item, index) => {
     return {
       id: `ai-detail-${index}`,
-      computeType: item.cardModel,
+      computePower: item.computePower,
+      maosPoolName: item.maosPoolName,
+      clusterId: item.clusterId,
+      cardModel: item.cardModel,
       total: toWan(item.operationsTotal),
       assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
       usage: formatPercent(item.cardTimeUseRate),
@@ -73,7 +73,35 @@ function createDrawerRows(data) {
   });
 }
 
+function createRegionDistribution(regionList) {
+  const distribution = regionList
+    .map((item) => {
+      return {
+        region: item.regionName,
+        num: item.operationsTotal,
+        percent: item.operationsTotalScale,
+      };
+    })
+    .sort((a, b) => b.num - a.num);
+  const mainDistribution = distribution.slice(0, 4);
+  const otherDistribution = distribution.slice(4);
+
+  if (otherDistribution.length === 0) {
+    return mainDistribution;
+  }
+
+  // Region 饼图只展示前四项，其余数据合并为“其他”。
+  const otherItem = {
+    region: '其他',
+    num: otherDistribution.reduce((sum, item) => sum + item.num, 0),
+    percent: otherDistribution.reduce((sum, item) => sum + item.percent, 0),
+  };
+
+  return [...mainDistribution, otherItem];
+}
+
 export function useAiCompute(filters) {
+  const drawerDetailType = ref('card');
   const drawerVisible = ref(false);
   const drawerTitle = ref('智算详情');
   const drawerRows = ref([]);
@@ -88,11 +116,6 @@ export function useAiCompute(filters) {
   const overviewMetrics = ref([]);
 
   const cardDistribution = ref([]);
-  const cardDistributionSummary = ref({
-    value: '',
-    label: '智算总数(卡)',
-  });
-
   const cardColumns = [
     { prop: 'name', label: '类型', width: 90, align: 'left', showSlot: true },
     { prop: 'cards', label: '卡数', minWidth: 92, align: 'right' },
@@ -116,11 +139,6 @@ export function useAiCompute(filters) {
   const efficiencyRows = ref([]);
 
   const customerDistribution = ref([]);
-  const customerDistributionSummary = ref({
-    value: '',
-    label: '客户数量',
-  });
-
   const customerColumns = [
     { prop: 'name', label: '客户分类', width: 105, align: 'left', showSlot: true },
     { prop: 'total', label: '卡数\n(卡)', minWidth: 55, align: 'right', sortable: true },
@@ -132,11 +150,6 @@ export function useAiCompute(filters) {
   const customerRows = ref([]);
 
   const regionDistribution = ref([]);
-  const regionDistributionSummary = ref({
-    value: '',
-    label: '智算卡数',
-  });
-
   const regionColumns = [
     { prop: 'name', label: 'Region', width: 105, align: 'left', showSlot: true },
     { prop: 'total', label: '卡数\n(卡)', minWidth: 60, align: 'right' },
@@ -161,24 +174,12 @@ export function useAiCompute(filters) {
   function clearXpuData() {
     overviewMetrics.value = [];
     cardDistribution.value = [];
-    cardDistributionSummary.value = {
-      value: '',
-      label: '智算总数(卡)',
-    };
     cardRows.value = [];
     efficiencyMetrics.value = [];
     efficiencyRows.value = [];
     customerDistribution.value = [];
-    customerDistributionSummary.value = {
-      value: '',
-      label: '客户数量',
-    };
     customerRows.value = [];
     regionDistribution.value = [];
-    regionDistributionSummary.value = {
-      value: '',
-      label: '智算卡数',
-    };
     regionRows.value = [];
   }
 
@@ -196,16 +197,11 @@ export function useAiCompute(filters) {
       { label: '卡时利用率', value: formatRateValue(overview.cardHourRate), unit: '%', icon: 'clock-o', help: true, helpText: CLOUD_OPERATION_METRIC_DESCRIPTIONS.cardHourRate },
       { label: 'AI Core利用率', value: formatRateValue(overview.aiCoreRate), unit: '%', icon: 'chart-trending-o', help: true, helpText: CLOUD_OPERATION_METRIC_DESCRIPTIONS.aiCoreRate },
     ];
-    cardDistributionSummary.value = {
-      value: formatNumToLocalStringAndFiexd(overview.operationsTotal, 0),
-      label: '智算总数(卡)',
-    };
     cardDistribution.value = data.cardModelList.map((item) => {
       return {
-        name: item.cardModelName,
-        value: Number(item.operationsTotalScale) * 100,
-        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}卡 | ${formatPercent(item.operationsTotalScale)}`,
-        color: CARD_MODEL_COLORS[item.cardModel],
+        region: item.cardModelName,
+        num: item.operationsTotal,
+        percent: item.operationsTotalScale,
       };
     });
     cardRows.value = data.cardModelList.map((item, index) => {
@@ -235,16 +231,11 @@ export function useAiCompute(filters) {
         details: createCardDetails(item, id),
       };
     });
-    customerDistributionSummary.value = {
-      value: '',
-      label: '客户数量',
-    };
     customerDistribution.value = data.customerList.map((item) => {
       return {
-        name: item.customerCategoryL1,
-        value: Number(item.operationsTotalScale) * 100,
-        displayValue: `${formatNumToLocalStringAndFiexd(item.operationsTotal, 0)}/${formatPercent(item.operationsTotalScale)}`,
-        color: CUSTOMER_DISTRIBUTION_COLOR,
+        region: item.customerCategoryL1,
+        num: item.operationsTotal,
+        percent: item.operationsTotalScale,
       };
     });
     customerRows.value = data.customerList.map((item, index) => {
@@ -259,21 +250,7 @@ export function useAiCompute(filters) {
         coreUsage: formatPercent(item.aiCoreUtilization),
       };
     });
-    const regionOperationsTotal = data.regionList.reduce((total, item) => {
-      return total + Number(item.operationsTotal);
-    }, 0);
-    regionDistributionSummary.value = {
-      value: formatNumToLocalStringAndFiexd(regionOperationsTotal, 0),
-      label: '智算卡数',
-    };
-    regionDistribution.value = data.regionList.map((item) => {
-      return {
-        name: item.regionName,
-        value: Number(item.operationsTotalScale) * 100,
-        displayValue: `${toWan(item.operationsTotal)}万/${formatPercent(item.operationsTotalScale)}`,
-        color: REGION_DISTRIBUTION_COLOR,
-      };
-    });
+    regionDistribution.value = createRegionDistribution(data.regionList);
     regionRows.value = data.regionList.map((item, index) => {
       return {
         id: `region-${index}`,
@@ -385,6 +362,7 @@ export function useAiCompute(filters) {
   );
 
   async function openDetail(row) {
+    drawerDetailType.value = row.detailType;
     drawerTitle.value = `${row.name}资源池详情`;
     drawerRows.value = [];
     drawerVisible.value = true;
@@ -404,12 +382,11 @@ export function useAiCompute(filters) {
   return {
     cardColumns,
     cardDistribution,
-    cardDistributionSummary,
     cardRows,
     customerColumns,
     customerDistribution,
-    customerDistributionSummary,
     customerRows,
+    drawerDetailType,
     drawerRows,
     drawerTitle,
     drawerVisible,
@@ -420,7 +397,6 @@ export function useAiCompute(filters) {
     overviewMetrics,
     regionColumns,
     regionDistribution,
-    regionDistributionSummary,
     regionRows,
     tableConfig,
     tokenColumns,

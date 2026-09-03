@@ -81,21 +81,24 @@ const emit = defineEmits(['navigate', 'ai-click'])
 .bottom-navigation {
   /* 建立独立层叠上下文，避免滚动内容在安卓 WebView 中覆盖导航点击层。 */
   position: relative;
-  z-index: 10;
+  z-index: 50;
   display: grid;
   width: 100%;
   max-width: 500px;
-  height: 54px;
+  /* 将导航背景延伸到 iPhone 底部手势区域，页面视觉上铺满屏幕。 */
+  height: calc(54px + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
   flex-shrink: 0;
   grid-template-columns: repeat(5, 1fr);
   align-items: stretch;
+  background: #fff;
 }
 
 .bottom-navigation::before {
   position: absolute;
   z-index: 0;
   right: 0;
-  bottom: 0;
+  bottom: env(safe-area-inset-bottom);
   left: 0;
   height: 66px;
   background-image: url('@/assets/svg/bottom-navigation-bg.svg');

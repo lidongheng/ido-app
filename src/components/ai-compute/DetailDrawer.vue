@@ -5,6 +5,7 @@
     position="bottom"
     round
     closeable
+    :z-index="40"
     :style="drawerStyle"
     @update:show="updateVisible"
   >
@@ -46,6 +47,10 @@ import TableList from '@/components/cloud-operation/TableList.vue';
 import { useDetailDrawer } from './useDetailDrawer.js';
 
 const props = defineProps({
+  detailType: {
+    type: String,
+    required: true,
+  },
   visible: {
     type: Boolean,
     required: true,
@@ -69,7 +74,10 @@ const {
   handleDragEnd,
   handleDragMove,
   handleDragStart,
-} = useDetailDrawer(() => props.visible);
+} = useDetailDrawer(
+  () => props.visible,
+  () => props.detailType
+);
 
 function updateVisible(value) {
   emit('update:visible', value);
@@ -135,8 +143,10 @@ function updateVisible(value) {
 }
 
 .drawer-content {
+  flex: 1;
   min-height: 0;
-  padding: 0 14px calc(20px + env(safe-area-inset-bottom));
+  /* 为悬浮在抽屉上方的底部导航预留完整滚动空间。 */
+  padding: 0 14px calc(74px + env(safe-area-inset-bottom));
   overflow-y: auto;
 }
 
