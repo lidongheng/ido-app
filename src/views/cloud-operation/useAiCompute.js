@@ -34,16 +34,11 @@ function createCardDetails(item, id) {
 function createDetailParams(filters, row) {
   const params = {
     date: filters.date,
-    cardModelList: [],
+    cardModelList: row.groupKeyList,
     customerCategoryL1List: [],
     regionIdList: [],
-    regionNameList: [],
     detailType: row.detailType,
   };
-
-  if (row.detailType === 'card') {
-    params.cardModelList = [row.cardModel];
-  }
 
   if (row.detailType === 'customer') {
     params.customerCategoryL1List = [row.customerCategoryL1];
@@ -51,7 +46,6 @@ function createDetailParams(filters, row) {
 
   if (row.detailType === 'region') {
     params.regionIdList = [row.regionId];
-    params.regionNameList = [row.regionName];
   }
 
   return params;
@@ -163,7 +157,7 @@ export function useAiCompute(filters) {
   const tokenMetrics = ref([]);
 
   const tokenColumns = [
-    { prop: 'name', label: '模型', width: 90, align: 'left' },
+    { prop: 'name', label: '模型', width: 90, align: 'left', showSlot: true },
     { prop: 'cards', label: '卡数', minWidth: 65, align: 'right', sortable: true },
     { prop: 'daily', label: '日Token数', minWidth: 82, align: 'right', sortable: true },
     { prop: 'usage', label: 'Token利用率', minWidth: 88, align: 'right', sortable: true },
@@ -221,6 +215,7 @@ export function useAiCompute(filters) {
         id,
         name: item.cardModelName,
         cardModel: item.cardModel,
+        groupKeyList: item.groupKeyList,
         detailType: 'card',
         total: toWan(item.operationsTotal),
         assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
@@ -243,6 +238,7 @@ export function useAiCompute(filters) {
         id: `customer-${index}`,
         name: item.customerCategoryL1,
         customerCategoryL1: item.customerCategoryL1,
+        groupKeyList: item.groupKeyList,
         detailType: 'customer',
         total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
         increase: formatNumToLocalStringAndFiexd(item.yearAddTotal, 0),
@@ -257,6 +253,7 @@ export function useAiCompute(filters) {
         name: item.regionName,
         regionId: item.regionId,
         regionName: item.regionName,
+        groupKeyList: item.groupKeyList,
         detailType: 'region',
         total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
         assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
@@ -283,6 +280,8 @@ export function useAiCompute(filters) {
       return {
         id: `token-${index}`,
         name: item.model,
+        groupKeyList: item.groupKeyList,
+        detailType: 'token',
         cards: formatNumToLocalStringAndFiexd(item.tokenCardTotal, 0),
         daily: toBillion(item.dayTokenTotal),
         usage: formatPercent(item.tokenUtilization),

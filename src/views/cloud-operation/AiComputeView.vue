@@ -140,7 +140,15 @@
         :table-data="tokenRows"
         :default-sort="{}"
         :table-config="tableConfig"
-      />
+      >
+        <template #name="{ scope }">
+          <data-link
+            v-if="scope.row && scope.row.name !== undefined"
+            :text="scope.row.name"
+            @click="openDetail(scope.row)"
+          />
+        </template>
+      </table-list>
     </card-layout>
 
     <detail-drawer

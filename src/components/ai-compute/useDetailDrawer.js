@@ -29,6 +29,11 @@ const drawerColumnMap = {
     { prop: 'cardModel', label: '卡类型', minWidth: 58, align: 'left' },
     ...commonDrawerColumns,
   ],
+  token: [
+    { prop: 'clusterId', label: '资源池', minWidth: 70, align: 'left' },
+    { prop: 'cardModel', label: '卡类型', minWidth: 58, align: 'left' },
+    ...commonDrawerColumns,
+  ],
 };
 
 const drawerTableConfig = {
