@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
+import { useDataDate } from '@/composables/useDataDate.js';
 import { useCurrentDate } from '@/stores/useCurrentDate.js';
 import { useSelectedDc } from '@/stores/useSelectedDc.js';
 import { useSelectedRegion } from '@/stores/useSelectedRegion.js';
@@ -25,6 +26,7 @@ export function useCloudOperationFilters() {
   const route = useRoute();
   const router = useRouter();
   const showSelector = ref(false);
+  const { loadDataDate } = useDataDate();
   const currentDate = useCurrentDate();
   const { dataForApi, date: selectedDate } = storeToRefs(currentDate);
   const {
@@ -206,6 +208,7 @@ export function useCloudOperationFilters() {
     }
 
     showSelector.value = false;
+    await loadDataDate(name);
     await router.push({ name });
 
     // 子路由共用该滚动容器，切换底部导航后需要主动回到顶部。

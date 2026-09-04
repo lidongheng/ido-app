@@ -8,11 +8,13 @@ import {
   getWecodeInfo,
 } from '@/mock/cordova.js';
 import { useUser } from '@/stores/useUser.js';
+import { useDataDate } from './useDataDate.js';
 
 export function useAppInitialization() {
   const router = useRouter();
   const userStore = useUser();
   const { ready } = storeToRefs(userStore);
+  const { loadDataDate } = useDataDate();
 
   async function initialization() {
     try {
@@ -37,6 +39,8 @@ export function useAppInitialization() {
       if (router.currentRoute.value.path === '/') {
         await router.replace({ name: 'commonCompute' });
       }
+
+      await loadDataDate(router.currentRoute.value.name);
       userStore.setReady(true);
     } catch (error) {
       console.error('应用初始化失败:', error);

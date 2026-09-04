@@ -2,6 +2,12 @@ import { SIMULATE_BUSINESS_API_FAILURE } from './mockConfig.js';
 
 const MOCK_DELAY = 280;
 
+const DATA_DATE_BY_TYPE = {
+  通算: '20260313',
+  智算: '20260313',
+  DC: '20260313',
+};
+
 function resolveMockResponse(data) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
@@ -26,6 +32,10 @@ function resolveAiComputeMockResponse(data) {
       messageEn: 'SUCCESS',
     };
   });
+}
+
+export function getDataDate(params) {
+  return resolveMockResponse(DATA_DATE_BY_TYPE[params.datatype]);
 }
 
 export function getAiComputeOverview(filters) {

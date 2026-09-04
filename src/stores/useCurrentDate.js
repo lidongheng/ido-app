@@ -26,10 +26,27 @@ function getRegionDate(currentDate) {
   return new Date(year, targetMonth, 0);
 }
 
+const MODULE_ROUTE_NAMES = ['commonCompute', 'aiCompute', 'dc'];
+
 export const useCurrentDate = defineStore('currentDate', {
-  state: () => ({
-    date: getCurrentDate(new Date())
-  }),
+  state: () => {
+    const currentDate = getCurrentDate(new Date());
+
+    return {
+      activeRouteName: null,
+      date: currentDate,
+      dataDateRequested: {
+        commonCompute: false,
+        aiCompute: false,
+        dc: false
+      },
+      moduleDates: {
+        commonCompute: currentDate,
+        aiCompute: currentDate,
+        dc: currentDate
+      }
+    };
+  },
   getters: {
     dataForApi(state) {
       return state.date.replaceAll('-', '');
@@ -39,10 +56,31 @@ export const useCurrentDate = defineStore('currentDate', {
     setDateByRoute(routeName) {
       const currentDate = new Date();
 
+      if (MODULE_ROUTE_NAMES.includes(this.activeRouteName)) {
+        this.moduleDates[this.activeRouteName] = this.date;
+      }
+
+      this.activeRouteName = routeName;
+
+      if (MODULE_ROUTE_NAMES.includes(routeName)) {
+        this.date = this.moduleDates[routeName];
+        return;
+      }
+
       // Region 数据按月结算，进入概览时使用对应账期，离开后恢复昨天。
       this.date = routeName === 'Region'
         ? formatDate(getRegionDate(currentDate))
         : getCurrentDate(currentDate);
+    },
+    setModuleDate(routeName, date) {
+      this.moduleDates[routeName] = date;
+
+      if (this.activeRouteName === routeName) {
+        this.date = date;
+      }
+    },
+    markDataDateRequested(routeName) {
+      this.dataDateRequested[routeName] = true;
     }
   }
 });
