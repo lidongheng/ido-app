@@ -3,6 +3,19 @@ const path = require('path')
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  devServer: {
+    client: {
+      overlay: {
+        warnings: false,
+        errors: true,
+        // Element Plus 表格调整尺寸时的浏览器通知不应阻断开发页面。
+        runtimeErrors: (error) => {
+          return error.message !== 'ResizeObserver loop limit exceeded'
+            && error.message !== 'ResizeObserver loop completed with undelivered notifications.';
+        }
+      }
+    }
+  },
   configureWebpack: {
     resolve: {
       alias: {

@@ -20,7 +20,15 @@ import {
 import { LabelLayout, UniversalTransition } from 'echarts/features';
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers';
-import { onMounted, onUnmounted, ref, watch } from 'vue';
+import {
+  nextTick,
+  onActivated,
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  ref,
+  watch,
+} from 'vue';
 import { getLegend } from './useCharts';
 
 // 注册必须的组件
@@ -52,6 +60,48 @@ const props = defineProps({
 const chartContainer = ref();
 let myChart = null;
 let isInitialized = false;
+let resizeFrame = null;
+let resizeListenerActive = false;
+
+const resizeChart = () => {
+  resizeFrame = null;
+
+  if (!myChart || !chartContainer.value) return;
+
+  const width = chartContainer.value.clientWidth;
+  const height = chartContainer.value.clientHeight;
+
+  if (!width || !height) return;
+  if (myChart.getWidth() === width && myChart.getHeight() === height) return;
+
+  myChart.resize();
+};
+
+// 折叠屏切换会连续触发 resize，合并到下一帧后再按最终容器尺寸重绘。
+const scheduleChartResize = () => {
+  if (!resizeListenerActive || resizeFrame !== null) return;
+
+  resizeFrame = window.requestAnimationFrame(resizeChart);
+};
+
+const startResizeListener = () => {
+  if (resizeListenerActive) return;
+
+  window.addEventListener('resize', scheduleChartResize);
+  resizeListenerActive = true;
+};
+
+const stopResizeListener = () => {
+  if (resizeListenerActive) {
+    window.removeEventListener('resize', scheduleChartResize);
+    resizeListenerActive = false;
+  }
+
+  if (resizeFrame !== null) {
+    window.cancelAnimationFrame(resizeFrame);
+    resizeFrame = null;
+  }
+};
 
 const initChart = () => {
   if (!chartContainer.value || isInitialized) return;
@@ -91,9 +141,23 @@ watch(
 
 onMounted(() => {
   initChart();
+  startResizeListener();
+});
+
+onActivated(() => {
+  startResizeListener();
+  nextTick(() => {
+    scheduleChartResize();
+  });
+});
+
+onDeactivated(() => {
+  stopResizeListener();
 });
 
 onUnmounted(() => {
+  stopResizeListener();
+
   if (myChart) {
     myChart.dispose();
     myChart = null;
