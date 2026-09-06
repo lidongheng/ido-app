@@ -21,9 +21,6 @@ import { LabelLayout, UniversalTransition } from 'echarts/features';
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers';
 import {
-  nextTick,
-  onActivated,
-  onDeactivated,
   onMounted,
   onUnmounted,
   ref,
@@ -55,53 +52,33 @@ const props = defineProps({
     type: Function,
     default: null,
   },
+  legendSelectable: {
+    type: Boolean,
+    default: true,
+  },
 });
+
+const emit = defineEmits(['legendselectchanged']);
 
 const chartContainer = ref();
 let myChart = null;
 let isInitialized = false;
-let resizeFrame = null;
-let resizeListenerActive = false;
+let resizeObserver = null;
 
-const resizeChart = () => {
-  resizeFrame = null;
-
-  if (!myChart || !chartContainer.value) return;
-
-  const width = chartContainer.value.clientWidth;
-  const height = chartContainer.value.clientHeight;
-
-  if (!width || !height) return;
-  if (myChart.getWidth() === width && myChart.getHeight() === height) return;
-
-  myChart.resize();
-};
-
-// 折叠屏切换会连续触发 resize，合并到下一帧后再按最终容器尺寸重绘。
-const scheduleChartResize = () => {
-  if (!resizeListenerActive || resizeFrame !== null) return;
-
-  resizeFrame = window.requestAnimationFrame(resizeChart);
-};
-
-const startResizeListener = () => {
-  if (resizeListenerActive) return;
-
-  window.addEventListener('resize', scheduleChartResize);
-  resizeListenerActive = true;
-};
-
-const stopResizeListener = () => {
-  if (resizeListenerActive) {
-    window.removeEventListener('resize', scheduleChartResize);
-    resizeListenerActive = false;
-  }
-
-  if (resizeFrame !== null) {
-    window.cancelAnimationFrame(resizeFrame);
-    resizeFrame = null;
+const resize = () => {
+  if (myChart) {
+    myChart.resize();
   }
 };
+
+const buildOptions = () => ({
+  ...props.options,
+  legend: {
+    ...getLegend(props.options.series),
+    ...(props.options?.legend || {}),
+    selectedMode: props.legendSelectable,
+  },
+});
 
 const initChart = () => {
   if (!chartContainer.value || isInitialized) return;
@@ -110,18 +87,21 @@ const initChart = () => {
     myChart = echarts.init(chartContainer.value);
     isInitialized = true;
 
-    // 设置初始配置
     if (props.options) {
-      myChart.setOption(
-        {
-          legend: getLegend(props.options.series),
-          ...props.options,
-        },
-        true
-      );
+      myChart.setOption(buildOptions(), true);
     }
+
+    myChart.on('legendselectchanged', (params) => {
+      emit('legendselectchanged', params);
+    });
+
+    // 使用 ResizeObserver 监听容器大小变化，支持折叠屏折叠/打开
+    resizeObserver = new ResizeObserver(() => {
+      resize();
+    });
+    resizeObserver.observe(chartContainer.value);
   } catch (error) {
-    console.error('Error initializing chart:', error);
+    console.error('图表初始化失败:', error);
   }
 };
 
@@ -130,10 +110,7 @@ watch(
   () => props.options,
   () => {
     if (myChart && props.options) {
-      myChart.setOption({
-        legend: getLegend(props.options.series),
-        ...props.options,
-      }, true);
+      myChart.setOption(buildOptions(), true);
     }
   },
   { deep: true }
@@ -141,27 +118,17 @@ watch(
 
 onMounted(() => {
   initChart();
-  startResizeListener();
-});
-
-onActivated(() => {
-  startResizeListener();
-  nextTick(() => {
-    scheduleChartResize();
-  });
-});
-
-onDeactivated(() => {
-  stopResizeListener();
 });
 
 onUnmounted(() => {
-  stopResizeListener();
-
   if (myChart) {
     myChart.dispose();
     myChart = null;
     isInitialized = false;
+  }
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+    resizeObserver = null;
   }
 });
 </script>

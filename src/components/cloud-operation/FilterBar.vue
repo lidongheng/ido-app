@@ -102,7 +102,6 @@ function confirmDate(value) {
   z-index: 30;
   display: flex;
   width: 100%;
-  max-width: 500PX;
   min-height: 32px;
   flex-shrink: 0;
   align-items: center;

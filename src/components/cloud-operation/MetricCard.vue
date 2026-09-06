@@ -183,7 +183,7 @@ function toggle() {
 .card-body {
   padding: 8px 10px;
   display: flex;
-  gap: 8px;
+  gap: 0.3rem;
   // justify-content: space-between;
 }
 .metric-item {

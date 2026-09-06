@@ -42,7 +42,6 @@ button {
 
 #app {
   width: 100%;
-  max-width: 500PX;
   height: 100%;
   margin: 0 auto;
   background: #fff;

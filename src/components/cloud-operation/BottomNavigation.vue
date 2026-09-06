@@ -84,7 +84,6 @@ const emit = defineEmits(['navigate', 'ai-click'])
   z-index: 50;
   display: grid;
   width: 100%;
-  max-width: 500px;
   /* 将导航背景延伸到 iPhone 底部手势区域，页面视觉上铺满屏幕。 */
   height: calc(54px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);

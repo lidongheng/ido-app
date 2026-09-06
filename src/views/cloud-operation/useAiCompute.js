@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { ref, watch, onMounted, onUnmounted } from 'vue';
 import {
   formatNumToLocalStringAndFiexd,
   formatRateValue,
@@ -34,18 +34,22 @@ function createCardDetails(item, id) {
 function createDetailParams(filters, row) {
   const params = {
     date: filters.date,
-    cardModelList: row.groupKeyList,
+    cardModelList: [],
     customerCategoryL1List: [],
     regionIdList: [],
     detailType: row.detailType,
   };
 
+  if (row.detailType === 'card') {
+    params.cardModelList = [...row.groupListKey];
+  }
+
   if (row.detailType === 'customer') {
-    params.customerCategoryL1List = [row.customerCategoryL1];
+    params.customerCategoryL1List = [...row.groupListKey];
   }
 
   if (row.detailType === 'region') {
-    params.regionIdList = [row.regionId];
+    params.regionIdList = [...row.groupListKey];
   }
 
   return params;
@@ -103,6 +107,31 @@ export function useAiCompute(filters) {
   const xpuFailed = ref(false);
   const tokenLoading = ref(true);
   const tokenFailed = ref(false);
+
+  // 折叠屏展开状态（响应式）
+  const isExpanded = ref(isFoldScreenExpanded());
+
+  // 是否需要分屏（折叠屏展开且有详情数据）
+  const shouldSplit = computed(() => {
+    return drawerVisible.value && isExpanded.value;
+  });
+
+  // 监听屏幕宽度变化，更新 isExpanded
+  const handleResize = () => {
+    const newExpanded = isFoldScreenExpanded();
+    if (isExpanded.value !== newExpanded) {
+      isExpanded.value = newExpanded;
+    }
+  };
+
+  onMounted(() => {
+    window.addEventListener('resize', handleResize);
+  });
+
+  onUnmounted(() => {
+    window.removeEventListener('resize', handleResize);
+  });
+
   // 筛选快速切换时只允许最后一次请求更新页面，避免旧响应覆盖新筛选结果。
   let xpuRequestSequence = 0;
   let tokenRequestSequence = 0;
@@ -215,7 +244,7 @@ export function useAiCompute(filters) {
         id,
         name: item.cardModelName,
         cardModel: item.cardModel,
-        groupKeyList: item.groupKeyList,
+        groupListKey: item.groupListKey,
         detailType: 'card',
         total: toWan(item.operationsTotal),
         assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
@@ -238,7 +267,7 @@ export function useAiCompute(filters) {
         id: `customer-${index}`,
         name: item.customerCategoryL1,
         customerCategoryL1: item.customerCategoryL1,
-        groupKeyList: item.groupKeyList,
+        groupListKey: item.groupListKey,
         detailType: 'customer',
         total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
         increase: formatNumToLocalStringAndFiexd(item.yearAddTotal, 0),
@@ -253,7 +282,7 @@ export function useAiCompute(filters) {
         name: item.regionName,
         regionId: item.regionId,
         regionName: item.regionName,
-        groupKeyList: item.groupKeyList,
+        groupListKey: item.groupListKey,
         detailType: 'region',
         total: formatNumToLocalStringAndFiexd(item.operationsTotal, 0),
         assigned: formatNumToLocalStringAndFiexd(item.allocationTotal, 0),
@@ -280,7 +309,7 @@ export function useAiCompute(filters) {
       return {
         id: `token-${index}`,
         name: item.model,
-        groupKeyList: item.groupKeyList,
+        groupListKey: item.groupListKey,
         detailType: 'token',
         cards: formatNumToLocalStringAndFiexd(item.tokenCardTotal, 0),
         daily: toBillion(item.dayTokenTotal),
@@ -392,11 +421,13 @@ export function useAiCompute(filters) {
     efficiencyColumns,
     efficiencyMetrics,
     efficiencyRows,
+    isExpanded,
     openDetail,
     overviewMetrics,
     regionColumns,
     regionDistribution,
     regionRows,
+    shouldSplit,
     tableConfig,
     tokenColumns,
     tokenFailed,
