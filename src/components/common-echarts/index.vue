@@ -67,6 +67,7 @@ let isInitialized = false;
 let resizeObserver = null;
 
 const resize = () => {
+  // 修复折叠屏切换时缓存页面容器尺寸为 0，ECharts 仍执行 resize 的警告。
   if (myChart && chartContainer.value?.clientWidth && chartContainer.value?.clientHeight) {
     myChart.resize();
   }
@@ -83,6 +84,7 @@ const buildOptions = () => ({
 
 const initChart = () => {
   if (!chartContainer.value || isInitialized) return;
+  // 折叠屏分屏创建或 keep-alive 切换时，隐藏容器不能提前初始化图表。
   if (!chartContainer.value.clientWidth || !chartContainer.value.clientHeight) return;
 
   try {
@@ -127,6 +129,7 @@ onMounted(() => {
 });
 
 onActivated(() => {
+  // 折叠屏页面从 keep-alive 恢复后，按当前分屏宽度重新校正图表尺寸。
   if (!isInitialized) {
     initChart();
     return;

@@ -112,12 +112,12 @@ export function useAiCompute(filters) {
   // 折叠屏展开状态（响应式）
   const isExpanded = ref(isFoldScreenExpanded());
 
-  // 是否需要分屏（折叠屏展开且有详情数据）
+  // 折叠屏展开且详情已打开时使用右侧分屏，合屏后自动切回底部抽屉。
   const shouldSplit = computed(() => {
     return drawerVisible.value && isExpanded.value;
   });
 
-  // 监听屏幕宽度变化，更新 isExpanded
+  // 折叠屏开合会触发 resize，及时同步分屏状态，避免详情仍按旧布局展示。
   const handleResize = () => {
     const newExpanded = isFoldScreenExpanded();
     if (isExpanded.value !== newExpanded) {

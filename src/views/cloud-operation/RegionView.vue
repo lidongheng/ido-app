@@ -138,12 +138,12 @@ const selectedRegion = ref(null);
 // 折叠屏展开状态（响应式）
 const isExpanded = ref(isFoldScreenExpanded());
 
-// 是否需要分屏（折叠屏展开且有选中 Region）
+// 折叠屏展开且已选择 Region 时启用右侧详情，并确保传给组件的是布尔值。
 const shouldSplit = computed(() => {
   return Boolean(selectedRegion.value && isExpanded.value);
 });
 
-// 监听屏幕宽度变化，更新 isExpanded
+// 折叠屏开合会触发 resize，及时同步 Region 详情的展示方式。
 const handleResize = () => {
   const newExpanded = isFoldScreenExpanded();
   if (isExpanded.value !== newExpanded) {

@@ -119,6 +119,7 @@ const router = useRouter();
 const originalBack = (...args) => History.prototype.back.apply(window.history, args);
 
 const interceptedBack = function (...args) {
+  // 折叠屏详情打开时，返回操作只关闭右侧详情，不离开当前页面。
   if (computedSplitMode.value) {
     if (props.isExpanded !== undefined) {
       emit('close-side');
@@ -131,6 +132,7 @@ const interceptedBack = function (...args) {
 };
 
 const restoreRootFontSize = () => {
+  // 分屏关闭后恢复整屏宽度对应的 rem，避免后续页面保持半屏字号。
   const docEl = document.documentElement;
   const width = Math.min(docEl.clientWidth, 500);
   docEl.style.fontSize = `${width / 10}px`;
@@ -179,10 +181,12 @@ onMounted(() => {
 });
 
 onActivated(() => {
+  // keep-alive 页面重新激活时，只允许当前分屏实例接管返回操作。
   window.history.back = interceptedBack;
 });
 
 onDeactivated(() => {
+  // 修复折叠屏页面缓存后仍拦截其他页面返回操作的问题。
   if (window.history.back === interceptedBack) {
     window.history.back = originalBack;
   }
