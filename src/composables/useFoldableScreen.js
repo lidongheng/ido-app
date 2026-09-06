@@ -22,7 +22,7 @@ export function useFoldableScreen(threshold = DEFAULT_EXPANDED_WIDTH) {
     isFoldExpanded,
     checkFoldState: () => {
       isFoldExpanded.value = isFoldScreenExpanded(threshold);
-    }
+    },
   };
 }
 

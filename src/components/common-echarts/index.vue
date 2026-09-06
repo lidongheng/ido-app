@@ -21,6 +21,7 @@ import { LabelLayout, UniversalTransition } from 'echarts/features';
 // 引入 Canvas 渲染器，注意引入 CanvasRenderer 或者 SVGRenderer 是必须的一步
 import { CanvasRenderer } from 'echarts/renderers';
 import {
+  onActivated,
   onMounted,
   onUnmounted,
   ref,
@@ -66,7 +67,7 @@ let isInitialized = false;
 let resizeObserver = null;
 
 const resize = () => {
-  if (myChart) {
+  if (myChart && chartContainer.value?.clientWidth && chartContainer.value?.clientHeight) {
     myChart.resize();
   }
 };
@@ -82,6 +83,7 @@ const buildOptions = () => ({
 
 const initChart = () => {
   if (!chartContainer.value || isInitialized) return;
+  if (!chartContainer.value.clientWidth || !chartContainer.value.clientHeight) return;
 
   try {
     myChart = echarts.init(chartContainer.value);
@@ -95,11 +97,6 @@ const initChart = () => {
       emit('legendselectchanged', params);
     });
 
-    // 使用 ResizeObserver 监听容器大小变化，支持折叠屏折叠/打开
-    resizeObserver = new ResizeObserver(() => {
-      resize();
-    });
-    resizeObserver.observe(chartContainer.value);
   } catch (error) {
     console.error('图表初始化失败:', error);
   }
@@ -117,7 +114,24 @@ watch(
 );
 
 onMounted(() => {
+  // 容器从隐藏状态恢复时由观察器完成首次初始化或尺寸更新。
+  resizeObserver = new ResizeObserver(() => {
+    if (!isInitialized) {
+      initChart();
+      return;
+    }
+    resize();
+  });
+  resizeObserver.observe(chartContainer.value);
   initChart();
+});
+
+onActivated(() => {
+  if (!isInitialized) {
+    initChart();
+    return;
+  }
+  resize();
 });
 
 onUnmounted(() => {

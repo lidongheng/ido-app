@@ -84,10 +84,12 @@ function createRankRows(scope) {
   });
 }
 
-export function useRegionDetail() {
+export function useRegionDetail(regionId) {
   const route = useRoute();
   const region = computed(() => {
-    return REGION_DETAILS[route.params.regionId] || REGION_DETAILS['cn-hongkong-1'];
+    const explicitRegionId = regionId ? regionId() : undefined;
+    const currentRegionId = explicitRegionId || route.params.regionId;
+    return REGION_DETAILS[currentRegionId] || REGION_DETAILS['cn-hongkong-1'];
   });
 
   const financialMetrics = [

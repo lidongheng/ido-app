@@ -103,6 +103,22 @@ export const toWan = (value) => {
   return formatterValue(value, unit);
 }
 
+export const valueToYi = (value, fixed = 2) => {
+  return formatterValue(value, 1e8, fixed);
+};
+
+export const valueToWan = (value, fixed = 2) => {
+  return formatterValue(value, 1e4, fixed);
+};
+
+export const floatToWan = (value, dataType, fixed = 2) => {
+  return formatterValue(value, 1e4, fixed);
+};
+
+export const formatValueRateM = (value, fixed = 2) => {
+  return `${formatRateValue(value, fixed)}%`;
+};
+
 export const toPb = (value) => {
   const unit = 10000;
   return formatterValue(value, unit);

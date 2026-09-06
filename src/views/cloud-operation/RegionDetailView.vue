@@ -162,6 +162,13 @@ import RankCell from '@/components/cloud-operation/RankCell.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import { useRegionDetail } from './useRegionDetail.js';
 
+const props = defineProps({
+  regionId: {
+    type: String,
+    default: undefined,
+  },
+});
+
 const {
   customerDistribution,
   customerDistributionSummary,
@@ -179,7 +186,7 @@ const {
   tableConfig,
   topColumns,
   trendOptions,
-} = useRegionDetail();
+} = useRegionDetail(() => props.regionId);
 </script>
 
 <style lang="less" scoped>

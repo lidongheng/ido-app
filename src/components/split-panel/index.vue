@@ -19,7 +19,16 @@
 </template>
 
 <script setup>
-import { computed, useSlots, ref, onMounted, onUnmounted, watch } from 'vue';
+import {
+  computed,
+  onActivated,
+  onDeactivated,
+  onMounted,
+  onUnmounted,
+  ref,
+  useSlots,
+  watch,
+} from 'vue';
 import { useRouter } from 'vue-router';
 import { isFoldScreenExpanded } from '@/composables/useFoldableScreen';
 
@@ -46,7 +55,7 @@ const props = defineProps({
   // 标题
   title: {
     type: String,
-    default: "",
+    default: '',
   },
   // 外部传入的展开状态（可选），如果有则优先使用
   isExpanded: {
@@ -106,28 +115,29 @@ const handleResize = () => {
 // 获取 Vue Router 实例
 const router = useRouter();
 
-// 保存原始的 back 方法
-const originalBack = window.history.back.bind(window.history);
+// 直接调用原生 History 方法，避免缓存页面互相包装 back。
+const originalBack = (...args) => History.prototype.back.apply(window.history, args);
 
-HWH5.addEventListener({
-  type: 'back',
-  func: () => {
-    if (computedSplitMode.value) {
-      // 关闭分屏
-      if (props.isExpanded !== undefined) {
-        emit('close-side');
-      } else {
-        updateExpanded(false);
-      }
-      // 不执行返回
-      return false;
+const interceptedBack = function (...args) {
+  if (computedSplitMode.value) {
+    if (props.isExpanded !== undefined) {
+      emit('close-side');
     } else {
-      return true;
+      updateExpanded(false);
     }
-  },
-}).catch((error) => {
-  console.log('监听事件发生异常', error);
-});
+    return;
+  }
+  return originalBack(...args);
+};
+
+const restoreRootFontSize = () => {
+  const docEl = document.documentElement;
+  const width = Math.min(docEl.clientWidth, 500);
+  docEl.style.fontSize = `${width / 10}px`;
+};
+
+let removeRouterGuard = null;
+let stopExpandedWatch = null;
 
 onMounted(() => {
   if (props.watchResize) {
@@ -135,23 +145,10 @@ onMounted(() => {
   }
 
   // 拦截 history.back() 方法，当分屏打开时关闭分屏，否则正常返回
-  window.history.back = function (...args) {
-    if (computedSplitMode.value) {
-      // 关闭分屏
-      if (props.isExpanded !== undefined) {
-        emit('close-side');
-      } else {
-        updateExpanded(false);
-      }
-      // 不执行返回
-      return;
-    }
-    // 正常返回
-    return originalBack(...args);
-  };
+  window.history.back = interceptedBack;
 
   // 添加 Vue Router 全局守卫，路由变化时关闭分屏
-  router.beforeEach((to, from, next) => {
+  removeRouterGuard = router.beforeEach((to, from, next) => {
     if (computedSplitMode.value) {
       // 关闭分屏
       if (props.isExpanded !== undefined) {
@@ -164,7 +161,7 @@ onMounted(() => {
     next();
   });
 
-  watch(
+  stopExpandedWatch = watch(
     () => props.isExpanded,
     (isOpen) => {
       const docEl = document.documentElement;
@@ -181,12 +178,33 @@ onMounted(() => {
   );
 });
 
+onActivated(() => {
+  window.history.back = interceptedBack;
+});
+
+onDeactivated(() => {
+  if (window.history.back === interceptedBack) {
+    window.history.back = originalBack;
+  }
+  restoreRootFontSize();
+});
+
 onUnmounted(() => {
   if (props.watchResize) {
     window.removeEventListener('resize', handleResize);
   }
   // 恢复原始的 back 方法
-  window.history.back = originalBack;
+  if (window.history.back === interceptedBack) {
+    window.history.back = originalBack;
+  }
+  if (removeRouterGuard) {
+    removeRouterGuard();
+  }
+  if (stopExpandedWatch) {
+    stopExpandedWatch();
+  }
+  // 页面卸载后恢复全屏宽度对应的根字号。
+  restoreRootFontSize();
 });
 </script>
 

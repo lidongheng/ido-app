@@ -1,12 +1,12 @@
 <template>
-  <RegionDetailView :regionName="regionName" />
+  <RegionDetailView :region-id="regionId" />
 </template>
 
 <script setup>
 import RegionDetailView from '@/views/cloud-operation/RegionDetailView.vue';
 
-const props = defineProps({
-  regionName: {
+defineProps({
+  regionId: {
     type: String,
     required: true,
   },

@@ -50,7 +50,12 @@
                 <span class="text-link" @click="openRegionDetail(scope.row, '国内 Region 经营详情')">{{ scope.row.regionName }}</span>
               </template>
               <template #status="{ scope }">
-                <div class="status-crice" :class="[scope.row.status]"></div>
+                <el-tooltip placement="top" effect="light">
+                  <template #content>
+                    <status-tooltip />
+                  </template>
+                  <div class="status-crice" :class="[scope.row.status]"></div>
+                </el-tooltip>
               </template>
             </table-list>
           </skeleton>
@@ -72,7 +77,12 @@
                 <span class="text-link" @click="openRegionDetail(scope.row, '海外 Region 经营详情')">{{ scope.row.regionName }}</span>
               </template>
               <template #status="{ scope }">
-                <div class="status-crice" :class="[scope.row.status]"></div>
+                <el-tooltip placement="top" effect="light">
+                  <template #content>
+                    <status-tooltip />
+                  </template>
+                  <div class="status-crice" :class="[scope.row.status]"></div>
+                </el-tooltip>
               </template>
             </table-list>
           </skeleton>
@@ -83,7 +93,7 @@
     <template #side>
       <inline-region-detail
         v-if="selectedRegion"
-        :region-name="selectedRegion"
+        :region-id="selectedRegion"
         @close="closeRegionDetail"
       />
     </template>
@@ -123,14 +133,14 @@ const router = useRouter();
 
 useRegionView();
 
-// 选中的 Region 名称
+// 选中的 Region 标识
 const selectedRegion = ref(null);
 // 折叠屏展开状态（响应式）
 const isExpanded = ref(isFoldScreenExpanded());
 
 // 是否需要分屏（折叠屏展开且有选中 Region）
 const shouldSplit = computed(() => {
-  return selectedRegion.value && isExpanded.value;
+  return Boolean(selectedRegion.value && isExpanded.value);
 });
 
 // 监听屏幕宽度变化，更新 isExpanded
@@ -156,13 +166,13 @@ const openRegionDetail = (row, title) => {
   if (isFoldScreenExpanded()) {
     sideTitle.value = title;
     // 折叠屏展开状态：在右侧内联展示
-    selectedRegion.value = row.regionName;
+    selectedRegion.value = row.regionId;
   } else {
     // 非展开状态：跳转到详情页
     router.push({
       name: 'RegionDetail',
-      query: {
-        regionName: row.regionName,
+      params: {
+        regionId: row.regionId,
       },
     });
   }
@@ -342,16 +352,40 @@ const tableColumn = [
 ];
 
 const insideRegionData = computed(() => {
-  return sortArrayByMetric(regionViewData.value.insideRegion, 'valueRateY')
-})
+  return sortArrayByMetric(regionViewData.value.insideRegion, 'valueRateY');
+});
 
 const outsideRegionData = computed(() => {
-  return sortArrayByMetric(regionViewData.value.outsideRegion, 'valueRateY')
-})
+  return sortArrayByMetric(regionViewData.value.outsideRegion, 'valueRateY');
+});
 </script>
 
 <style lang="less" scoped>
 .mgt8 {
   margin-top: 8px;
+}
+
+.text-link {
+  color: #536fdb;
+  cursor: pointer;
+}
+
+.status-crice {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-crice.success {
+  background: #20b486;
+}
+
+.status-crice.warning {
+  background: #f5a623;
+}
+
+.status-crice.danger {
+  background: #e85b72;
 }
 </style>

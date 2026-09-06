@@ -1,7 +1,7 @@
 <template>
   <split-panel
     :title="drawerTitle"
-    :is-pxpanded="shouldSplit"
+    :is-expanded="shouldSplit"
     :watch-resize="true"
     main-width="50%"
     @close-side="closeDrawer"
@@ -184,7 +184,7 @@
 </template>
 
 <script setup>
-import { toRef } from 'vue';
+import { computed, toRef } from 'vue';
 import CardLayout from '@/components/card-layout/index.vue';
 import DataLink from '@/components/cloud-operation/DataLink.vue';
 import DetailDrawer from '@/components/ai-compute/DetailDrawer.vue';
@@ -192,6 +192,7 @@ import RegionPie from '@/components/cloud-operation/common-computed/RegionPie.vu
 import MetricCard from '@/components/cloud-operation/MetricCard.vue';
 import TableList from '@/components/cloud-operation/TableList.vue';
 import TokenCard from '@/components/ai-compute/TokenCard.vue';
+import SplitPanel from '@/components/split-panel/index.vue';
 import { useAiCompute } from './useAiCompute.js';
 import { useDetailDrawer } from '@/components/ai-compute/useDetailDrawer.js';
 

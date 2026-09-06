@@ -1,4 +1,4 @@
-import { ref, watch, onMounted, onUnmounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
   formatNumToLocalStringAndFiexd,
   formatRateValue,
@@ -7,6 +7,7 @@ import {
 } from '@/utils/index.js';
 import api from '@/api/index.js';
 import { CLOUD_OPERATION_METRIC_DESCRIPTIONS } from '@/data/cloudOperationMetricDescriptions.js';
+import { isFoldScreenExpanded } from '@/composables/useFoldableScreen.js';
 
 const CARD_MODEL_COLORS = {
   A5: '#12bca8',
