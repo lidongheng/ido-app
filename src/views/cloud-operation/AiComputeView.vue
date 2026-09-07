@@ -1,5 +1,6 @@
 <template>
   <split-panel
+    class="ai-compute-split-panel"
     :title="drawerTitle"
     :is-expanded="shouldSplit"
     :watch-resize="true"
@@ -248,6 +249,17 @@ const closeDrawer = () => {
 </script>
 
 <style lang="less" scoped>
+// 折叠屏展开后左右区域与 AgentPanel 共用外层页面滚动，避免内外层同时出现纵向滚动条。
+.ai-compute-split-panel {
+  height: auto;
+  min-height: 100%;
+}
+
+.ai-compute-split-panel :deep(.split-panel-main),
+.ai-compute-split-panel.split-mode :deep(.split-panel-side) {
+  overflow: visible;
+}
+
 .dashboard-view {
   min-height: 100%;
   padding: 14px 10px 24px;
@@ -309,7 +321,7 @@ const closeDrawer = () => {
 .inline-detail {
   display: flex;
   flex-direction: column;
-  height: calc(100% - 32px);
+  height: auto;
   background: #fff;
   margin: 8px;
 }
