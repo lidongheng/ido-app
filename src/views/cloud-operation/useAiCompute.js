@@ -1,4 +1,5 @@
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import {
   formatNumToLocalStringAndFiexd,
   formatRateValue,
@@ -100,6 +101,7 @@ function createRegionDistribution(regionList) {
 }
 
 export function useAiCompute(filters) {
+  const router = useRouter();
   const drawerDetailType = ref('card');
   const drawerVisible = ref(false);
   const drawerTitle = ref('智算详情');
@@ -108,6 +110,9 @@ export function useAiCompute(filters) {
   const xpuFailed = ref(false);
   const tokenLoading = ref(true);
   const tokenFailed = ref(false);
+  // 两个业务接口都返回无权限时才离开智算页。
+  const xpuNoAuth = ref(false);
+  const tokenNoAuth = ref(false);
 
   // 折叠屏展开状态（响应式）
   const isExpanded = ref(isFoldScreenExpanded());
@@ -319,17 +324,38 @@ export function useAiCompute(filters) {
     });
   }
 
+  function responseIsNoAuth(response) {
+    return response.status === 200
+      && response.errorcode === '3002'
+      && response.errorMessage.endsWith('403');
+  }
+
+  function navigateWhenAllNoAuth() {
+    if (!xpuNoAuth.value || !tokenNoAuth.value) {
+      return;
+    }
+
+    router.push({ name: 'authority-tip' });
+  }
+
   async function loadXpuData() {
     const requestSequence = ++xpuRequestSequence;
 
     xpuLoading.value = true;
     xpuFailed.value = false;
+    xpuNoAuth.value = false;
     clearXpuData();
 
     try {
       const response = await api.operate.getAiComputeOverview(filters.value);
 
       if (requestSequence !== xpuRequestSequence) {
+        return;
+      }
+
+      if (responseIsNoAuth(response)) {
+        xpuNoAuth.value = true;
+        navigateWhenAllNoAuth();
         return;
       }
 
@@ -355,12 +381,19 @@ export function useAiCompute(filters) {
 
     tokenLoading.value = true;
     tokenFailed.value = false;
+    tokenNoAuth.value = false;
     clearTokenData();
 
     try {
       const response = await api.operate.getAiComputeTokenOverview(filters.value);
 
       if (requestSequence !== tokenRequestSequence) {
+        return;
+      }
+
+      if (responseIsNoAuth(response)) {
+        tokenNoAuth.value = true;
+        navigateWhenAllNoAuth();
         return;
       }
 

@@ -65,6 +65,11 @@ const routes = [
         }
       }
     ]
+  },
+  {
+    path: '/authority-tip',
+    name: 'authority-tip',
+    component: () => import('../views/AuthorityTipView.vue')
   }
 
   // 旧版路由保留备查，取消注释后才会重新进入构建。
