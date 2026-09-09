@@ -1,5 +1,6 @@
 <template>
   <split-panel
+    class="region-split-panel"
     :title="sideTitle"
     :is-expanded="shouldSplit"
     :watch-resize="true"
@@ -361,6 +362,17 @@ const outsideRegionData = computed(() => {
 </script>
 
 <style lang="less" scoped>
+// 折叠屏展开后左右区域与 AgentPanel 共用外层页面滚动，避免 Region 页面产生嵌套滚动。
+.region-split-panel {
+  height: auto;
+  min-height: 100%;
+}
+
+.region-split-panel :deep(.split-panel-main),
+.region-split-panel.split-mode :deep(.split-panel-side) {
+  overflow: visible;
+}
+
 .mgt8 {
   margin-top: 8px;
 }
