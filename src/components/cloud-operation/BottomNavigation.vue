@@ -1,6 +1,7 @@
 <template>
   <nav class="bottom-navigation" aria-label="页面导航">
     <button
+      v-if="businessRoute === 'aiCompute'"
       class="nav-item ai-compute-item"
       :class="{ active: active === 'aiCompute' }"
       type="button"
@@ -14,6 +15,7 @@
     </button>
 
     <button
+      v-if="businessRoute === 'commonCompute'"
       class="nav-item common-compute-item"
       :class="{ active: active === 'commonCompute' }"
       type="button"
@@ -37,6 +39,7 @@
     </button>
 
     <button
+      v-if="businessRoute === 'Region'"
       class="nav-item region-item"
       :class="{ active: active === 'Region' }"
       type="button"
@@ -50,6 +53,7 @@
     </button>
 
     <button
+      v-if="businessRoute === 'dc'"
       class="nav-item dc-item"
       :class="{ active: active === 'dc' }"
       type="button"
@@ -59,22 +63,25 @@
         class="nav-svg-icon"
         :icon-name="`dc${active === 'dc' ? '_active' : ''}`"
       />
-      <p class="nav-item-text">DC</p>
+      <p class="nav-item-text">saleable</p>
     </button>
   </nav>
 </template>
 
 <script setup>
-import SvgIcon from './SvgIcon.vue'
+import SvgIcon from './SvgIcon.vue';
+import { useRoleNavigation } from '@/composables/useRoleNavigation.js';
+
+const { businessRoute } = useRoleNavigation();
 
 defineProps({
   active: {
     type: String,
     required: true
   }
-})
+});
 
-const emit = defineEmits(['navigate', 'ai-click'])
+const emit = defineEmits(['navigate', 'ai-click']);
 </script>
 
 <style lang="less" scoped>
@@ -88,12 +95,13 @@ const emit = defineEmits(['navigate', 'ai-click'])
   height: calc(54px + env(safe-area-inset-bottom));
   padding-bottom: env(safe-area-inset-bottom);
   flex-shrink: 0;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   align-items: stretch;
   background: #fff;
 }
 
 .bottom-navigation::before {
+  display: none;
   position: absolute;
   z-index: 0;
   right: 0;
@@ -133,7 +141,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
 
 /* AI 按钮脱离 Grid 后，明确固定左右导航项所在列。 */
 .common-compute-item {
-  grid-column: 2;
+  grid-column: 1;
 }
 
 .ai-compute-item {
@@ -141,11 +149,11 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .region-item {
-  grid-column: 4;
+  grid-column: 1;
 }
 
 .dc-item {
-  grid-column: 5;
+  grid-column: 1;
 }
 
 .nav-item .van-icon {
@@ -162,10 +170,13 @@ const emit = defineEmits(['navigate', 'ai-click'])
 }
 
 .ai-button {
-    position: absolute;
+    position: relative;
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: center;
     right: auto;
     bottom: 3px;
-    left: 50%;
+    left: auto;
     width: 66px;
     height: 66px;
     flex-direction: column;
@@ -179,7 +190,7 @@ const emit = defineEmits(['navigate', 'ai-click'])
     background-size: 100% 100%, 300% 100%;
     animation: border-flow 2s linear infinite;
     box-shadow: 0 -2px 9px rgba(76, 79, 191, 0.22);
-    transform: translate(-54%, -24%);
+    transform: translateY(-24%);
     padding-bottom: 4px;
 }
 

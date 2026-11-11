@@ -14,6 +14,15 @@ const authmgt = {
       },
     };
   },
+  async getUserRole(uid) {
+    // Mock 角色接口：修改 role 可验证 1/2/3、其他角色和空角色的入口权限。
+    return {
+      status: 200,
+      data: {
+        role: 1,
+      },
+    };
+  },
 };
 
 const home = {

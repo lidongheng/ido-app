@@ -9,8 +9,12 @@ export const useUser = defineStore('user', {
     uid: null,
     wecodeInfo: null,
     tenant: null,
+    role: null,
   }),
   actions: {
+    setRole(role) {
+      this.role = role;
+    },
     setDeviceInfo(deviceInfo) {
       this.deviceInfo = deviceInfo;
     },
